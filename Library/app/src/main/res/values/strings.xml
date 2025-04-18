@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Library</string>
+
+    <string name="search">검색하기</string>
+    <string name="search_close">검색어 삭제</string>
+    <string name="search_label">검색할 도서 명을 입력하시오</string>
+
+    <string name="back">뒤로 가기</string>
+
+    <string name="loading">로딩 중</string>
+    <string name="error">로딩 실패</string>
+    <string name="retry">재시도</string>
+
+    <string name="book">책목록</string>
+    <string name="bookmark">즐겨찾기</string>
+
+    <string name="empty_bookmark">책을 추가하여 나만의 서재를 완성해보세요</string>
+
+    <string name="totalCount">총 도서 개수 : </string>
+
+    <string name="load_data_error">데이터 로딩 중 오류 발생</string>
+    <string name="previous_page">&lt;</string>
+    <string name="next_page">&gt;</string>
+    
+    <string name="navigation_drawer">Navigation Drawer</string>
+    <string name="navigation_rail">Navigation Rail</string>
+    <string name="navigation_bottom">Navigation Bottom</string>
+</resources>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="list_only_content_column_padding">8.dp</dimen>
+    <dimen name="list_only_content_search_icon_padding">4.dp</dimen>
+    <dimen name="list_only_content_search_horizontal_padding">8.dp</dimen>
+    <dimen name="list_only_content_total_text_start_padding">16.dp</dimen>
+    <dimen name="list_only_content_total_text_top_padding">8.dp</dimen>
+
+    <dimen name="list_padding">12.dp</dimen>
+    <dimen name="list_item_padding">8.dp</dimen>
+    <dimen name="list_item_text_column_padding">4.dp</dimen>
+    <dimen name="list_item_text_padding">4.dp</dimen>
+    <dimen name="list_item_image_padding">4.dp</dimen>
+    <dimen name="list_item_image_height">128.dp</dimen>
+    <dimen name="list_item_image_width">80.dp</dimen>
+
+    <dimen name="detail_screen_arrow_padding">4.dp</dimen>
+    <dimen name="detail_screen_text_column_padding">4.dp</dimen>
+    <dimen name="detail_screen_text_padding">12.dp</dimen>
+    <dimen name="detail_screen_image_padding">12.dp</dimen>
+    <dimen name="detail_screen_image_height">160.dp</dimen>
+    <dimen name="detail_screen_spacer_height">12.dp</dimen>
+
+    <dimen name="loading_screen_image_size">200.dp</dimen>
+    <dimen name="error_screen_text_padding">12.dp</dimen>
+
+    <dimen name="permanent_navigation_drawer_content_padding">12.dp</dimen>
+    <dimen name="permanent_navigation_drawer_content_icon_padding">8.dp</dimen>
+    <dimen name="permanent_navigation_drawer_content_text_padding">20.dp</dimen>
+    <dimen name="navigation_rail_item_padding">40.dp</dimen>
+
+    <dimen name="page_button_padding">40.dp</dimen>
+</resources>
