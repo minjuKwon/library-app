@@ -20,6 +20,8 @@ import com.example.library.data.BookType
 import com.example.library.data.BookshelfRepository
 import com.example.library.network.Book
 import com.example.library.network.BookInfo
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,11 +34,15 @@ import java.io.IOException
 const val PAGE_SIZE=10
 
 class BookshelfViewModel(
-    private val bookshelfRepository: BookshelfRepository
+    private val bookshelfRepository: BookshelfRepository,
+    private val ioDispatcher:CoroutineDispatcher = Dispatchers.IO,
+    externalScope: CoroutineScope? = null
 ):ViewModel() {
 
     var bookshelfUiState: BookshelfUiState by mutableStateOf(BookshelfUiState.Loading)
         private set
+
+    private val scope = externalScope ?: viewModelScope
 
     private val _currentPage = MutableStateFlow(1)
     val currentPage: StateFlow<Int> = _currentPage
@@ -69,12 +75,12 @@ class BookshelfViewModel(
                 pageSize = PAGE_SIZE,
                 enablePlaceholders = false
             )){BookPagingSource(bookshelfRepository,input=search,page=page,pageSize=PAGE_SIZE)}
-            .flow.cachedIn(viewModelScope)
+            .flow.cachedIn(scope)
 
-        viewModelScope.launch {
+        scope.launch {
             bookshelfUiState = try{
 
-                val totalCount=withContext(Dispatchers.IO){
+                val totalCount=withContext(ioDispatcher){
                     bookshelfRepository
                         .getBookListInformation(search,10,0).totalCount
                 }
