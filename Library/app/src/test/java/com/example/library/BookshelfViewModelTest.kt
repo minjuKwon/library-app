@@ -9,7 +9,6 @@ import com.example.library.rules.TestDispatcherRule
 import com.example.library.ui.BookshelfUiState
 import com.example.library.ui.BookshelfViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -37,7 +36,7 @@ class BookshelfViewModelTest {
 
         val fakeRepository= FakeNetworkBookshelfRepository()
 
-        val testScope = CoroutineScope(testDispatcherRule.testDispatcher + Job())
+        val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
         val bookshelfViewModel=BookshelfViewModel(
             bookshelfRepository = fakeRepository,
             ioDispatcher = testDispatcherRule.testDispatcher,
