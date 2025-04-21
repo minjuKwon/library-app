@@ -77,7 +77,7 @@ class BookshelfViewModelTest {
         }
 }
 
-class MyDiffCallback : DiffUtil.ItemCallback<Book>() {
+private class MyDiffCallback : DiffUtil.ItemCallback<Book>() {
     override fun areItemsTheSame(oldItem: Book, newItem: Book): Boolean {
         return oldItem.id == newItem.id
     }
