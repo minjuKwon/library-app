@@ -55,6 +55,7 @@ class BookshelfViewModelTest {
             workerDispatcher = testDispatcherRule.testDispatcher
         )
 
+        // collectLatest 사용하여 강제 수집 및 완료 처리
         launch {
             flowOf(pagingData).collectLatest {
                 differ.submitData(it)
