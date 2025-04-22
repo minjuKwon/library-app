@@ -7,7 +7,7 @@ import com.example.library.ui.BookshelfApp
 import org.junit.Rule
 import org.junit.Test
 
-class BookshelfTest {
+class WindowWidthSizeClassUiTest {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
