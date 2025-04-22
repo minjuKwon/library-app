@@ -3,6 +3,8 @@ package com.example.library
 import androidx.paging.AsyncPagingDataDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
+import com.example.library.fake.FakeBookmarkedBookshelfRepository
+import com.example.library.fake.FakeExceptionBookshelfRepository
 import com.example.library.fake.FakeNetworkBookshelfRepository
 import com.example.library.network.Book
 import com.example.library.rules.TestDispatcherRule
@@ -18,6 +20,7 @@ import org.junit.Rule
 import org.junit.Test
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
+import org.junit.Assert.assertTrue
 
 class BookshelfViewModelTest {
 
@@ -76,6 +79,79 @@ class BookshelfViewModelTest {
         testScope.cancel()
 
         }
+
+    @Test
+    fun bookshelfViewModel_getBookListInformation_verifyBookshelfBookmark()=runTest{
+
+        val fakeRepository= FakeNetworkBookshelfRepository()
+        val testScope= CoroutineScope(testDispatcherRule.testDispatcher)
+        val bookshelfViewModel=BookshelfViewModel(
+            bookshelfRepository = fakeRepository,
+            ioDispatcher = testDispatcherRule.testDispatcher,
+            externalScope = testScope
+        )
+        testScheduler.advanceUntilIdle()
+
+        //bookmark 리스트 확인
+        val successState= (bookshelfViewModel.bookshelfUiState as BookshelfUiState.Success)
+        val pagingData= successState.list.book.first()
+        val differ= AsyncPagingDataDiffer(
+            diffCallback = MyDiffCallback(),
+            updateCallback = NoopListCallback,
+            workerDispatcher = testDispatcherRule.testDispatcher
+        )
+
+        launch {
+            flowOf(pagingData).collectLatest{differ.submitData(it)}
+        }
+
+        testScheduler.advanceUntilIdle()
+
+        val actualItems=differ.snapshot().items
+        for(book in actualItems){
+            bookshelfViewModel.updateBookmarkList(book)
+        }
+        var expectedItems=FakeBookmarkedBookshelfRepository().getBookListInformation(
+            bookshelfViewModel.textFieldKeyword.value,
+            10,
+            0
+        ).book
+
+        assertEquals(expectedItems, actualItems)
+
+        //bookmark 해제된  리스트 확인
+        for(book in actualItems){
+            bookshelfViewModel.updateBookmarkList(book)
+        }
+
+        expectedItems=FakeNetworkBookshelfRepository().getBookListInformation(
+            bookshelfViewModel.textFieldKeyword.value,
+            10,
+            0
+        ).book
+
+        assertEquals(expectedItems, actualItems)
+
+        testScope.cancel()
+
+    }
+
+    @Test
+    fun bookshelfViewModel_getBookListInformation_verityBookshelfUiStateError()= runTest {
+
+        val fakeRepository= FakeExceptionBookshelfRepository()
+        val testScope= CoroutineScope(testDispatcherRule.testDispatcher)
+        val viewModel=BookshelfViewModel(
+            bookshelfRepository = fakeRepository,
+            ioDispatcher = testDispatcherRule.testDispatcher,
+            externalScope = testScope
+        )
+
+        testScheduler.advanceUntilIdle()
+
+        assertTrue(viewModel.bookshelfUiState is BookshelfUiState.Error)
+    }
+
 }
 
 private class MyDiffCallback : DiffUtil.ItemCallback<Book>() {
