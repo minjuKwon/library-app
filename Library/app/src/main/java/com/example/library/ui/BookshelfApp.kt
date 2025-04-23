@@ -18,9 +18,9 @@ import com.example.library.ui.utils.NavigationType
 @Composable
 fun BookshelfApp(
     windowSize: WindowWidthSizeClass,
+    bookshelfViewModel: BookshelfViewModel = viewModel(factory=BookshelfViewModel.Factory),
     modifier:Modifier= Modifier
 ){
-    val bookshelfViewModel: BookshelfViewModel = viewModel(factory=BookshelfViewModel.Factory)
     val navigationType:NavigationType
     val contentType:ContentType
 
