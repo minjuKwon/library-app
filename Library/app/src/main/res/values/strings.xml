@@ -25,4 +25,6 @@
     <string name="navigation_drawer">Navigation Drawer</string>
     <string name="navigation_rail">Navigation Rail</string>
     <string name="navigation_bottom">Navigation Bottom</string>
+
+    <string name="test_itemCount">total book count </string>
 </resources>
