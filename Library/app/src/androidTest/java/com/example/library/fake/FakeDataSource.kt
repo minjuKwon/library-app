@@ -4,9 +4,10 @@ import com.example.library.network.Book
 import com.example.library.network.BookInfo
 import com.example.library.network.Image
 import com.example.library.network.Item
+import kotlin.math.min
 
 object FakeDataSource {
-    val item= Item(
+    private val item= Item(
         listOf(
             Book("1",
                 BookInfo("android_1",listOf("1_1","1_2"),"publisher1",
@@ -69,4 +70,8 @@ object FakeDataSource {
                     "1515","description15", Image(),false)
             )
     ),15)
+
+    fun getListRange(count:Int, startIdx:Int):Item{
+        return Item(item.book.subList(startIdx, min(startIdx+count, item.totalCount)),item.totalCount)
+    }
 }

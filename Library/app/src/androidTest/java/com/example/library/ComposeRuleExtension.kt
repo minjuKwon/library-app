@@ -8,5 +8,9 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 
 fun <A: ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>
-        .onNodeWithTagForStringId(@StringRes id:Int):SemanticsNodeInteraction
-        =onNodeWithTag(activity.getString(id))
+        .onNodeWithTagForStringId(
+            @StringRes id:Int,
+            string:String="",
+            useUnmergedTree:Boolean=false
+        ):SemanticsNodeInteraction
+        =onNodeWithTag(activity.getString(id)+string, useUnmergedTree)

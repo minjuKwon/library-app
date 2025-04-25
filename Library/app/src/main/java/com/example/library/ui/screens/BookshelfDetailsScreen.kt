@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -53,6 +54,7 @@ fun BookshelfDetailsScreen(
                         .fillMaxWidth()
                         .align(Alignment.Start)
                         .padding(dimensionResource(R.dimen.detail_screen_arrow_padding))
+                        .testTag(stringResource(R.string.test_back))
                 )
             }
         }
@@ -129,6 +131,7 @@ private fun DetailScreenContentInformation(
                 modifier= Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(dimensionResource(R.dimen.detail_screen_text_padding))
+                    .testTag(it)
             )
         }
 

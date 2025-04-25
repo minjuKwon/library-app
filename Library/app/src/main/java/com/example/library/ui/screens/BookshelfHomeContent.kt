@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -108,6 +107,7 @@ fun BookshelfListOnlyContent(
             state=listContentParams.scrollState,
             modifier= Modifier
                 .padding(dimensionResource(R.dimen.list_padding))
+                .testTag(stringResource(R.string.test_list))
         ){
             if(checkTabPressed(bookshelfUiState)==BookType.Bookmark){
                     items(checkBookmarkList(bookshelfUiState),key={it.id}){
@@ -223,7 +223,6 @@ fun BookmarkEmptyScreen(modifier:Modifier=Modifier){
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchTextField(
     input:String,
@@ -302,6 +301,7 @@ private fun PageNumberButton(
                 color = if (page == currentPage) Color.Black else Color.LightGray,
                 modifier=Modifier
                     .clickable { updatePage(page) }
+                    .testTag(stringResource(R.string.test_pageNum)+page)
             )
         }
         if (endPage < totalPages) {
@@ -375,9 +375,9 @@ private fun ItemDescription(book:Book){
         Text(
             text= it,
             style = MaterialTheme.typography.bodyLarge,
-            modifier=Modifier.padding(
-                bottom=dimensionResource(R.dimen.list_item_text_padding)
-            )
+            modifier=Modifier
+                .padding(bottom=dimensionResource(R.dimen.list_item_text_padding))
+                .testTag(it)
         )
     }
     Row(modifier= Modifier
