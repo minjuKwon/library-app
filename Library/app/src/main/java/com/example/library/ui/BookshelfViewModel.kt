@@ -74,7 +74,7 @@ class BookshelfViewModel(
             config= PagingConfig(
                 pageSize = PAGE_SIZE,
                 enablePlaceholders = false
-            )){BookPagingSource(bookshelfRepository,input=search,page=page,pageSize=PAGE_SIZE)}
+            )){BookPagingSource(bookshelfRepository,keyword=search,pageNumber=page,pageSize=PAGE_SIZE)}
             .flow.cachedIn(scope)
 
         scope.launch {
