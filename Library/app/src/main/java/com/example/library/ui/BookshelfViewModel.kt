@@ -47,14 +47,14 @@ class BookshelfViewModel(
     private val _currentPage = MutableStateFlow(1)
     val currentPage: StateFlow<Int> = _currentPage
 
-    private val _currentOrder = MutableStateFlow(false)
-    val currentOrder:StateFlow<Boolean> = _currentOrder
+    private val _isDataReadyForUi = MutableStateFlow(false)
+    val isDataReadyForUi:StateFlow<Boolean> = _isDataReadyForUi
 
     private val _textFieldKeyword = mutableStateOf("android")
     val textFieldKeyword=_textFieldKeyword
 
     fun updateOrder(b:Boolean){
-        _currentOrder.value= b
+        _isDataReadyForUi.value= b
     }
 
     fun updateKeyword(input:String){
@@ -80,7 +80,7 @@ class BookshelfViewModel(
         scope.launch {
             bookshelfUiState = try{
 
-                val totalCount=withContext(ioDispatcher){
+                val totalItemCount=withContext(ioDispatcher){
                     bookshelfRepository
                         .getBookListInformation(search,10,0).totalCount
                 }
@@ -103,11 +103,11 @@ class BookshelfViewModel(
                         }
 
                         (bookshelfUiState as BookshelfUiState.Success)
-                            .copy(list= PageData(pageDataBookmarked,totalCount))
+                            .copy(list= PageData(pageDataBookmarked,totalItemCount))
 
                     }
                     else-> BookshelfUiState.Success(
-                        list= PageData(pageData,totalCount)
+                        list= PageData(pageData,totalItemCount)
                     )
                 }
             }catch (e: IOException){

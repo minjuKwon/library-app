@@ -69,9 +69,9 @@ fun BookshelfListOnlyContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        val totalCount= getTotalItemsCount(bookshelfUiState)
+        val totalItemCount= getTotalItemsCount(bookshelfUiState)
         val pageSize = PAGE_SIZE
-        val totalPages = (totalCount+pageSize-1)/pageSize
+        val totalPages = (totalItemCount+pageSize-1)/pageSize
         val pageGroupSize = 3
         val currentGroup = (listContentParams.currentPage-1)/pageGroupSize
 
@@ -98,7 +98,7 @@ fun BookshelfListOnlyContent(
         ) {
             Text(text = stringResource(R.string.totalCount))
             Text(
-                text = " $totalCount",
+                text = " $totalItemCount",
                 modifier = Modifier.testTag(stringResource(R.string.test_itemCount))
             )
         }

@@ -27,7 +27,7 @@ fun BookshelfApp(
     val currentPage by bookshelfViewModel.currentPage.collectAsState()
     val scrollState  = rememberLazyListState()
 
-    val currentOrder by bookshelfViewModel.currentOrder.collectAsState()
+    val isDataReadyForUi by bookshelfViewModel.isDataReadyForUi.collectAsState()
     val textFieldKeyword by bookshelfViewModel.textFieldKeyword
 
     when(windowSize){
@@ -73,7 +73,7 @@ fun BookshelfApp(
                 bookshelfViewModel.initCurrentItem(v1,v2)}
         ),
         detailsScreenParams = DetailsScreenParams(
-            currentOrder=currentOrder,
+            currentOrder= isDataReadyForUi,
             updateOrder={bookshelfViewModel.updateOrder(it)},
             onBackPressed={bookshelfViewModel.resetHomeScreenState(it)}
         ),
