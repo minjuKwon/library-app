@@ -71,7 +71,7 @@ object FakeDataSource {
             )
     ),15)
 
-    fun getListRange(count:Int, startIdx:Int):Item{
-        return Item(item.book.subList(startIdx, min(startIdx+count, item.totalCount)),item.totalCount)
+    fun getListRange(limit:Int, offset:Int):Item{
+        return Item(item.book.subList(offset, min(offset+limit, item.totalCount)),item.totalCount)
     }
 }

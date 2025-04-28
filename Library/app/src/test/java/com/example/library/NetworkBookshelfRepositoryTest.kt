@@ -16,7 +16,7 @@ class NetworkBookshelfRepositoryTest {
                 bookshelfApiService = FakeBookshelfApiService()
             )
             assertEquals(FakeDataSource.item,
-                repository.getBookListInformation("android",0,0)
+                repository.searchVolume("android",0,0)
             )
         }
 }

@@ -9,78 +9,78 @@ import com.example.library.ui.defaultBookInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-fun checkTabPressed(
+fun getTabPressed(
     bookshelfUiState: BookshelfUiState
 ): BookType
 {
-    return checkUiState(
+    return getDataByUiState(
         bookshelfUiState=bookshelfUiState,
-        a={it.currentTabType},
-        b={BookType.Books}
+        onSuccess={it.currentTabType},
+        onFailure={BookType.Books}
     )
 }
 
-fun checkBookmarkIsEmpty(
+fun isBookmarkListEmpty(
     bookshelfUiState: BookshelfUiState
 ):Boolean
 {
-    return checkUiState(
+    return getDataByUiState(
         bookshelfUiState=bookshelfUiState,
-        a={it.bookmarkList.isEmpty()},
-        b={false}
+        onSuccess={it.bookmarkList.isEmpty()},
+        onFailure={false}
     )
 }
 
-fun checkBookmarkList(
+fun getBookmarkList(
     bookshelfUiState: BookshelfUiState
 ):MutableList<Book>
 {
-    return checkUiState(
+    return getDataByUiState(
         bookshelfUiState=bookshelfUiState,
-        a={it.bookmarkList},
-        b={ mutableListOf()}
+        onSuccess={it.bookmarkList},
+        onFailure={ mutableListOf()}
     )
 }
 
-fun checkCurrentItem(
+fun getCurrentItem(
     bookshelfUiState: BookshelfUiState
 ):BookInfo
 {
-    return checkUiState(
+    return getDataByUiState(
         bookshelfUiState=bookshelfUiState,
-        a={it.currentItem?.get(it.currentTabType)?: defaultBookInfo},
-        b={ defaultBookInfo}
+        onSuccess={it.currentItem?.get(it.currentTabType)?: defaultBookInfo},
+        onFailure={ defaultBookInfo}
     )
 }
 
-fun checkBookList(
+fun getBookList(
     bookshelfUiState: BookshelfUiState
 ): Flow<PagingData<Book>>
 {
-    return checkUiState(
+    return getDataByUiState(
         bookshelfUiState=bookshelfUiState,
-        a={it.list.book},
-        b={ MutableStateFlow(PagingData.from(emptyList())) }
+        onSuccess={it.list.book},
+        onFailure={ MutableStateFlow(PagingData.from(emptyList())) }
     )
 }
 
-fun getTotalItemsCount(
+fun getTotalItemCount(
     bookshelfUiState: BookshelfUiState
 ):Int{
-    return checkUiState(
+    return getDataByUiState(
         bookshelfUiState=bookshelfUiState,
-        a={it.list.totalCount},
-        b={0}
+        onSuccess={it.list.totalCount},
+        onFailure={0}
     )
 }
 
-fun <T>checkUiState(
+fun <T> getDataByUiState(
     bookshelfUiState: BookshelfUiState,
-    a:(BookshelfUiState.Success)->T,
-    b:()->T
+    onSuccess :(BookshelfUiState.Success)->T,
+    onFailure:()->T
 ):T{
     return when(bookshelfUiState){
-        is BookshelfUiState.Success->a(bookshelfUiState)
-        else->b()
+        is BookshelfUiState.Success->onSuccess(bookshelfUiState)
+        else->onFailure()
     }
 }

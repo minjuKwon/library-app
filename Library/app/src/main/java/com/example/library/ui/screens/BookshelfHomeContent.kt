@@ -44,10 +44,10 @@ import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
-import com.example.library.checkBookmarkList
-import com.example.library.checkTabPressed
 import com.example.library.data.BookType
-import com.example.library.getTotalItemsCount
+import com.example.library.getBookmarkList
+import com.example.library.getTabPressed
+import com.example.library.getTotalItemCount
 import com.example.library.network.Book
 import com.example.library.network.BookInfo
 import com.example.library.ui.BookshelfUiState
@@ -71,7 +71,7 @@ fun BookshelfListOnlyContent(
 
         val pageGroupSize = 3
         val pageSize = PAGE_SIZE
-        val totalItemCount= getTotalItemsCount(bookshelfUiState)
+        val totalItemCount= getTotalItemCount(bookshelfUiState)
         val totalPages = (totalItemCount+pageSize-1)/pageSize
         val currentGroup = (listContentParams.currentPage-1)/pageGroupSize
 
@@ -109,11 +109,11 @@ fun BookshelfListOnlyContent(
                 .padding(dimensionResource(R.dimen.list_padding))
                 .testTag(stringResource(R.string.test_list))
         ){
-            if(checkTabPressed(bookshelfUiState)==BookType.Bookmark){
-                    items(checkBookmarkList(bookshelfUiState),key={it.id}){
+            if(getTabPressed(bookshelfUiState)==BookType.Bookmark){
+                    items(getBookmarkList(bookshelfUiState),key={it.id}){
                         listContentParams.initCurrentItem(
-                            checkTabPressed(bookshelfUiState),
-                            checkBookmarkList(bookshelfUiState)[0].bookInfo
+                            getTabPressed(bookshelfUiState),
+                            getBookmarkList(bookshelfUiState)[0].bookInfo
                         )
                         BookShelfListItem(
                             book = it,
@@ -126,7 +126,7 @@ fun BookshelfListOnlyContent(
                     books[it]?.let { it1 ->
                         if(it==0){
                             listContentParams.initCurrentItem(
-                                checkTabPressed(bookshelfUiState), it1.bookInfo
+                                getTabPressed(bookshelfUiState), it1.bookInfo
                             )
                         }
                         BookShelfListItem(
@@ -198,8 +198,8 @@ fun BookshelfListAndDetailContent(
             BookshelfDetailsScreen(
                 detailsScreenParams= DetailsScreenParams(
                     onBackPressed = { activity.finish() },
-                    currentOrder = detailsScreenParams.currentOrder,
-                    updateOrder = detailsScreenParams.updateOrder
+                    isDataReadyForUi = detailsScreenParams.isDataReadyForUi,
+                    updateDataReadyForUi = detailsScreenParams.updateDataReadyForUi
                 ),
                 bookshelfUiState=bookshelfUiState,
                 modifier=Modifier.weight(1f),

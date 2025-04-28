@@ -13,13 +13,13 @@ class BookPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> {
         return try{
-            val limit = pageSize * (pageNumber-1)
+            val offset = pageSize * (pageNumber-1)
             val data=bookshelfRepository
-                .getBookListInformation(
+                .searchVolume(
                     query=keyword,
-                    count=pageSize,
-                    startIndex = limit
-            ).book
+                    limit= pageSize,
+                    offset = offset
+                ).book
             LoadResult.Page(data=data, prevKey = null, nextKey = null)
         }catch (e:Exception){
             LoadResult.Error(e)

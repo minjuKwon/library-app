@@ -4,7 +4,7 @@ import com.example.library.network.BookshelfApiService
 import com.example.library.network.Item
 
 class FakeBookshelfApiService :BookshelfApiService {
-    override suspend fun getInformation(query: String, count: Int, startIndex: Int): Item {
+    override suspend fun searchVolume(query: String, limit: Int, offset: Int): Item {
         return FakeDataSource.item
     }
 }

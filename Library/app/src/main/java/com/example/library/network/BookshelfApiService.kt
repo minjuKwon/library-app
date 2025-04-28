@@ -6,7 +6,7 @@ import retrofit2.http.Query
 interface BookshelfApiService {
     
     @GET("volumes")
-    suspend fun getInformation(
+    suspend fun searchVolume(
         @Query("q")query:String,
         @Query("maxResults")limit:Int,
         @Query("startIndex")offset:Int

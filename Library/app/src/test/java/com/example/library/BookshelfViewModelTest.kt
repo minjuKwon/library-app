@@ -68,7 +68,7 @@ class BookshelfViewModelTest {
         testScheduler.advanceUntilIdle()
 
         val actualItems = differ.snapshot().items
-        val expectedItems=fakeRepository.getBookListInformation(
+        val expectedItems=fakeRepository.searchVolume(
             bookshelfViewModel.textFieldKeyword.value,
             10,
             0
@@ -111,7 +111,7 @@ class BookshelfViewModelTest {
         for(book in actualItems){
             bookshelfViewModel.updateBookmarkList(book)
         }
-        var expectedItems=FakeBookmarkedBookshelfRepository().getBookListInformation(
+        var expectedItems=FakeBookmarkedBookshelfRepository().searchVolume(
             bookshelfViewModel.textFieldKeyword.value,
             10,
             0
@@ -124,7 +124,7 @@ class BookshelfViewModelTest {
             bookshelfViewModel.updateBookmarkList(book)
         }
 
-        expectedItems=FakeNetworkBookshelfRepository().getBookListInformation(
+        expectedItems=FakeNetworkBookshelfRepository().searchVolume(
             bookshelfViewModel.textFieldKeyword.value,
             10,
             0

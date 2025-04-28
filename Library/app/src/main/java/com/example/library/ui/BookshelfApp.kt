@@ -67,14 +67,14 @@ fun BookshelfApp(
             updatePage={bookshelfViewModel.getInformation(page=it)},
             onBookmarkPressed={bookshelfViewModel.updateBookmarkList(it)},
             onBookItemPressed={
-                bookshelfViewModel.updateOrder(true)
+                bookshelfViewModel.updateDataReadyForUi(true)
                 bookshelfViewModel.updateDetailsScreenState(it)},
             initCurrentItem={v1,v2->
                 bookshelfViewModel.initCurrentItem(v1,v2)}
         ),
         detailsScreenParams = DetailsScreenParams(
-            currentOrder= isDataReadyForUi,
-            updateOrder={bookshelfViewModel.updateOrder(it)},
+            isDataReadyForUi= isDataReadyForUi,
+            updateDataReadyForUi={bookshelfViewModel.updateDataReadyForUi(it)},
             onBackPressed={bookshelfViewModel.resetHomeScreenState(it)}
         ),
         modifier=modifier
@@ -103,7 +103,7 @@ data class ListContentParams(
 )
 
 data class DetailsScreenParams(
-    val currentOrder:Boolean,
-    val updateOrder: (Boolean)->Unit,
+    val isDataReadyForUi:Boolean,
+    val updateDataReadyForUi: (Boolean)->Unit,
     val onBackPressed:(BookInfo)->Unit
 )

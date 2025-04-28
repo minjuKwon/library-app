@@ -26,7 +26,7 @@ import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
-import com.example.library.checkCurrentItem
+import com.example.library.getCurrentItem
 import com.example.library.network.BookInfo
 import com.example.library.ui.BookshelfUiState
 import com.example.library.ui.DetailsScreenParams
@@ -38,7 +38,7 @@ fun BookshelfDetailsScreen(
     modifier: Modifier =Modifier,
     isNotFullScreen:Boolean=true
 ){
-    val data=checkCurrentItem(bookshelfUiState)
+    val data=getCurrentItem(bookshelfUiState)
     BackHandler {
         detailsScreenParams.onBackPressed(data)
     }
@@ -64,10 +64,10 @@ fun BookshelfDetailsScreen(
         )
         LazyColumn{
             item{
-                DetailsScreenContent(checkCurrentItem(bookshelfUiState))
-                if (detailsScreenParams.currentOrder) {
-                    DetailsScreenContent(checkCurrentItem(bookshelfUiState))
-                    detailsScreenParams.updateOrder(false)
+                DetailsScreenContent(getCurrentItem(bookshelfUiState))
+                if (detailsScreenParams.isDataReadyForUi) {
+                    DetailsScreenContent(getCurrentItem(bookshelfUiState))
+                    detailsScreenParams.updateDataReadyForUi(false)
                 }
             }
         }

@@ -53,7 +53,7 @@ class BookshelfViewModel(
     private val _isDataReadyForUi = MutableStateFlow(false)
     val isDataReadyForUi:StateFlow<Boolean> = _isDataReadyForUi
 
-    fun updateOrder(b:Boolean){
+    fun updateDataReadyForUi(b:Boolean){
         _isDataReadyForUi.value= b
     }
 
@@ -82,7 +82,7 @@ class BookshelfViewModel(
 
                 val totalItemCount=withContext(ioDispatcher){
                     bookshelfRepository
-                        .getBookListInformation(search,10,0).totalCount
+                        .searchVolume(search,10,0).totalCount
                 }
 
                 _currentPage.value=page

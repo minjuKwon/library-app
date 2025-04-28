@@ -4,12 +4,12 @@ import com.example.library.network.BookshelfApiService
 import com.example.library.network.Item
 
 interface BookshelfRepository {
-    suspend fun getBookListInformation(query:String, limit:Int, offset:Int):Item
+    suspend fun searchVolume(query:String, limit:Int, offset:Int):Item
 }
 
 class NetworkBookshelfRepository(
     private val bookshelfApiService: BookshelfApiService
 ):BookshelfRepository{
-    override suspend fun getBookListInformation(query:String, limit:Int, offset:Int): Item
-    = bookshelfApiService.getInformation(query, limit, offset)
+    override suspend fun searchVolume(query:String, limit:Int, offset:Int): Item
+    = bookshelfApiService.searchVolume(query, limit, offset)
 }

@@ -4,7 +4,7 @@ import com.example.library.data.BookshelfRepository
 import com.example.library.network.Item
 
 class FakeNetworkBookshelfRepository :BookshelfRepository {
-    override suspend fun getBookListInformation(query: String, count: Int, startIndex: Int): Item {
-        return FakeDataSource.getListRange(count, startIndex)
+    override suspend fun searchVolume(query: String, limit: Int, offset: Int): Item {
+        return FakeDataSource.getListRange(limit, offset)
     }
 }

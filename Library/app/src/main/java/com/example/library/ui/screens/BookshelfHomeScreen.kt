@@ -36,10 +36,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.library.R
-import com.example.library.checkBookList
-import com.example.library.checkBookmarkIsEmpty
-import com.example.library.checkTabPressed
 import com.example.library.data.BookType
+import com.example.library.getBookList
+import com.example.library.getTabPressed
+import com.example.library.isBookmarkListEmpty
 import com.example.library.ui.BookshelfUiState
 import com.example.library.ui.DetailsScreenParams
 import com.example.library.ui.ListContentParams
@@ -77,7 +77,7 @@ fun BookshelfHomeScreen(
             drawerContent = {
                 PermanentDrawerSheet(modifier = Modifier.fillMaxWidth(0.2f)) {
                     NavigationDrawerContent(
-                        selectedTab = checkTabPressed(bookshelfUiState) ,
+                        selectedTab = getTabPressed(bookshelfUiState) ,
                         onTabPressed = navigationConfig.onTabPressed,
                         navigationItemList = navigationItemContentList,
                         modifier= Modifier
@@ -160,7 +160,7 @@ private fun BookshelfAppContent(
                 visible=navigationConfig.navigationType==NavigationType.NAVIGATION_RAIL
             ){
                 BookNavigationRail(
-                    currentTab = checkTabPressed(bookshelfUiState),
+                    currentTab = getTabPressed(bookshelfUiState),
                     onTabPressed = navigationConfig.onTabPressed,
                     navigationItemContentList = navigationItemContent,
                     modifier=Modifier.testTag(stringResource(R.string.navigation_rail))
@@ -170,15 +170,15 @@ private fun BookshelfAppContent(
             Column(modifier=Modifier.fillMaxSize()) {
                 if(navigationConfig.contentType==ContentType.LIST_AND_DETAIL){
                     BookshelfListAndDetailContent(
-                        books = checkBookList(bookshelfUiState).collectAsLazyPagingItems() ,
+                        books = getBookList(bookshelfUiState).collectAsLazyPagingItems() ,
                         bookshelfUiState = bookshelfUiState,
                         listContentParams=listContentParams,
                         textFieldParams=textFieldParams,
                         detailsScreenParams=detailsScreenParams,
                     )
                 }else{
-                    if(checkTabPressed(bookshelfUiState)==BookType.Bookmark
-                        && checkBookmarkIsEmpty(bookshelfUiState)
+                    if(getTabPressed(bookshelfUiState)==BookType.Bookmark
+                        && isBookmarkListEmpty(bookshelfUiState)
                     ){
                         BookmarkEmptyScreen(modifier= Modifier
                             .fillMaxSize()
@@ -215,7 +215,7 @@ private fun BookshelfAppContent(
                     visible = navigationConfig.navigationType==NavigationType.BOTTOM_NAVIGATION
                 ) {
                     BookBottomNavigationBar(
-                        currentTab = checkTabPressed(bookshelfUiState),
+                        currentTab = getTabPressed(bookshelfUiState),
                         onTabPressed = navigationConfig.onTabPressed,
                         navigationItemContentList = navigationItemContent,
                         modifier=Modifier.fillMaxWidth()
