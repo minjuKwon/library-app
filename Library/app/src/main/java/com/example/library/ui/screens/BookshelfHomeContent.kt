@@ -69,10 +69,10 @@ fun BookshelfListOnlyContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        val totalItemCount= getTotalItemsCount(bookshelfUiState)
-        val pageSize = PAGE_SIZE
-        val totalPages = (totalItemCount+pageSize-1)/pageSize
         val pageGroupSize = 3
+        val pageSize = PAGE_SIZE
+        val totalItemCount= getTotalItemsCount(bookshelfUiState)
+        val totalPages = (totalItemCount+pageSize-1)/pageSize
         val currentGroup = (listContentParams.currentPage-1)/pageGroupSize
 
         SearchTextField(

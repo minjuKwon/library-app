@@ -39,19 +39,19 @@ class BookshelfViewModel(
     externalScope: CoroutineScope? = null
 ):ViewModel() {
 
+    private val scope = externalScope ?: viewModelScope
+
     var bookshelfUiState: BookshelfUiState by mutableStateOf(BookshelfUiState.Loading)
         private set
 
-    private val scope = externalScope ?: viewModelScope
+    private val _textFieldKeyword = mutableStateOf("android")
+    val textFieldKeyword=_textFieldKeyword
 
     private val _currentPage = MutableStateFlow(1)
     val currentPage: StateFlow<Int> = _currentPage
 
     private val _isDataReadyForUi = MutableStateFlow(false)
     val isDataReadyForUi:StateFlow<Boolean> = _isDataReadyForUi
-
-    private val _textFieldKeyword = mutableStateOf("android")
-    val textFieldKeyword=_textFieldKeyword
 
     fun updateOrder(b:Boolean){
         _isDataReadyForUi.value= b

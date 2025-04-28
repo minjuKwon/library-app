@@ -24,11 +24,11 @@ fun BookshelfApp(
     val navigationType:NavigationType
     val contentType:ContentType
 
-    val currentPage by bookshelfViewModel.currentPage.collectAsState()
     val scrollState  = rememberLazyListState()
 
-    val isDataReadyForUi by bookshelfViewModel.isDataReadyForUi.collectAsState()
     val textFieldKeyword by bookshelfViewModel.textFieldKeyword
+    val currentPage by bookshelfViewModel.currentPage.collectAsState()
+    val isDataReadyForUi by bookshelfViewModel.isDataReadyForUi.collectAsState()
 
     when(windowSize){
         WindowWidthSizeClass.Compact->{
