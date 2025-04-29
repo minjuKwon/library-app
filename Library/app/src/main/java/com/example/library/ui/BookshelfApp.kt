@@ -11,12 +11,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.library.data.BookType
 import com.example.library.network.Book
 import com.example.library.network.BookInfo
-import com.example.library.ui.screens.BookshelfHomeScreen
+import com.example.library.ui.screens.LibraryScreen
 import com.example.library.ui.utils.ContentType
 import com.example.library.ui.utils.NavigationType
 
 @Composable
-fun BookshelfApp(
+fun LibraryApp(
     windowSize: WindowWidthSizeClass,
     bookshelfViewModel: BookshelfViewModel = viewModel(factory=BookshelfViewModel.Factory),
     modifier:Modifier= Modifier
@@ -49,7 +49,7 @@ fun BookshelfApp(
         }
     }
 
-    BookshelfHomeScreen(
+    LibraryScreen(
         bookshelfUiState=bookshelfViewModel.bookshelfUiState,
         navigationConfig = NavigationConfig(
             contentType=contentType,

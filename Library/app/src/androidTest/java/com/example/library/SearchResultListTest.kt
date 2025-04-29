@@ -8,8 +8,8 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
 import com.example.library.fake.FakeNetworkBookshelfRepository
-import com.example.library.ui.BookshelfApp
 import com.example.library.ui.BookshelfViewModel
+import com.example.library.ui.LibraryApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -101,7 +101,7 @@ class SearchResultListTest {
         }
 
         composeTestRule.setContent {
-            BookshelfApp(WindowWidthSizeClass.Compact,bookshelfViewModel)
+            LibraryApp(WindowWidthSizeClass.Compact,bookshelfViewModel)
         }
 
         composeTestRule.runOnIdle {

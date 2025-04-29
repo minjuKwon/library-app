@@ -4,8 +4,8 @@ import androidx.activity.ComponentActivity
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.example.library.fake.FakeNetworkBookshelfRepository
-import com.example.library.ui.BookshelfApp
 import com.example.library.ui.BookshelfViewModel
+import com.example.library.ui.LibraryApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -29,7 +29,7 @@ class WindowWidthSizeClassUiTest {
         )
 
         composeTestRule.setContent {
-            BookshelfApp(WindowWidthSizeClass.Compact,viewModel)
+            LibraryApp(WindowWidthSizeClass.Compact,viewModel)
         }
         composeTestRule.onNodeWithTagForStringId(
             R.string.navigation_bottom
@@ -50,7 +50,7 @@ class WindowWidthSizeClassUiTest {
         )
 
         composeTestRule.setContent {
-            BookshelfApp(WindowWidthSizeClass.Medium, viewModel)
+            LibraryApp(WindowWidthSizeClass.Medium, viewModel)
         }
         composeTestRule.onNodeWithTagForStringId(
             R.string.navigation_rail
@@ -71,7 +71,7 @@ class WindowWidthSizeClassUiTest {
         )
 
         composeTestRule.setContent {
-            BookshelfApp(WindowWidthSizeClass.Expanded,viewModel)
+            LibraryApp(WindowWidthSizeClass.Expanded,viewModel)
         }
         composeTestRule.onNodeWithTagForStringId(
             R.string.navigation_drawer

@@ -32,7 +32,7 @@ import com.example.library.ui.BookshelfUiState
 import com.example.library.ui.DetailsScreenParams
 
 @Composable
-fun BookshelfDetailsScreen(
+fun LibraryDetailsScreen(
     bookshelfUiState: BookshelfUiState,
     detailsScreenParams: DetailsScreenParams,
     modifier: Modifier =Modifier,

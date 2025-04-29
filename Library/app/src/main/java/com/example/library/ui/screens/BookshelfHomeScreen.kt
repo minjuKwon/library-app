@@ -50,7 +50,7 @@ import com.example.library.ui.utils.NavigationType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookshelfHomeScreen(
+fun LibraryScreen(
     bookshelfUiState: BookshelfUiState,
     navigationConfig: NavigationConfig,
     textFieldParams: TextFieldParams,
@@ -93,7 +93,7 @@ fun BookshelfHomeScreen(
 
             },modifier=Modifier.testTag(stringResource(R.string.navigation_drawer))
         ) {
-            BookshelfAppContent(
+            LibraryContent(
                 bookshelfUiState = bookshelfUiState,
                 navigationItemContent = navigationItemContentList,
                 navigationConfig=navigationConfig,
@@ -107,7 +107,7 @@ fun BookshelfHomeScreen(
         when(bookshelfUiState){
             is BookshelfUiState.Success -> {
                 if(bookshelfUiState.isShowingHomepage) {
-                    BookshelfAppContent(
+                    LibraryContent(
                         bookshelfUiState = bookshelfUiState,
                         navigationItemContent = navigationItemContentList,
                         navigationConfig=navigationConfig,
@@ -119,7 +119,7 @@ fun BookshelfHomeScreen(
                 }
                 else {
                     bookshelfUiState.currentItem[bookshelfUiState.currentTabType]?.let {
-                        BookshelfDetailsScreen(
+                        LibraryDetailsScreen(
                             bookshelfUiState = bookshelfUiState,
                             detailsScreenParams=detailsScreenParams,
                             modifier=modifier
@@ -128,7 +128,7 @@ fun BookshelfHomeScreen(
                 }
             }
             else ->{
-                BookshelfAppContent(
+                LibraryContent(
                     bookshelfUiState = bookshelfUiState,
                     navigationItemContent = navigationItemContentList,
                     navigationConfig=navigationConfig,
@@ -143,7 +143,7 @@ fun BookshelfHomeScreen(
 }
 
 @Composable
-private fun BookshelfAppContent(
+private fun LibraryContent(
     bookshelfUiState: BookshelfUiState,
     navigationItemContent: List<NavigationItemContent>,
     navigationConfig: NavigationConfig,
@@ -169,7 +169,7 @@ private fun BookshelfAppContent(
 
             Column(modifier=Modifier.fillMaxSize()) {
                 if(navigationConfig.contentType==ContentType.LIST_AND_DETAIL){
-                    BookshelfListAndDetailContent(
+                    LibraryListAndDetailContent(
                         books = getBookList(bookshelfUiState).collectAsLazyPagingItems() ,
                         bookshelfUiState = bookshelfUiState,
                         listContentParams=listContentParams,
@@ -185,7 +185,7 @@ private fun BookshelfAppContent(
                             .weight(1f))
                     }else{
                         when(bookshelfUiState){
-                            is BookshelfUiState.Success -> BookshelfListOnlyContent(
+                            is BookshelfUiState.Success -> LibraryListOnlyContent(
                                 books=bookshelfUiState.list.book.collectAsLazyPagingItems(),
                                 bookshelfUiState=bookshelfUiState,
                                 textFieldParams=textFieldParams,

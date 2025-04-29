@@ -9,7 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Modifier
-import com.example.library.ui.BookshelfApp
+import com.example.library.ui.LibraryApp
 import com.example.library.ui.theme.BookshelfTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val windowSize=calculateWindowSizeClass(this)
-                   BookshelfApp(windowSize=windowSize.widthSizeClass)
+                    LibraryApp(windowSize=windowSize.widthSizeClass)
                 }
             }
         }

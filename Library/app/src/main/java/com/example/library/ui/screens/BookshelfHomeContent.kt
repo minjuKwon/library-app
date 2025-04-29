@@ -57,7 +57,7 @@ import com.example.library.ui.PAGE_SIZE
 import com.example.library.ui.TextFieldParams
 
 @Composable
-fun BookshelfListOnlyContent(
+fun LibraryListOnlyContent(
     books:LazyPagingItems<Book>,
     bookshelfUiState: BookshelfUiState,
     textFieldParams:TextFieldParams,
@@ -115,7 +115,7 @@ fun BookshelfListOnlyContent(
                             getTabPressed(bookshelfUiState),
                             getBookmarkList(bookshelfUiState)[0].bookInfo
                         )
-                        BookShelfListItem(
+                        LibraryListItem(
                             book = it,
                             onBookItemPressed= listContentParams.onBookItemPressed,
                             onBookMarkPressed = listContentParams.onBookmarkPressed
@@ -129,7 +129,7 @@ fun BookshelfListOnlyContent(
                                 getTabPressed(bookshelfUiState), it1.bookInfo
                             )
                         }
-                        BookShelfListItem(
+                        LibraryListItem(
                             book = it1,
                             onBookItemPressed= listContentParams.onBookItemPressed,
                             onBookMarkPressed =listContentParams.onBookmarkPressed
@@ -175,7 +175,7 @@ fun BookshelfListOnlyContent(
 }
 
 @Composable
-fun BookshelfListAndDetailContent(
+fun LibraryListAndDetailContent(
     books:LazyPagingItems<Book>,
     bookshelfUiState: BookshelfUiState,
     textFieldParams:TextFieldParams,
@@ -184,7 +184,7 @@ fun BookshelfListAndDetailContent(
     modifier:Modifier= Modifier
 ){
     Row(modifier=modifier){
-        BookshelfListOnlyContent(
+        LibraryListOnlyContent(
             books = books,
             bookshelfUiState = bookshelfUiState,
             textFieldParams=textFieldParams,
@@ -195,7 +195,7 @@ fun BookshelfListAndDetailContent(
         val activity = LocalContext.current as Activity
 
         if(books.loadState.refresh is LoadState.NotLoading){
-            BookshelfDetailsScreen(
+            LibraryDetailsScreen(
                 detailsScreenParams= DetailsScreenParams(
                     onBackPressed = { activity.finish() },
                     isDataReadyForUi = detailsScreenParams.isDataReadyForUi,
@@ -315,7 +315,7 @@ private fun PageNumberButton(
 }
 
 @Composable
-private fun BookShelfListItem(
+private fun LibraryListItem(
     book: Book,
     onBookItemPressed:(BookInfo)->Unit,
     onBookMarkPressed:(Book)->Unit
