@@ -82,95 +82,126 @@ fun LibraryListOnlyContent(
             onInputReset = textFieldParams.updateKeyword
         )
 
-        Row(
-            modifier= Modifier
-                .fillMaxWidth()
-                .padding(
-                    top = dimensionResource(
-                        R.dimen.list_only_content_total_text_top_padding
-                    ),
-                    start = dimensionResource(
-                        R.dimen.list_only_content_total_text_start_padding
-                    )
-                ),
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = stringResource(R.string.totalCount))
-            Text(
-                text = " $totalItemCount",
-                modifier = Modifier.testTag(stringResource(R.string.test_itemCount))
-            )
-        }
+        LibraryTotalItemText(totalItemCount)
 
-        LazyColumn(
-            state=listContentParams.scrollState,
-            modifier= Modifier
-                .padding(dimensionResource(R.dimen.list_padding))
-                .testTag(stringResource(R.string.test_list))
-        ){
-            if(getTabPressed(bookshelfUiState)==BookType.Bookmark){
-                    items(getBookmarkList(bookshelfUiState),key={it.id}){
+        LibraryList(
+            books= books,
+            bookshelfUiState= bookshelfUiState,
+            listContentParams= listContentParams,
+            pageGroupSize = pageGroupSize,
+            totalPages= totalPages,
+            currentGroup= currentGroup
+        )
+
+    }
+}
+
+@Composable
+private fun LibraryTotalItemText(
+    totalItemCount:Int
+){
+    Row(
+        modifier= Modifier
+            .fillMaxWidth()
+            .padding(
+                top = dimensionResource(
+                    R.dimen.list_only_content_total_text_top_padding
+                ),
+                start = dimensionResource(
+                    R.dimen.list_only_content_total_text_start_padding
+                )
+            ),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = stringResource(R.string.totalCount))
+        Text(
+            text = " $totalItemCount",
+            modifier = Modifier.testTag(stringResource(R.string.test_itemCount))
+        )
+    }
+}
+
+@Composable
+private fun LibraryList(
+    books:LazyPagingItems<Book>,
+    bookshelfUiState: BookshelfUiState,
+    listContentParams:ListContentParams,
+    pageGroupSize:Int,
+    totalPages:Int,
+    currentGroup: Int
+){
+    LazyColumn(
+        state=listContentParams.scrollState,
+        modifier= Modifier
+            .padding(dimensionResource(R.dimen.list_padding))
+            .testTag(stringResource(R.string.test_list))
+    ){
+        if(getTabPressed(bookshelfUiState)==BookType.Bookmark){
+            items(getBookmarkList(bookshelfUiState),key={it.id}){
+                listContentParams.initCurrentItem(
+                    getTabPressed(bookshelfUiState),
+                    getBookmarkList(bookshelfUiState)[0].bookInfo
+                )
+                LibraryListItem(
+                    book = it,
+                    onBookItemPressed= listContentParams.onBookItemPressed,
+                    onBookMarkPressed = listContentParams.onBookmarkPressed
+                )
+            }
+        }else{
+            items(count=books.itemCount){
+                books[it]?.let { it1 ->
+                    if(it==0){
                         listContentParams.initCurrentItem(
-                            getTabPressed(bookshelfUiState),
-                            getBookmarkList(bookshelfUiState)[0].bookInfo
-                        )
-                        LibraryListItem(
-                            book = it,
-                            onBookItemPressed= listContentParams.onBookItemPressed,
-                            onBookMarkPressed = listContentParams.onBookmarkPressed
+                            getTabPressed(bookshelfUiState), it1.bookInfo
                         )
                     }
-            }else{
-                items(count=books.itemCount){
-                    books[it]?.let { it1 ->
-                        if(it==0){
-                            listContentParams.initCurrentItem(
-                                getTabPressed(bookshelfUiState), it1.bookInfo
-                            )
-                        }
-                        LibraryListItem(
-                            book = it1,
-                            onBookItemPressed= listContentParams.onBookItemPressed,
-                            onBookMarkPressed =listContentParams.onBookmarkPressed
-                        )
-                    }
-                }
-                item{
-                    books.apply  {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier=Modifier.fillMaxWidth()
-                        ){
-                            when{
-                                loadState.refresh is LoadState.Loading -> {
-                                    CircularProgressIndicator()
-                                }
-                                loadState.refresh is LoadState.Error ->{
-                                    Text(stringResource(R.string.load_data_error))
-                                }
-                                loadState.append is LoadState.Loading -> {
-                                    CircularProgressIndicator()
-                                }
-                                loadState.append is LoadState.Error -> {
-                                    Text(stringResource(R.string.load_data_error))
-                                }
-                            }
-                        }
-                    }
-                }
-                item {
-                    PageNumberButton(
-                        currentGroup = currentGroup,
-                        pageGroupSize = pageGroupSize,
-                        totalPages = totalPages,
-                        updatePage = listContentParams.updatePage,
-                        currentPage = listContentParams.currentPage
+                    LibraryListItem(
+                        book = it1,
+                        onBookItemPressed= listContentParams.onBookItemPressed,
+                        onBookMarkPressed =listContentParams.onBookmarkPressed
                     )
                 }
             }
+            item{ LibraryUiStateIndicator(books) }
+            item {
+                PageNumberButton(
+                    currentGroup = currentGroup,
+                    pageGroupSize = pageGroupSize,
+                    totalPages = totalPages,
+                    updatePage = listContentParams.updatePage,
+                    currentPage = listContentParams.currentPage
+                )
+            }
         }
+    }
+}
 
+@Composable
+private fun LibraryUiStateIndicator(
+    books:LazyPagingItems<Book>
+){
+    books.apply  {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier=Modifier.fillMaxWidth()
+        ){
+            when{
+                loadState.refresh is LoadState.Loading -> {
+                    CircularProgressIndicator()
+                }
+                loadState.refresh is LoadState.Error ->{
+                    Text(stringResource(R.string.load_data_error))
+                }
+                loadState.append is LoadState.Loading -> {
+                    CircularProgressIndicator()
+                }
+                loadState.append is LoadState.Error -> {
+                    Text(stringResource(R.string.load_data_error))
+                }
+            }
+        }
     }
 }
 

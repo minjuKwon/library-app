@@ -61,21 +61,7 @@ class SearchResultListTest {
 
         initial(testDispatcher, testScope)
 
-        composeTestRule
-            .onNodeWithTagForStringId(R.string.test_list)
-            .performScrollToIndex(9)
-
-        composeTestRule
-            .onNodeWithTagForStringId(R.string.test_pageNum,"2",useUnmergedTree = true)
-            .performClick()
-
-        //ui 안정화 위해 여러번 호출
-        composeTestRule.runOnIdle {
-            testDispatcher.scheduler.advanceUntilIdle()
-        }
-        composeTestRule.runOnIdle {
-            testDispatcher.scheduler.advanceUntilIdle()
-        }
+        moveNextPage(9,"2", testDispatcher)
 
         verifyListItemText(0, "android_11")
 
@@ -87,6 +73,28 @@ class SearchResultListTest {
 
 
         testScope.cancel()
+    }
+
+    private fun moveNextPage(
+        idx:Int,
+        pageNumber:String,
+        testDispatcher: TestDispatcher
+    ){
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_list)
+            .performScrollToIndex(idx)
+
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_pageNum,pageNumber,useUnmergedTree = true)
+            .performClick()
+
+        //ui 안정화 위해 여러번 호출
+        composeTestRule.runOnIdle {
+            testDispatcher.scheduler.advanceUntilIdle()
+        }
+        composeTestRule.runOnIdle {
+            testDispatcher.scheduler.advanceUntilIdle()
+        }
     }
 
     private fun initial(testDispatcher: TestDispatcher, testScope: CoroutineScope){
