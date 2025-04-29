@@ -19,48 +19,23 @@ class WindowWidthSizeClassUiTest {
 
     @Test
     fun compactDevice_verifyUsingNavigationBottom(){
-        val dispatcher = StandardTestDispatcher()
-        val scope = CoroutineScope(dispatcher)
-        val fakeRepository = FakeNetworkBookshelfRepository()
-        val viewModel = BookshelfViewModel(
-            bookshelfRepository = fakeRepository,
-            ioDispatcher = dispatcher,
-            externalScope = scope
-        )
-
-        composeTestRule.setContent {
-            LibraryApp(WindowWidthSizeClass.Compact,viewModel)
-        }
-        composeTestRule.onNodeWithTagForStringId(
-            R.string.navigation_bottom
-        ).assertExists()
-
-        scope.cancel()
+        verifyWindowWidthSize(WindowWidthSizeClass.Compact, R.string.navigation_bottom)
     }
 
     @Test
     fun mediumDevice_verifyUsingNavigationRail(){
-        val dispatcher = StandardTestDispatcher()
-        val scope = CoroutineScope(dispatcher)
-        val fakeRepository = FakeNetworkBookshelfRepository()
-        val viewModel = BookshelfViewModel(
-            bookshelfRepository = fakeRepository,
-            ioDispatcher = dispatcher,
-            externalScope = scope
-        )
-
-        composeTestRule.setContent {
-            LibraryApp(WindowWidthSizeClass.Medium, viewModel)
-        }
-        composeTestRule.onNodeWithTagForStringId(
-            R.string.navigation_rail
-        ).assertExists()
-
-        scope.cancel()
+        verifyWindowWidthSize(WindowWidthSizeClass.Medium, R.string.navigation_rail)
     }
 
     @Test
     fun expandedDevice_verifyUsingNavigationDrawer(){
+        verifyWindowWidthSize(WindowWidthSizeClass.Expanded, R.string.navigation_drawer)
+    }
+
+    private fun verifyWindowWidthSize(
+        windowWidthSizeClass: WindowWidthSizeClass,
+        stringId:Int
+    ){
         val dispatcher = StandardTestDispatcher()
         val scope = CoroutineScope(dispatcher)
         val fakeRepository = FakeNetworkBookshelfRepository()
@@ -71,10 +46,10 @@ class WindowWidthSizeClassUiTest {
         )
 
         composeTestRule.setContent {
-            LibraryApp(WindowWidthSizeClass.Expanded,viewModel)
+            LibraryApp(windowWidthSizeClass,viewModel)
         }
         composeTestRule.onNodeWithTagForStringId(
-            R.string.navigation_drawer
+            stringId
         ).assertExists()
 
         scope.cancel()
