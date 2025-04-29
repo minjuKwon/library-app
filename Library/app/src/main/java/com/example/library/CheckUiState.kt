@@ -48,7 +48,7 @@ fun getCurrentItem(
 {
     return getDataByUiState(
         bookshelfUiState=bookshelfUiState,
-        onSuccess={it.currentItem?.get(it.currentTabType)?: defaultBookInfo},
+        onSuccess={ it.currentItem[it.currentTabType] ?: defaultBookInfo},
         onFailure={ defaultBookInfo}
     )
 }

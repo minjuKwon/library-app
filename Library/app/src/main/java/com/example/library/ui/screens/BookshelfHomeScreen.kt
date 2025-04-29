@@ -16,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -48,7 +47,6 @@ import com.example.library.ui.TextFieldParams
 import com.example.library.ui.utils.ContentType
 import com.example.library.ui.utils.NavigationType
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
     bookshelfUiState: BookshelfUiState,
@@ -262,7 +260,6 @@ private fun ErrorScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NavigationDrawerContent(
     selectedTab:BookType,
