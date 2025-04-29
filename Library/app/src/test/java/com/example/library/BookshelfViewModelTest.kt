@@ -60,9 +60,7 @@ class BookshelfViewModelTest {
 
         // collectLatest 사용하여 강제 수집 및 완료 처리
         launch {
-            flowOf(pagingData).collectLatest {
-                differ.submitData(it)
-            }
+            flowOf(pagingData).collectLatest { differ.submitData(it) }
         }
 
         testScheduler.advanceUntilIdle()
@@ -78,7 +76,7 @@ class BookshelfViewModelTest {
 
         testScope.cancel()
 
-        }
+    }
 
     @Test
     fun bookshelfViewModel_getBookListInformation_verifyBookshelfBookmark()=runTest{

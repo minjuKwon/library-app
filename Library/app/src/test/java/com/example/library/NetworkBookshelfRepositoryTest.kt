@@ -15,7 +15,8 @@ class NetworkBookshelfRepositoryTest {
             val repository= NetworkBookshelfRepository(
                 bookshelfApiService = FakeBookshelfApiService()
             )
-            assertEquals(FakeDataSource.item,
+            assertEquals(
+                FakeDataSource.item,
                 repository.searchVolume("android",0,0)
             )
         }

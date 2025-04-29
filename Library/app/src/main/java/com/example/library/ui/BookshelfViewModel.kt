@@ -72,26 +72,30 @@ class BookshelfViewModel(
         page:Int=1
     ){
 
-        val pageData: Flow<PagingData<Book>> = Pager(
-            config= PagingConfig(
-                pageSize = PAGE_SIZE,
-                enablePlaceholders = false
-            )){BookPagingSource(bookshelfRepository,keyword=search,pageNumber=page,pageSize=PAGE_SIZE)}
-            .flow.cachedIn(scope)
+        val pageData: Flow<PagingData<Book>> =
+            Pager(
+                config= PagingConfig(
+                    pageSize = PAGE_SIZE,
+                    enablePlaceholders = false
+                )
+            ){
+                BookPagingSource(
+                    bookshelfRepository,
+                    keyword=search,
+                    pageNumber=page,
+                    pageSize=PAGE_SIZE
+                )
+        }.flow.cachedIn(scope)
 
         scope.launch {
             bookshelfUiState = try{
-
                 val totalItemCount=withContext(ioDispatcher){
                     bookshelfRepository
                         .searchVolume(search,10,0).totalCount
                 }
-
                 _currentPage.value=page
-
                 when(bookshelfUiState){
                     is BookshelfUiState.Success->{
-
                         val pageDataBookmarked=pageData.map { page->
                             page.map { data->
                                 data.copy(
@@ -103,10 +107,8 @@ class BookshelfViewModel(
                                 )
                             }
                         }
-
                         (bookshelfUiState as BookshelfUiState.Success)
                             .copy(list= PageData(pageDataBookmarked,totalItemCount))
-
                     }
                     else-> BookshelfUiState.Success(
                         list= PageData(pageData,totalItemCount)
@@ -137,9 +139,7 @@ class BookshelfViewModel(
     fun resetHomeScreenState(bookInfo:BookInfo){
         bookshelfUiState=updateCopiedUiState(bookshelfUiState){
             it.currentItem[it.currentTabType] = bookInfo
-            it.copy(
-                currentItem = it.currentItem, isShowingHomepage = true
-            )
+            it.copy(currentItem = it.currentItem, isShowingHomepage = true)
         }
     }
 

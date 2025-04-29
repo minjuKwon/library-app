@@ -68,9 +68,11 @@ fun LibraryApp(
             onBookmarkPressed={bookshelfViewModel.updateBookmarkList(it)},
             onBookItemPressed={
                 bookshelfViewModel.updateDataReadyForUi(true)
-                bookshelfViewModel.updateDetailsScreenState(it)},
+                bookshelfViewModel.updateDetailsScreenState(it)
+            },
             initCurrentItem={v1,v2->
-                bookshelfViewModel.initCurrentItem(v1,v2)}
+                bookshelfViewModel.initCurrentItem(v1,v2)
+            }
         ),
         detailsScreenParams = DetailsScreenParams(
             isDataReadyForUi= isDataReadyForUi,

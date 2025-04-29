@@ -88,8 +88,8 @@ fun LibraryScreen(
                             )
                     )
                 }
-
-            },modifier=Modifier.testTag(stringResource(R.string.navigation_drawer))
+            },
+            modifier=Modifier.testTag(stringResource(R.string.navigation_drawer))
         ) {
             LibraryContent(
                 bookshelfUiState = bookshelfUiState,
@@ -178,9 +178,7 @@ private fun LibraryContent(
                     if(getTabPressed(bookshelfUiState)==BookType.Bookmark
                         && isBookmarkListEmpty(bookshelfUiState)
                     ){
-                        BookmarkEmptyScreen(modifier= Modifier
-                            .fillMaxSize()
-                            .weight(1f))
+                        BookmarkEmptyScreen(modifier= Modifier.fillMaxSize().weight(1f))
                     }else{
                         when(bookshelfUiState){
                             is BookshelfUiState.Success -> LibraryListOnlyContent(
@@ -194,17 +192,14 @@ private fun LibraryContent(
                                     .weight(1f)
                             )
                             is BookshelfUiState.Loading -> {
-                                LoadingScreen(modifier= Modifier
-                                    .fillMaxSize()
-                                    .weight(1f))
+                                LoadingScreen(modifier= Modifier.fillMaxSize().weight(1f))
                             }
                             is BookshelfUiState.Error -> {
                                 ErrorScreen(
                                     input=textFieldParams.textFieldKeyword,
                                     retryAction = textFieldParams.onSearch,
-                                    modifier= Modifier
-                                        .fillMaxSize()
-                                        .weight(1f))
+                                    modifier= Modifier.fillMaxSize().weight(1f)
+                                )
                             }
                         }
                     }
