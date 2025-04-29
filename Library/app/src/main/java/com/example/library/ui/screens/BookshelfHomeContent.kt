@@ -58,8 +58,8 @@ import com.example.library.ui.TextFieldParams
 
 @Composable
 fun LibraryListOnlyContent(
-    books:LazyPagingItems<Book>,
     bookshelfUiState: BookshelfUiState,
+    books:LazyPagingItems<Book>,
     textFieldParams:TextFieldParams,
     listContentParams:ListContentParams,
     modifier:Modifier= Modifier
@@ -85,172 +85,14 @@ fun LibraryListOnlyContent(
         LibraryTotalItemText(totalItemCount)
 
         LibraryList(
-            books= books,
             bookshelfUiState= bookshelfUiState,
-            listContentParams= listContentParams,
+            books= books,
             pageGroupSize = pageGroupSize,
             totalPages= totalPages,
-            currentGroup= currentGroup
+            currentGroup= currentGroup,
+            listContentParams= listContentParams
         )
 
-    }
-}
-
-@Composable
-private fun LibraryTotalItemText(
-    totalItemCount:Int
-){
-    Row(
-        modifier= Modifier
-            .fillMaxWidth()
-            .padding(
-                top = dimensionResource(
-                    R.dimen.list_only_content_total_text_top_padding
-                ),
-                start = dimensionResource(
-                    R.dimen.list_only_content_total_text_start_padding
-                )
-            ),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = stringResource(R.string.totalCount))
-        Text(
-            text = " $totalItemCount",
-            modifier = Modifier.testTag(stringResource(R.string.test_itemCount))
-        )
-    }
-}
-
-@Composable
-private fun LibraryList(
-    books:LazyPagingItems<Book>,
-    bookshelfUiState: BookshelfUiState,
-    listContentParams:ListContentParams,
-    pageGroupSize:Int,
-    totalPages:Int,
-    currentGroup: Int
-){
-    LazyColumn(
-        state=listContentParams.scrollState,
-        modifier= Modifier
-            .padding(dimensionResource(R.dimen.list_padding))
-            .testTag(stringResource(R.string.test_list))
-    ){
-        if(getTabPressed(bookshelfUiState)==BookType.Bookmark){
-            items(getBookmarkList(bookshelfUiState),key={it.id}){
-                listContentParams.initCurrentItem(
-                    getTabPressed(bookshelfUiState),
-                    getBookmarkList(bookshelfUiState)[0].bookInfo
-                )
-                LibraryListItem(
-                    book = it,
-                    onBookItemPressed= listContentParams.onBookItemPressed,
-                    onBookMarkPressed = listContentParams.onBookmarkPressed
-                )
-            }
-        }else{
-            items(count=books.itemCount){
-                books[it]?.let { it1 ->
-                    if(it==0){
-                        listContentParams.initCurrentItem(
-                            getTabPressed(bookshelfUiState), it1.bookInfo
-                        )
-                    }
-                    LibraryListItem(
-                        book = it1,
-                        onBookItemPressed= listContentParams.onBookItemPressed,
-                        onBookMarkPressed =listContentParams.onBookmarkPressed
-                    )
-                }
-            }
-            item{ LibraryUiStateIndicator(books) }
-            item {
-                PageNumberButton(
-                    currentGroup = currentGroup,
-                    pageGroupSize = pageGroupSize,
-                    totalPages = totalPages,
-                    updatePage = listContentParams.updatePage,
-                    currentPage = listContentParams.currentPage
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun LibraryUiStateIndicator(
-    books:LazyPagingItems<Book>
-){
-    books.apply  {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier=Modifier.fillMaxWidth()
-        ){
-            when{
-                loadState.refresh is LoadState.Loading -> {
-                    CircularProgressIndicator()
-                }
-                loadState.refresh is LoadState.Error ->{
-                    Text(stringResource(R.string.load_data_error))
-                }
-                loadState.append is LoadState.Loading -> {
-                    CircularProgressIndicator()
-                }
-                loadState.append is LoadState.Error -> {
-                    Text(stringResource(R.string.load_data_error))
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun LibraryListAndDetailContent(
-    books:LazyPagingItems<Book>,
-    bookshelfUiState: BookshelfUiState,
-    textFieldParams:TextFieldParams,
-    listContentParams:ListContentParams,
-    detailsScreenParams: DetailsScreenParams,
-    modifier:Modifier= Modifier
-){
-    Row(modifier=modifier){
-        LibraryListOnlyContent(
-            books = books,
-            bookshelfUiState = bookshelfUiState,
-            textFieldParams=textFieldParams,
-            listContentParams=listContentParams,
-            modifier=Modifier.weight(1f)
-        )
-
-        val activity = LocalContext.current as Activity
-
-        if(books.loadState.refresh is LoadState.NotLoading){
-            LibraryDetailsScreen(
-                detailsScreenParams= DetailsScreenParams(
-                    onBackPressed = { activity.finish() },
-                    isDataReadyForUi = detailsScreenParams.isDataReadyForUi,
-                    updateDataReadyForUi = detailsScreenParams.updateDataReadyForUi
-                ),
-                bookshelfUiState=bookshelfUiState,
-                modifier=Modifier.weight(1f),
-                isNotFullScreen = false
-            )
-        }
-
-    }
-}
-
-@Composable
-fun BookmarkEmptyScreen(modifier:Modifier=Modifier){
-    Box(
-        modifier=modifier,
-        contentAlignment = Alignment.Center
-    ){
-        Text(
-            text=stringResource(R.string.empty_bookmark),
-            textAlign=TextAlign.Center
-        )
     }
 }
 
@@ -304,43 +146,83 @@ private fun SearchTextField(
 }
 
 @Composable
-private fun PageNumberButton(
-    currentGroup:Int,
+private fun LibraryTotalItemText(
+    totalItemCount:Int
+){
+    Row(
+        modifier= Modifier
+            .fillMaxWidth()
+            .padding(
+                top = dimensionResource(
+                    R.dimen.list_only_content_total_text_top_padding
+                ),
+                start = dimensionResource(
+                    R.dimen.list_only_content_total_text_start_padding
+                )
+            ),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = stringResource(R.string.totalCount))
+        Text(
+            text = " $totalItemCount",
+            modifier = Modifier.testTag(stringResource(R.string.test_itemCount))
+        )
+    }
+}
+
+@Composable
+private fun LibraryList(
+    bookshelfUiState: BookshelfUiState,
+    books:LazyPagingItems<Book>,
     pageGroupSize:Int,
     totalPages:Int,
-    updatePage: (Int) -> Unit,
-    currentPage: Int
-) {
-    Row(
-        horizontalArrangement =Arrangement.SpaceBetween,
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(R.dimen.page_button_padding))
-            .fillMaxWidth()
-    ) {
-        val startPage = currentGroup * pageGroupSize + 1
-        val endPage = minOf(startPage + pageGroupSize - 1, totalPages)
-        if (currentGroup > 0) {
-            Text(
-                text=stringResource(R.string.previous_page),
-                modifier=Modifier
-                    .clickable { updatePage(startPage - pageGroupSize) }
-            )
-        }
-        for (page in startPage..endPage) {
-            Text(
-                text=page.toString(),
-                color = if (page == currentPage) Color.Black else Color.LightGray,
-                modifier=Modifier
-                    .clickable { updatePage(page) }
-                    .testTag(stringResource(R.string.test_pageNum)+page)
-            )
-        }
-        if (endPage < totalPages) {
-            Text(
-                text=stringResource(R.string.next_page),
-                modifier=Modifier
-                    .clickable { updatePage(startPage + pageGroupSize) }
-            )
+    currentGroup: Int,
+    listContentParams:ListContentParams
+){
+    LazyColumn(
+        state=listContentParams.scrollState,
+        modifier= Modifier
+            .padding(dimensionResource(R.dimen.list_padding))
+            .testTag(stringResource(R.string.test_list))
+    ){
+        if(getTabPressed(bookshelfUiState)==BookType.Bookmark){
+            items(getBookmarkList(bookshelfUiState),key={it.id}){
+                listContentParams.initCurrentItem(
+                    getTabPressed(bookshelfUiState),
+                    getBookmarkList(bookshelfUiState)[0].bookInfo
+                )
+                LibraryListItem(
+                    book = it,
+                    onBookItemPressed= listContentParams.onBookItemPressed,
+                    onBookMarkPressed = listContentParams.onBookmarkPressed
+                )
+            }
+        }else{
+            items(count=books.itemCount){
+                books[it]?.let { it1 ->
+                    if(it==0){
+                        listContentParams.initCurrentItem(
+                            getTabPressed(bookshelfUiState), it1.bookInfo
+                        )
+                    }
+                    LibraryListItem(
+                        book = it1,
+                        onBookItemPressed= listContentParams.onBookItemPressed,
+                        onBookMarkPressed =listContentParams.onBookmarkPressed
+                    )
+                }
+            }
+            item{ LibraryUiStateIndicator(books) }
+            item {
+                PageNumberButton(
+                    pageGroupSize = pageGroupSize,
+                    totalPages = totalPages,
+                    currentGroup = currentGroup,
+                    currentPage = listContentParams.currentPage,
+                    updatePage = listContentParams.updatePage
+                )
+            }
         }
     }
 }
@@ -348,8 +230,8 @@ private fun PageNumberButton(
 @Composable
 private fun LibraryListItem(
     book: Book,
-    onBookItemPressed:(BookInfo)->Unit,
-    onBookMarkPressed:(Book)->Unit
+    onBookMarkPressed:(Book)->Unit,
+    onBookItemPressed:(BookInfo)->Unit
 ){
     Row(
         modifier= Modifier
@@ -372,7 +254,7 @@ private fun LibraryListItem(
             book.bookInfo.img?.let {
                 AsyncImage(
                     model=ImageRequest.Builder(context=LocalContext.current)
-                            .data(it.thumbnail).build(),
+                        .data(it.thumbnail).build(),
                     contentDescription = null,
                     contentScale= ContentScale.FillBounds,
                     modifier= Modifier
@@ -438,6 +320,124 @@ private fun ItemDescription(book:Book){
         Text(
             text= it,
             style=MaterialTheme.typography.bodySmall
+        )
+    }
+}
+
+@Composable
+private fun LibraryUiStateIndicator(
+    books:LazyPagingItems<Book>
+){
+    books.apply  {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier=Modifier.fillMaxWidth()
+        ){
+            when{
+                loadState.refresh is LoadState.Loading -> {
+                    CircularProgressIndicator()
+                }
+                loadState.refresh is LoadState.Error ->{
+                    Text(stringResource(R.string.load_data_error))
+                }
+                loadState.append is LoadState.Loading -> {
+                    CircularProgressIndicator()
+                }
+                loadState.append is LoadState.Error -> {
+                    Text(stringResource(R.string.load_data_error))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PageNumberButton(
+    pageGroupSize:Int,
+    totalPages:Int,
+    currentGroup:Int,
+    currentPage: Int,
+    updatePage: (Int) -> Unit
+) {
+    Row(
+        horizontalArrangement =Arrangement.SpaceBetween,
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.page_button_padding))
+            .fillMaxWidth()
+    ) {
+        val startPage = currentGroup * pageGroupSize + 1
+        val endPage = minOf(startPage + pageGroupSize - 1, totalPages)
+        if (currentGroup > 0) {
+            Text(
+                text=stringResource(R.string.previous_page),
+                modifier=Modifier
+                    .clickable { updatePage(startPage - pageGroupSize) }
+            )
+        }
+        for (page in startPage..endPage) {
+            Text(
+                text=page.toString(),
+                color = if (page == currentPage) Color.Black else Color.LightGray,
+                modifier=Modifier
+                    .clickable { updatePage(page) }
+                    .testTag(stringResource(R.string.test_pageNum)+page)
+            )
+        }
+        if (endPage < totalPages) {
+            Text(
+                text=stringResource(R.string.next_page),
+                modifier=Modifier
+                    .clickable { updatePage(startPage + pageGroupSize) }
+            )
+        }
+    }
+}
+
+@Composable
+fun LibraryListAndDetailContent(
+    bookshelfUiState: BookshelfUiState,
+    books:LazyPagingItems<Book>,
+    textFieldParams:TextFieldParams,
+    listContentParams:ListContentParams,
+    detailsScreenParams: DetailsScreenParams,
+    modifier:Modifier= Modifier
+){
+    Row(modifier=modifier){
+        LibraryListOnlyContent(
+            bookshelfUiState = bookshelfUiState,
+            books = books,
+            textFieldParams=textFieldParams,
+            listContentParams=listContentParams,
+            modifier=Modifier.weight(1f)
+        )
+
+        val activity = LocalContext.current as Activity
+
+        if(books.loadState.refresh is LoadState.NotLoading){
+            LibraryDetailsScreen(
+                bookshelfUiState=bookshelfUiState,
+                isNotFullScreen = false,
+                detailsScreenParams= DetailsScreenParams(
+                    isDataReadyForUi = detailsScreenParams.isDataReadyForUi,
+                    updateDataReadyForUi = detailsScreenParams.updateDataReadyForUi,
+                    onBackPressed = { activity.finish() }
+                ),
+                modifier=Modifier.weight(1f)
+            )
+        }
+
+    }
+}
+
+@Composable
+fun BookmarkEmptyScreen(modifier:Modifier=Modifier){
+    Box(
+        modifier=modifier,
+        contentAlignment = Alignment.Center
+    ){
+        Text(
+            text=stringResource(R.string.empty_bookmark),
+            textAlign=TextAlign.Center
         )
     }
 }

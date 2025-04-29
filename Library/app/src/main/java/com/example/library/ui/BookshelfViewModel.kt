@@ -39,6 +39,16 @@ class BookshelfViewModel(
     externalScope: CoroutineScope? = null
 ):ViewModel() {
 
+    companion object{
+        val Factory : ViewModelProvider.Factory = viewModelFactory{
+            initializer{
+                val application = (this[APPLICATION_KEY] as BookshelfApplication)
+                val bookshelfRepository = application.container.bookshelfRepository
+                BookshelfViewModel(bookshelfRepository)
+            }
+        }
+    }
+
     private val scope = externalScope ?: viewModelScope
 
     var bookshelfUiState: BookshelfUiState by mutableStateOf(BookshelfUiState.Loading)
@@ -52,14 +62,6 @@ class BookshelfViewModel(
 
     private val _isDataReadyForUi = MutableStateFlow(false)
     val isDataReadyForUi:StateFlow<Boolean> = _isDataReadyForUi
-
-    fun updateDataReadyForUi(b:Boolean){
-        _isDataReadyForUi.value= b
-    }
-
-    fun updateKeyword(input:String){
-        _textFieldKeyword.value=input
-    }
 
     init {
         getInformation()
@@ -117,14 +119,12 @@ class BookshelfViewModel(
 
     }
 
-    companion object{
-        val Factory : ViewModelProvider.Factory = viewModelFactory{
-            initializer{
-                val application = (this[APPLICATION_KEY] as BookshelfApplication)
-                val bookshelfRepository = application.container.bookshelfRepository
-                BookshelfViewModel(bookshelfRepository)
-            }
-        }
+    fun updateDataReadyForUi(b:Boolean){
+        _isDataReadyForUi.value= b
+    }
+
+    fun updateKeyword(input:String){
+        _textFieldKeyword.value=input
     }
 
     fun updateDetailsScreenState(bookInfo: BookInfo){

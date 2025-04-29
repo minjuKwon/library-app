@@ -9,17 +9,6 @@ import com.example.library.ui.defaultBookInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-fun getTabPressed(
-    bookshelfUiState: BookshelfUiState
-): BookType
-{
-    return getDataByUiState(
-        bookshelfUiState=bookshelfUiState,
-        onSuccess={it.currentTabType},
-        onFailure={BookType.Books}
-    )
-}
-
 fun isBookmarkListEmpty(
     bookshelfUiState: BookshelfUiState
 ):Boolean
@@ -31,14 +20,24 @@ fun isBookmarkListEmpty(
     )
 }
 
-fun getBookmarkList(
+fun getTotalItemCount(
     bookshelfUiState: BookshelfUiState
-):MutableList<Book>
+):Int{
+    return getDataByUiState(
+        bookshelfUiState=bookshelfUiState,
+        onSuccess={it.list.totalCount},
+        onFailure={0}
+    )
+}
+
+fun getTabPressed(
+    bookshelfUiState: BookshelfUiState
+): BookType
 {
     return getDataByUiState(
         bookshelfUiState=bookshelfUiState,
-        onSuccess={it.bookmarkList},
-        onFailure={ mutableListOf()}
+        onSuccess={it.currentTabType},
+        onFailure={BookType.Books}
     )
 }
 
@@ -53,6 +52,17 @@ fun getCurrentItem(
     )
 }
 
+fun getBookmarkList(
+    bookshelfUiState: BookshelfUiState
+):MutableList<Book>
+{
+    return getDataByUiState(
+        bookshelfUiState=bookshelfUiState,
+        onSuccess={it.bookmarkList},
+        onFailure={ mutableListOf()}
+    )
+}
+
 fun getBookList(
     bookshelfUiState: BookshelfUiState
 ): Flow<PagingData<Book>>
@@ -61,16 +71,6 @@ fun getBookList(
         bookshelfUiState=bookshelfUiState,
         onSuccess={it.list.book},
         onFailure={ MutableStateFlow(PagingData.from(emptyList())) }
-    )
-}
-
-fun getTotalItemCount(
-    bookshelfUiState: BookshelfUiState
-):Int{
-    return getDataByUiState(
-        bookshelfUiState=bookshelfUiState,
-        onSuccess={it.list.totalCount},
-        onFailure={0}
     )
 }
 

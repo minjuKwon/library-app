@@ -34,9 +34,9 @@ import com.example.library.ui.DetailsScreenParams
 @Composable
 fun LibraryDetailsScreen(
     bookshelfUiState: BookshelfUiState,
+    isNotFullScreen:Boolean=true,
     detailsScreenParams: DetailsScreenParams,
-    modifier: Modifier =Modifier,
-    isNotFullScreen:Boolean=true
+    modifier: Modifier =Modifier
 ){
     val data=getCurrentItem(bookshelfUiState)
     BackHandler {
