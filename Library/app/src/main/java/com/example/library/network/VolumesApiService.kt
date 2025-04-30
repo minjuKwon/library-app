@@ -3,7 +3,7 @@ package com.example.library.network
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface BookshelfApiService {
+interface VolumesApiService {
     
     @GET("volumes")
     suspend fun searchVolume(

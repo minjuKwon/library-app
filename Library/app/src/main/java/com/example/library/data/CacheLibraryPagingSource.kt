@@ -4,8 +4,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.library.network.Book
 
-class BookPagingSource(
-    private val bookshelfRepository: BookshelfRepository,
+class CacheLibraryPagingSource(
+    private val bookRepository: BookRepository,
     private val keyword:String,
     private val pageSize:Int,
     private val pageNumber:Int
@@ -14,7 +14,7 @@ class BookPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> {
         return try{
             val offset = pageSize * (pageNumber-1)
-            val data=bookshelfRepository
+            val data=bookRepository
                 .searchVolume(
                     query=keyword,
                     limit= pageSize,

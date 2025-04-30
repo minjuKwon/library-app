@@ -1,22 +1,22 @@
 package com.example.library.ui
 
 import androidx.paging.PagingData
-import com.example.library.data.BookType
+import com.example.library.data.NavigationMenuType
 import com.example.library.network.Book
 import com.example.library.network.BookInfo
 import com.example.library.network.Image
 import kotlinx.coroutines.flow.Flow
 
-sealed interface BookshelfUiState{
+sealed interface LibraryUiState{
     data class Success(
         val list :PageData,
         val bookmarkList:MutableList<Book> = mutableListOf(),
-        val currentTabType:BookType=BookType.Books,
-        val currentItem : MutableMap <BookType,BookInfo> = mutableMapOf(),
+        val currentTabType:NavigationMenuType=NavigationMenuType.Books,
+        val currentItem : MutableMap <NavigationMenuType,BookInfo> = mutableMapOf(),
         val isShowingHomepage: Boolean = true
-    ):BookshelfUiState
-    object Error : BookshelfUiState
-    object Loading: BookshelfUiState
+    ):LibraryUiState
+    object Error : LibraryUiState
+    object Loading: LibraryUiState
 }
 
 val defaultBookInfo

@@ -14,10 +14,10 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.example.library.BookshelfApplication
-import com.example.library.data.BookPagingSource
-import com.example.library.data.BookType
-import com.example.library.data.BookshelfRepository
+import com.example.library.LibraryApplication
+import com.example.library.data.CacheLibraryPagingSource
+import com.example.library.data.NavigationMenuType
+import com.example.library.data.BookRepository
 import com.example.library.network.Book
 import com.example.library.network.BookInfo
 import kotlinx.coroutines.CoroutineDispatcher
@@ -33,8 +33,8 @@ import java.io.IOException
 
 const val PAGE_SIZE=10
 
-class BookshelfViewModel(
-    private val bookshelfRepository: BookshelfRepository,
+class LibraryViewModel(
+    private val bookRepository: BookRepository,
     private val ioDispatcher:CoroutineDispatcher = Dispatchers.IO,
     externalScope: CoroutineScope? = null
 ):ViewModel() {
@@ -42,16 +42,16 @@ class BookshelfViewModel(
     companion object{
         val Factory : ViewModelProvider.Factory = viewModelFactory{
             initializer{
-                val application = (this[APPLICATION_KEY] as BookshelfApplication)
-                val bookshelfRepository = application.container.bookshelfRepository
-                BookshelfViewModel(bookshelfRepository)
+                val application = (this[APPLICATION_KEY] as LibraryApplication)
+                val bookRepository = application.container.bookRepository
+                LibraryViewModel(bookRepository)
             }
         }
     }
 
     private val scope = externalScope ?: viewModelScope
 
-    var bookshelfUiState: BookshelfUiState by mutableStateOf(BookshelfUiState.Loading)
+    var libraryUiState: LibraryUiState by mutableStateOf(LibraryUiState.Loading)
         private set
 
     private val _textFieldKeyword = mutableStateOf("android")
@@ -79,8 +79,8 @@ class BookshelfViewModel(
                     enablePlaceholders = false
                 )
             ){
-                BookPagingSource(
-                    bookshelfRepository,
+                CacheLibraryPagingSource(
+                    bookRepository,
                     keyword=search,
                     pageNumber=page,
                     pageSize=PAGE_SIZE
@@ -88,34 +88,34 @@ class BookshelfViewModel(
         }.flow.cachedIn(scope)
 
         scope.launch {
-            bookshelfUiState = try{
+            libraryUiState = try{
                 val totalItemCount=withContext(ioDispatcher){
-                    bookshelfRepository
+                    bookRepository
                         .searchVolume(search,10,0).totalCount
                 }
                 _currentPage.value=page
-                when(bookshelfUiState){
-                    is BookshelfUiState.Success->{
+                when(libraryUiState){
+                    is LibraryUiState.Success->{
                         val pageDataBookmarked=pageData.map { page->
                             page.map { data->
                                 data.copy(
                                     bookInfo = data.bookInfo.copy(
                                         isBookmarked =
-                                        (bookshelfUiState as BookshelfUiState.Success)
+                                        (libraryUiState as LibraryUiState.Success)
                                             .bookmarkList.any { it.id==data.id }
                                     )
                                 )
                             }
                         }
-                        (bookshelfUiState as BookshelfUiState.Success)
+                        (libraryUiState as LibraryUiState.Success)
                             .copy(list= PageData(pageDataBookmarked,totalItemCount))
                     }
-                    else-> BookshelfUiState.Success(
+                    else-> LibraryUiState.Success(
                         list= PageData(pageData,totalItemCount)
                     )
                 }
             }catch (e: IOException){
-                BookshelfUiState.Error
+                LibraryUiState.Error
             }
         }
 
@@ -130,28 +130,28 @@ class BookshelfViewModel(
     }
 
     fun updateDetailsScreenState(bookInfo: BookInfo){
-        bookshelfUiState=updateCopiedUiState(bookshelfUiState){
+        libraryUiState=updateCopiedUiState(libraryUiState){
             it.currentItem[it.currentTabType] = bookInfo
             it.copy(currentItem = it.currentItem, isShowingHomepage = false)
         }
     }
 
     fun resetHomeScreenState(bookInfo:BookInfo){
-        bookshelfUiState=updateCopiedUiState(bookshelfUiState){
+        libraryUiState=updateCopiedUiState(libraryUiState){
             it.currentItem[it.currentTabType] = bookInfo
             it.copy(currentItem = it.currentItem, isShowingHomepage = true)
         }
     }
 
-    fun updateCurrentBookTabType(bookType: BookType){
-        bookshelfUiState=updateCopiedUiState(bookshelfUiState){
-            it.copy(currentTabType = bookType)
+    fun updateCurrentBookTabType(navigationMenuType: NavigationMenuType){
+        libraryUiState=updateCopiedUiState(libraryUiState){
+            it.copy(currentTabType = navigationMenuType)
         }
     }
 
     fun updateBookmarkList(book:Book){
         book.bookInfo.isBookmarked= !book.bookInfo.isBookmarked
-        bookshelfUiState=updateCopiedUiState(bookshelfUiState){
+        libraryUiState=updateCopiedUiState(libraryUiState){
             var tempList:MutableList<Book> = it.bookmarkList
             tempList = if(book.bookInfo.isBookmarked){
                 (tempList+book) as MutableList<Book>
@@ -162,20 +162,20 @@ class BookshelfViewModel(
         }
     }
 
-    fun initCurrentItem(bookType: BookType,bookInfo: BookInfo){
-        bookshelfUiState=updateCopiedUiState(bookshelfUiState){
-            it.currentItem[bookType]=bookInfo
+    fun initCurrentItem(navigationMenuType: NavigationMenuType, bookInfo: BookInfo){
+        libraryUiState=updateCopiedUiState(libraryUiState){
+            it.currentItem[navigationMenuType]=bookInfo
             it.copy(currentItem = it.currentItem)
         }
     }
 
     private fun updateCopiedUiState(
-        uiState:BookshelfUiState,
-        copyOperation:(BookshelfUiState.Success)-> BookshelfUiState.Success
-    ):BookshelfUiState
+        uiState:LibraryUiState,
+        copyOperation:(LibraryUiState.Success)-> LibraryUiState.Success
+    ):LibraryUiState
     {
         return when(uiState){
-            is BookshelfUiState.Success-> copyOperation(uiState)
+            is LibraryUiState.Success-> copyOperation(uiState)
             else ->uiState
         }
     }

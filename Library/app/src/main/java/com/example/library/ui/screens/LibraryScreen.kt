@@ -35,11 +35,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.library.R
-import com.example.library.data.BookType
+import com.example.library.data.NavigationMenuType
 import com.example.library.getBookList
 import com.example.library.getTabPressed
 import com.example.library.isBookmarkListEmpty
-import com.example.library.ui.BookshelfUiState
+import com.example.library.ui.LibraryUiState
 import com.example.library.ui.DetailsScreenParams
 import com.example.library.ui.ListContentParams
 import com.example.library.ui.NavigationConfig
@@ -49,7 +49,7 @@ import com.example.library.ui.utils.NavigationType
 
 @Composable
 fun LibraryScreen(
-    bookshelfUiState: BookshelfUiState,
+    libraryUiState: LibraryUiState,
     navigationConfig: NavigationConfig,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
@@ -59,12 +59,12 @@ fun LibraryScreen(
 
     val navigationItemContentList = listOf(
         NavigationItemContent(
-            bookType=BookType.Books,
+            navigationMenuType=NavigationMenuType.Books,
             icon= Icons.Filled.Book,
             text= stringResource(R.string.book)
         ),
         NavigationItemContent(
-            bookType=BookType.Bookmark,
+            navigationMenuType=NavigationMenuType.Bookmark,
             icon=Icons.Filled.Bookmark,
             text=stringResource(R.string.bookmark)
         )
@@ -75,7 +75,7 @@ fun LibraryScreen(
             drawerContent = {
                 PermanentDrawerSheet(modifier = Modifier.fillMaxWidth(0.2f)) {
                     NavigationDrawerContent(
-                        selectedTab = getTabPressed(bookshelfUiState) ,
+                        selectedTab = getTabPressed(libraryUiState) ,
                         navigationItemList = navigationItemContentList,
                         onTabPressed = navigationConfig.onTabPressed,
                         modifier= Modifier
@@ -92,7 +92,7 @@ fun LibraryScreen(
             modifier=Modifier.testTag(stringResource(R.string.navigation_drawer))
         ) {
             LibraryContent(
-                bookshelfUiState = bookshelfUiState,
+                libraryUiState = libraryUiState,
                 navigationItemContent = navigationItemContentList,
                 navigationConfig=navigationConfig,
                 textFieldParams=textFieldParams,
@@ -102,11 +102,11 @@ fun LibraryScreen(
             )
         }
     }else{
-        when(bookshelfUiState){
-            is BookshelfUiState.Success -> {
-                if(bookshelfUiState.isShowingHomepage) {
+        when(libraryUiState){
+            is LibraryUiState.Success -> {
+                if(libraryUiState.isShowingHomepage) {
                     LibraryContent(
-                        bookshelfUiState = bookshelfUiState,
+                        libraryUiState = libraryUiState,
                         navigationItemContent = navigationItemContentList,
                         navigationConfig=navigationConfig,
                         textFieldParams=textFieldParams,
@@ -116,9 +116,9 @@ fun LibraryScreen(
                     )
                 }
                 else {
-                    bookshelfUiState.currentItem[bookshelfUiState.currentTabType]?.let {
+                    libraryUiState.currentItem[libraryUiState.currentTabType]?.let {
                         LibraryDetailsScreen(
-                            bookshelfUiState = bookshelfUiState,
+                            libraryUiState = libraryUiState,
                             detailsScreenParams=detailsScreenParams,
                             modifier=modifier
                         )
@@ -127,7 +127,7 @@ fun LibraryScreen(
             }
             else ->{
                 LibraryContent(
-                    bookshelfUiState = bookshelfUiState,
+                    libraryUiState = libraryUiState,
                     navigationItemContent = navigationItemContentList,
                     navigationConfig=navigationConfig,
                     textFieldParams=textFieldParams,
@@ -142,7 +142,7 @@ fun LibraryScreen(
 
 @Composable
 private fun LibraryContent(
-    bookshelfUiState: BookshelfUiState,
+    libraryUiState: LibraryUiState,
     navigationItemContent: List<NavigationItemContent>,
     navigationConfig: NavigationConfig,
     textFieldParams: TextFieldParams,
@@ -158,7 +158,7 @@ private fun LibraryContent(
                 visible=navigationConfig.navigationType==NavigationType.NAVIGATION_RAIL
             ){
                 BookNavigationRail(
-                    currentTab = getTabPressed(bookshelfUiState),
+                    currentTab = getTabPressed(libraryUiState),
                     navigationItemContentList = navigationItemContent,
                     onTabPressed = navigationConfig.onTabPressed,
                     modifier=Modifier.testTag(stringResource(R.string.navigation_rail))
@@ -168,22 +168,22 @@ private fun LibraryContent(
             Column(modifier=Modifier.fillMaxSize()) {
                 if(navigationConfig.contentType==ContentType.LIST_AND_DETAIL){
                     LibraryListAndDetailContent(
-                        bookshelfUiState = bookshelfUiState,
-                        books = getBookList(bookshelfUiState).collectAsLazyPagingItems() ,
+                        libraryUiState = libraryUiState,
+                        books = getBookList(libraryUiState).collectAsLazyPagingItems() ,
                         listContentParams=listContentParams,
                         textFieldParams=textFieldParams,
                         detailsScreenParams=detailsScreenParams,
                     )
                 }else{
-                    if(getTabPressed(bookshelfUiState)==BookType.Bookmark
-                        && isBookmarkListEmpty(bookshelfUiState)
+                    if(getTabPressed(libraryUiState)==NavigationMenuType.Bookmark
+                        && isBookmarkListEmpty(libraryUiState)
                     ){
                         BookmarkEmptyScreen(modifier= Modifier.fillMaxSize().weight(1f))
                     }else{
-                        when(bookshelfUiState){
-                            is BookshelfUiState.Success -> LibraryListOnlyContent(
-                                bookshelfUiState=bookshelfUiState,
-                                books=bookshelfUiState.list.book.collectAsLazyPagingItems(),
+                        when(libraryUiState){
+                            is LibraryUiState.Success -> LibraryListOnlyContent(
+                                libraryUiState=libraryUiState,
+                                books=libraryUiState.list.book.collectAsLazyPagingItems(),
                                 textFieldParams=textFieldParams,
                                 listContentParams=listContentParams,
                                 modifier= Modifier
@@ -191,10 +191,10 @@ private fun LibraryContent(
                                     .fillMaxSize()
                                     .weight(1f)
                             )
-                            is BookshelfUiState.Loading -> {
+                            is LibraryUiState.Loading -> {
                                 LoadingScreen(modifier= Modifier.fillMaxSize().weight(1f))
                             }
-                            is BookshelfUiState.Error -> {
+                            is LibraryUiState.Error -> {
                                 ErrorScreen(
                                     input=textFieldParams.textFieldKeyword,
                                     retryAction = textFieldParams.onSearch,
@@ -208,7 +208,7 @@ private fun LibraryContent(
                     visible = navigationConfig.navigationType==NavigationType.BOTTOM_NAVIGATION
                 ) {
                     BookBottomNavigationBar(
-                        currentTab = getTabPressed(bookshelfUiState),
+                        currentTab = getTabPressed(libraryUiState),
                         navigationItemContentList = navigationItemContent,
                         onTabPressed = navigationConfig.onTabPressed,
                         modifier=Modifier.fillMaxWidth()
@@ -257,16 +257,16 @@ private fun ErrorScreen(
 
 @Composable
 private fun NavigationDrawerContent(
-    selectedTab:BookType,
+    selectedTab:NavigationMenuType,
     navigationItemList:List<NavigationItemContent>,
-    onTabPressed:(BookType)->Unit,
+    onTabPressed:(NavigationMenuType)->Unit,
     modifier:Modifier=Modifier
 ){
     Column(modifier=modifier) {
         for(naviItem in navigationItemList){
             NavigationDrawerItem(
-                selected = selectedTab==naviItem.bookType,
-                onClick = { onTabPressed(naviItem.bookType) },
+                selected = selectedTab==naviItem.navigationMenuType,
+                onClick = { onTabPressed(naviItem.navigationMenuType) },
                 label = {
                     Text(
                         text=naviItem.text,
@@ -293,9 +293,9 @@ private fun NavigationDrawerContent(
 
 @Composable
 private fun BookNavigationRail(
-    currentTab:BookType,
+    currentTab:NavigationMenuType,
     navigationItemContentList:List<NavigationItemContent>,
-    onTabPressed: (BookType) -> Unit,
+    onTabPressed: (NavigationMenuType) -> Unit,
     modifier:Modifier=Modifier
 ){
     NavigationRail(modifier=modifier) {
@@ -306,8 +306,8 @@ private fun BookNavigationRail(
         ){
             for(naviItem in navigationItemContentList){
                 NavigationRailItem(
-                    selected = currentTab== naviItem.bookType,
-                    onClick = {onTabPressed(naviItem.bookType)},
+                    selected = currentTab== naviItem.navigationMenuType,
+                    onClick = {onTabPressed(naviItem.navigationMenuType)},
                     icon={
                         Icon(imageVector = naviItem.icon,
                             contentDescription = naviItem.text
@@ -324,16 +324,16 @@ private fun BookNavigationRail(
 
 @Composable
 private fun BookBottomNavigationBar(
-    currentTab: BookType,
+    currentTab: NavigationMenuType,
     navigationItemContentList: List<NavigationItemContent>,
-    onTabPressed: (BookType) -> Unit,
+    onTabPressed: (NavigationMenuType) -> Unit,
     modifier:Modifier=Modifier
 ){
     NavigationBar(modifier=modifier.testTag(stringResource(R.string.navigation_bottom))) {
         for(naviItem in navigationItemContentList){
             NavigationBarItem(
-                selected = currentTab== naviItem.bookType,
-                onClick = {onTabPressed(naviItem.bookType)},
+                selected = currentTab== naviItem.navigationMenuType,
+                onClick = {onTabPressed(naviItem.navigationMenuType)},
                 icon={
                     Icon(imageVector=naviItem.icon, contentDescription =naviItem.text)
                 }
@@ -343,7 +343,7 @@ private fun BookBottomNavigationBar(
 }
 
 private data class NavigationItemContent(
-    val bookType: BookType,
+    val navigationMenuType: NavigationMenuType,
     val icon: ImageVector,
     val text:String
 )

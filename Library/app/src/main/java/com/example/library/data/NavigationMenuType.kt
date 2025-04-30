@@ -1,5 +1,5 @@
 package com.example.library.data
 
-enum class BookType {
+enum class NavigationMenuType {
     Books, Bookmark
 }

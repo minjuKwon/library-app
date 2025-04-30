@@ -28,17 +28,17 @@ import coil.request.ImageRequest
 import com.example.library.R
 import com.example.library.getCurrentItem
 import com.example.library.network.BookInfo
-import com.example.library.ui.BookshelfUiState
+import com.example.library.ui.LibraryUiState
 import com.example.library.ui.DetailsScreenParams
 
 @Composable
 fun LibraryDetailsScreen(
-    bookshelfUiState: BookshelfUiState,
+    libraryUiState: LibraryUiState,
     isNotFullScreen:Boolean=true,
     detailsScreenParams: DetailsScreenParams,
     modifier: Modifier =Modifier
 ){
-    val data=getCurrentItem(bookshelfUiState)
+    val data=getCurrentItem(libraryUiState)
     BackHandler {
         detailsScreenParams.onBackPressed(data)
     }
@@ -64,9 +64,9 @@ fun LibraryDetailsScreen(
         )
         LazyColumn{
             item{
-                DetailsScreenContent(getCurrentItem(bookshelfUiState))
+                DetailsScreenContent(getCurrentItem(libraryUiState))
                 if (detailsScreenParams.isDataReadyForUi) {
-                    DetailsScreenContent(getCurrentItem(bookshelfUiState))
+                    DetailsScreenContent(getCurrentItem(libraryUiState))
                     detailsScreenParams.updateDataReadyForUi(false)
                 }
             }

@@ -7,8 +7,8 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
-import com.example.library.fake.FakeNetworkBookshelfRepository
-import com.example.library.ui.BookshelfViewModel
+import com.example.library.fake.FakeNetworkBookRepository
+import com.example.library.ui.LibraryViewModel
 import com.example.library.ui.LibraryApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -98,9 +98,9 @@ class SearchResultListTest {
     }
 
     private fun initial(testDispatcher: TestDispatcher, testScope: CoroutineScope){
-        val fakeRepository= FakeNetworkBookshelfRepository()
-        val bookshelfViewModel= BookshelfViewModel(
-            bookshelfRepository = fakeRepository,
+        val fakeRepository= FakeNetworkBookRepository()
+        val libraryViewModel= LibraryViewModel(
+            bookRepository = fakeRepository,
             ioDispatcher = testDispatcher,
             externalScope = testScope
         )
@@ -109,7 +109,7 @@ class SearchResultListTest {
         }
 
         composeTestRule.setContent {
-            LibraryApp(WindowWidthSizeClass.Compact,bookshelfViewModel)
+            LibraryApp(WindowWidthSizeClass.Compact,libraryViewModel)
         }
 
         composeTestRule.runOnIdle {

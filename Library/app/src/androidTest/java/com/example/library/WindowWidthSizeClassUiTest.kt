@@ -3,8 +3,8 @@ package com.example.library
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import com.example.library.fake.FakeNetworkBookshelfRepository
-import com.example.library.ui.BookshelfViewModel
+import com.example.library.fake.FakeNetworkBookRepository
+import com.example.library.ui.LibraryViewModel
 import com.example.library.ui.LibraryApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -38,9 +38,9 @@ class WindowWidthSizeClassUiTest {
     ){
         val dispatcher = StandardTestDispatcher()
         val scope = CoroutineScope(dispatcher)
-        val fakeRepository = FakeNetworkBookshelfRepository()
-        val viewModel = BookshelfViewModel(
-            bookshelfRepository = fakeRepository,
+        val fakeRepository = FakeNetworkBookRepository()
+        val viewModel = LibraryViewModel(
+            bookRepository = fakeRepository,
             ioDispatcher = dispatcher,
             externalScope = scope
         )

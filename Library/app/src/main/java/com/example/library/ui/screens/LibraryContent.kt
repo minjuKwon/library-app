@@ -44,13 +44,13 @@ import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
-import com.example.library.data.BookType
+import com.example.library.data.NavigationMenuType
 import com.example.library.getBookmarkList
 import com.example.library.getTabPressed
 import com.example.library.getTotalItemCount
 import com.example.library.network.Book
 import com.example.library.network.BookInfo
-import com.example.library.ui.BookshelfUiState
+import com.example.library.ui.LibraryUiState
 import com.example.library.ui.DetailsScreenParams
 import com.example.library.ui.ListContentParams
 import com.example.library.ui.PAGE_SIZE
@@ -58,7 +58,7 @@ import com.example.library.ui.TextFieldParams
 
 @Composable
 fun LibraryListOnlyContent(
-    bookshelfUiState: BookshelfUiState,
+    libraryUiState: LibraryUiState,
     books:LazyPagingItems<Book>,
     textFieldParams:TextFieldParams,
     listContentParams:ListContentParams,
@@ -71,7 +71,7 @@ fun LibraryListOnlyContent(
 
         val pageGroupSize = 3
         val pageSize = PAGE_SIZE
-        val totalItemCount= getTotalItemCount(bookshelfUiState)
+        val totalItemCount= getTotalItemCount(libraryUiState)
         val totalPages = (totalItemCount+pageSize-1)/pageSize
         val currentGroup = (listContentParams.currentPage-1)/pageGroupSize
 
@@ -85,7 +85,7 @@ fun LibraryListOnlyContent(
         LibraryTotalItemText(totalItemCount)
 
         LibraryList(
-            bookshelfUiState= bookshelfUiState,
+            libraryUiState= libraryUiState,
             books= books,
             pageGroupSize = pageGroupSize,
             totalPages= totalPages,
@@ -173,7 +173,7 @@ private fun LibraryTotalItemText(
 
 @Composable
 private fun LibraryList(
-    bookshelfUiState: BookshelfUiState,
+    libraryUiState: LibraryUiState,
     books:LazyPagingItems<Book>,
     pageGroupSize:Int,
     totalPages:Int,
@@ -186,11 +186,11 @@ private fun LibraryList(
             .padding(dimensionResource(R.dimen.list_padding))
             .testTag(stringResource(R.string.test_list))
     ){
-        if(getTabPressed(bookshelfUiState)==BookType.Bookmark){
-            items(getBookmarkList(bookshelfUiState),key={it.id}){
+        if(getTabPressed(libraryUiState)==NavigationMenuType.Bookmark){
+            items(getBookmarkList(libraryUiState),key={it.id}){
                 listContentParams.initCurrentItem(
-                    getTabPressed(bookshelfUiState),
-                    getBookmarkList(bookshelfUiState)[0].bookInfo
+                    getTabPressed(libraryUiState),
+                    getBookmarkList(libraryUiState)[0].bookInfo
                 )
                 LibraryListItem(
                     book = it,
@@ -203,7 +203,7 @@ private fun LibraryList(
                 books[it]?.let { it1 ->
                     if(it==0){
                         listContentParams.initCurrentItem(
-                            getTabPressed(bookshelfUiState), it1.bookInfo
+                            getTabPressed(libraryUiState), it1.bookInfo
                         )
                     }
                     LibraryListItem(
@@ -395,7 +395,7 @@ private fun PageNumberButton(
 
 @Composable
 fun LibraryListAndDetailContent(
-    bookshelfUiState: BookshelfUiState,
+    libraryUiState: LibraryUiState,
     books:LazyPagingItems<Book>,
     textFieldParams:TextFieldParams,
     listContentParams:ListContentParams,
@@ -404,7 +404,7 @@ fun LibraryListAndDetailContent(
 ){
     Row(modifier=modifier){
         LibraryListOnlyContent(
-            bookshelfUiState = bookshelfUiState,
+            libraryUiState = libraryUiState,
             books = books,
             textFieldParams=textFieldParams,
             listContentParams=listContentParams,
@@ -415,7 +415,7 @@ fun LibraryListAndDetailContent(
 
         if(books.loadState.refresh is LoadState.NotLoading){
             LibraryDetailsScreen(
-                bookshelfUiState=bookshelfUiState,
+                libraryUiState=libraryUiState,
                 isNotFullScreen = false,
                 detailsScreenParams= DetailsScreenParams(
                     isDataReadyForUi = detailsScreenParams.isDataReadyForUi,

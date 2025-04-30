@@ -1,22 +1,22 @@
 package com.example.library.fake
 
-import com.example.library.data.BookshelfRepository
+import com.example.library.data.BookRepository
 import com.example.library.network.Item
 import okio.IOException
 
-class FakeNetworkBookshelfRepository :BookshelfRepository {
+class FakeNetworkBookRepository :BookRepository {
     override suspend fun searchVolume(query: String, limit: Int, offset: Int): Item {
         return FakeDataSource.item
     }
 }
 
-class FakeBookmarkedBookshelfRepository:BookshelfRepository{
+class FakeBookmarkedBookRepository:BookRepository{
     override suspend fun searchVolume(query: String, limit: Int, offset: Int): Item {
         return FakeDataSource.itemBookmarked
     }
 }
 
-class FakeExceptionBookshelfRepository:BookshelfRepository{
+class FakeExceptionBookRepository:BookRepository{
     override suspend fun searchVolume(query: String, limit: Int, offset: Int): Item {
         throw IOException("fake exception repository")
     }

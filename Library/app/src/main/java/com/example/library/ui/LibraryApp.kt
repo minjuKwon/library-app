@@ -8,7 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.library.data.BookType
+import com.example.library.data.NavigationMenuType
 import com.example.library.network.Book
 import com.example.library.network.BookInfo
 import com.example.library.ui.screens.LibraryScreen
@@ -18,7 +18,7 @@ import com.example.library.ui.utils.NavigationType
 @Composable
 fun LibraryApp(
     windowSize: WindowWidthSizeClass,
-    bookshelfViewModel: BookshelfViewModel = viewModel(factory=BookshelfViewModel.Factory),
+    libraryViewModel: LibraryViewModel = viewModel(factory=LibraryViewModel.Factory),
     modifier:Modifier= Modifier
 ){
     val navigationType:NavigationType
@@ -26,9 +26,9 @@ fun LibraryApp(
 
     val scrollState  = rememberLazyListState()
 
-    val textFieldKeyword by bookshelfViewModel.textFieldKeyword
-    val currentPage by bookshelfViewModel.currentPage.collectAsState()
-    val isDataReadyForUi by bookshelfViewModel.isDataReadyForUi.collectAsState()
+    val textFieldKeyword by libraryViewModel.textFieldKeyword
+    val currentPage by libraryViewModel.currentPage.collectAsState()
+    val isDataReadyForUi by libraryViewModel.isDataReadyForUi.collectAsState()
 
     when(windowSize){
         WindowWidthSizeClass.Compact->{
@@ -50,34 +50,34 @@ fun LibraryApp(
     }
 
     LibraryScreen(
-        bookshelfUiState=bookshelfViewModel.bookshelfUiState,
+        libraryUiState=libraryViewModel.libraryUiState,
         navigationConfig = NavigationConfig(
             contentType=contentType,
             navigationType = navigationType,
-            onTabPressed = { bookshelfViewModel.updateCurrentBookTabType(it) }
+            onTabPressed = { libraryViewModel.updateCurrentBookTabType(it) }
         ),
         textFieldParams = TextFieldParams(
             textFieldKeyword=textFieldKeyword,
-            updateKeyword={bookshelfViewModel.updateKeyword(it)},
-            onSearch = { bookshelfViewModel.getInformation(it)}
+            updateKeyword={libraryViewModel.updateKeyword(it)},
+            onSearch = { libraryViewModel.getInformation(it)}
         ),
         listContentParams = ListContentParams(
             scrollState=scrollState,
             currentPage=currentPage,
-            updatePage={bookshelfViewModel.getInformation(page=it)},
-            onBookmarkPressed={bookshelfViewModel.updateBookmarkList(it)},
+            updatePage={libraryViewModel.getInformation(page=it)},
+            onBookmarkPressed={libraryViewModel.updateBookmarkList(it)},
             onBookItemPressed={
-                bookshelfViewModel.updateDataReadyForUi(true)
-                bookshelfViewModel.updateDetailsScreenState(it)
+                libraryViewModel.updateDataReadyForUi(true)
+                libraryViewModel.updateDetailsScreenState(it)
             },
             initCurrentItem={v1,v2->
-                bookshelfViewModel.initCurrentItem(v1,v2)
+                libraryViewModel.initCurrentItem(v1,v2)
             }
         ),
         detailsScreenParams = DetailsScreenParams(
             isDataReadyForUi= isDataReadyForUi,
-            updateDataReadyForUi={bookshelfViewModel.updateDataReadyForUi(it)},
-            onBackPressed={bookshelfViewModel.resetHomeScreenState(it)}
+            updateDataReadyForUi={libraryViewModel.updateDataReadyForUi(it)},
+            onBackPressed={libraryViewModel.resetHomeScreenState(it)}
         ),
         modifier=modifier
     )
@@ -86,7 +86,7 @@ fun LibraryApp(
 data class NavigationConfig(
     val contentType: ContentType,
     val navigationType: NavigationType,
-    val onTabPressed: (BookType) -> Unit
+    val onTabPressed: (NavigationMenuType) -> Unit
 )
 
 data class TextFieldParams(
@@ -101,7 +101,7 @@ data class ListContentParams(
     val updatePage:(Int)->Unit,
     val onBookmarkPressed:(Book)->Unit,
     val onBookItemPressed: (BookInfo) -> Unit,
-    val initCurrentItem:(BookType,BookInfo)->Unit,
+    val initCurrentItem:(NavigationMenuType, BookInfo)->Unit,
 )
 
 data class DetailsScreenParams(

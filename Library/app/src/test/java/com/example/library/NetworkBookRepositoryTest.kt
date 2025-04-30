@@ -1,19 +1,19 @@
 package com.example.library
 
-import com.example.library.data.NetworkBookshelfRepository
-import com.example.library.fake.FakeBookshelfApiService
+import com.example.library.data.NetworkBookRepository
+import com.example.library.fake.FakeVolumesApiService
 import com.example.library.fake.FakeDataSource
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class NetworkBookshelfRepositoryTest {
+class NetworkBookRepositoryTest {
 
     @Test
-    fun networkBookshelfRepository_getBookListInformation_verityItem()=
+    fun networkBookRepository_getBookListInformation_verityItem()=
         runTest {
-            val repository= NetworkBookshelfRepository(
-                bookshelfApiService = FakeBookshelfApiService()
+            val repository= NetworkBookRepository(
+                volumesApiService = FakeVolumesApiService()
             )
             assertEquals(
                 FakeDataSource.item,
