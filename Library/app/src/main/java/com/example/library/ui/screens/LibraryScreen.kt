@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.library.R
 import com.example.library.data.NavigationMenuType
@@ -219,6 +220,19 @@ private fun LibraryContent(
         }
     }
 
+}
+
+@Composable
+private fun BookmarkEmptyScreen(modifier:Modifier=Modifier){
+    Box(
+        modifier=modifier,
+        contentAlignment = Alignment.Center
+    ){
+        Text(
+            text=stringResource(R.string.empty_bookmark),
+            textAlign= TextAlign.Center
+        )
+    }
 }
 
 @Composable

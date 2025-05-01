@@ -37,7 +37,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.core.content.ContextCompat
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -426,18 +425,5 @@ fun LibraryListAndDetailContent(
             )
         }
 
-    }
-}
-
-@Composable
-fun BookmarkEmptyScreen(modifier:Modifier=Modifier){
-    Box(
-        modifier=modifier,
-        contentAlignment = Alignment.Center
-    ){
-        Text(
-            text=stringResource(R.string.empty_bookmark),
-            textAlign=TextAlign.Center
-        )
     }
 }
