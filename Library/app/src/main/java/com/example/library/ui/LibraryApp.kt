@@ -7,7 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.library.ui.screens.LibraryScreen
+import com.example.library.ui.screens.LibraryAppContent
 import com.example.library.ui.utils.ContentType
 import com.example.library.ui.utils.NavigationType
 
@@ -45,7 +45,7 @@ fun LibraryApp(
         }
     }
 
-    LibraryScreen(
+    LibraryAppContent(
         libraryUiState=libraryViewModel.libraryUiState,
         navigationConfig = NavigationConfig(
             contentType=contentType,
