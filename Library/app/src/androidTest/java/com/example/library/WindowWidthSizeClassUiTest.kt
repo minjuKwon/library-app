@@ -4,7 +4,8 @@ import androidx.activity.ComponentActivity
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.example.library.fake.FakeNetworkBookRepository
-import com.example.library.ui.LibraryViewModel
+import com.example.library.rules.onNodeWithTagForStringId
+import com.example.library.ui.screens.search.LibraryViewModel
 import com.example.library.ui.LibraryApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel

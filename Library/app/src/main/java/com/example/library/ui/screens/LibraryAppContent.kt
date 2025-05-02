@@ -26,13 +26,14 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.example.library.R
-import com.example.library.data.NavigationMenuType
-import com.example.library.getTabPressed
-import com.example.library.ui.DetailsScreenParams
-import com.example.library.ui.LibraryUiState
-import com.example.library.ui.ListContentParams
-import com.example.library.ui.NavigationConfig
-import com.example.library.ui.TextFieldParams
+import com.example.library.ui.navigation.NavigationMenuType
+import com.example.library.ui.screens.search.getTabPressed
+import com.example.library.ui.utils.DetailsScreenParams
+import com.example.library.ui.screens.search.LibraryUiState
+import com.example.library.ui.utils.ListContentParams
+import com.example.library.ui.utils.NavigationConfig
+import com.example.library.ui.utils.TextFieldParams
+import com.example.library.ui.screens.detail.LibraryDetailsScreen
 import com.example.library.ui.utils.NavigationType
 
 @Composable
@@ -130,7 +131,7 @@ fun LibraryAppContent(
 
 @Composable
 private fun NavigationDrawerContent(
-    selectedTab:NavigationMenuType,
+    selectedTab: NavigationMenuType,
     navigationItemList:List<NavigationItemContent>,
     onTabPressed:(NavigationMenuType)->Unit,
     modifier:Modifier=Modifier
@@ -166,7 +167,7 @@ private fun NavigationDrawerContent(
 
 @Composable
 fun BookNavigationRail(
-    currentTab:NavigationMenuType,
+    currentTab: NavigationMenuType,
     navigationItemContentList:List<NavigationItemContent>,
     onTabPressed: (NavigationMenuType) -> Unit,
     modifier:Modifier=Modifier

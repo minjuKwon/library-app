@@ -3,24 +3,23 @@ package com.example.library
 import androidx.paging.AsyncPagingDataDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
+import com.example.library.data.api.Book
 import com.example.library.fake.FakeBookmarkedBookRepository
+import com.example.library.fake.FakeExceptionBookRepository
 import com.example.library.fake.FakeNetworkBookRepository
-import com.example.library.network.Book
 import com.example.library.rules.TestDispatcherRule
-import com.example.library.ui.LibraryUiState
-import com.example.library.ui.LibraryViewModel
+import com.example.library.ui.screens.search.LibraryUiState
+import com.example.library.ui.screens.search.LibraryViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
+import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOf
-import org.junit.Assert.assertTrue
-import com.example.library.fake.FakeExceptionBookRepository as FakeExceptionBookRepository1
 
 class LibraryViewModelTest {
 
@@ -35,22 +34,22 @@ class LibraryViewModelTest {
     }
 
     @Test
-    fun libraryViewModel_getBookListInformation_verifyLibraryUiStateSuccess()= runTest{
+    fun libraryViewModel_getBookListInformation_verifyLibraryUiStateSuccess()= runTest {
 
-        val fakeRepository= FakeNetworkBookRepository()
+        val fakeRepository = FakeNetworkBookRepository()
 
         val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
-        val libraryViewModel=LibraryViewModel(
+        val libraryViewModel = LibraryViewModel(
             bookRepository = fakeRepository,
             ioDispatcher = testDispatcherRule.testDispatcher,
             externalScope = testScope
         )
 
-        assertEquals(LibraryUiState.Loading, libraryViewModel.libraryUiState)
+        Assert.assertEquals(LibraryUiState.Loading, libraryViewModel.libraryUiState)
 
         testScheduler.advanceUntilIdle()
 
-        val successState  = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+        val successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
         val pagingData = successState.list.book.first()
         val differ = AsyncPagingDataDiffer(
             diffCallback = MyDiffCallback(),
@@ -66,24 +65,24 @@ class LibraryViewModelTest {
         testScheduler.advanceUntilIdle()
 
         val actualItems = differ.snapshot().items
-        val expectedItems=fakeRepository.searchVolume(
+        val expectedItems = fakeRepository.searchVolume(
             libraryViewModel.textFieldKeyword.value,
             10,
             0
         ).book
 
-        assertEquals(expectedItems, actualItems)
+        Assert.assertEquals(expectedItems, actualItems)
 
         testScope.cancel()
 
     }
 
     @Test
-    fun libraryViewModel_getBookListInformation_verifyLibraryBookmark()=runTest{
+    fun libraryViewModel_getBookListInformation_verifyLibraryBookmark()= runTest {
 
-        val fakeRepository= FakeNetworkBookRepository()
-        val testScope= CoroutineScope(testDispatcherRule.testDispatcher)
-        val libraryViewModel=LibraryViewModel(
+        val fakeRepository = FakeNetworkBookRepository()
+        val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
+        val libraryViewModel = LibraryViewModel(
             bookRepository = fakeRepository,
             ioDispatcher = testDispatcherRule.testDispatcher,
             externalScope = testScope
@@ -91,44 +90,44 @@ class LibraryViewModelTest {
         testScheduler.advanceUntilIdle()
 
         //bookmark 리스트 확인
-        val successState= (libraryViewModel.libraryUiState as LibraryUiState.Success)
-        val pagingData= successState.list.book.first()
-        val differ= AsyncPagingDataDiffer(
+        val successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+        val pagingData = successState.list.book.first()
+        val differ = AsyncPagingDataDiffer(
             diffCallback = MyDiffCallback(),
             updateCallback = NoopListCallback,
             workerDispatcher = testDispatcherRule.testDispatcher
         )
 
         launch {
-            flowOf(pagingData).collectLatest{differ.submitData(it)}
+            flowOf(pagingData).collectLatest { differ.submitData(it) }
         }
 
         testScheduler.advanceUntilIdle()
 
-        val actualItems=differ.snapshot().items
-        for(book in actualItems){
+        val actualItems = differ.snapshot().items
+        for (book in actualItems) {
             libraryViewModel.updateBookmarkList(book)
         }
-        var expectedItems=FakeBookmarkedBookRepository().searchVolume(
+        var expectedItems = FakeBookmarkedBookRepository().searchVolume(
             libraryViewModel.textFieldKeyword.value,
             10,
             0
         ).book
 
-        assertEquals(expectedItems, actualItems)
+        Assert.assertEquals(expectedItems, actualItems)
 
         //bookmark 해제된  리스트 확인
-        for(book in actualItems){
+        for (book in actualItems) {
             libraryViewModel.updateBookmarkList(book)
         }
 
-        expectedItems=FakeNetworkBookRepository().searchVolume(
+        expectedItems = FakeNetworkBookRepository().searchVolume(
             libraryViewModel.textFieldKeyword.value,
             10,
             0
         ).book
 
-        assertEquals(expectedItems, actualItems)
+        Assert.assertEquals(expectedItems, actualItems)
 
         testScope.cancel()
 
@@ -137,9 +136,9 @@ class LibraryViewModelTest {
     @Test
     fun libraryViewModel_getBookListInformation_verityLibraryUiStateError()= runTest {
 
-        val fakeRepository= FakeExceptionBookRepository1()
-        val testScope= CoroutineScope(testDispatcherRule.testDispatcher)
-        val viewModel=LibraryViewModel(
+        val fakeRepository = FakeExceptionBookRepository()
+        val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
+        val viewModel = LibraryViewModel(
             bookRepository = fakeRepository,
             ioDispatcher = testDispatcherRule.testDispatcher,
             externalScope = testScope
@@ -147,7 +146,7 @@ class LibraryViewModelTest {
 
         testScheduler.advanceUntilIdle()
 
-        assertTrue(viewModel.libraryUiState is LibraryUiState.Error)
+        Assert.assertTrue(viewModel.libraryUiState is LibraryUiState.Error)
     }
 
 }

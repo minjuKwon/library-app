@@ -2,7 +2,8 @@ package com.example.library.data
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.library.network.Book
+import com.example.library.data.api.Book
+import com.example.library.domain.BookRepository
 
 class CacheLibraryPagingSource(
     private val bookRepository: BookRepository,

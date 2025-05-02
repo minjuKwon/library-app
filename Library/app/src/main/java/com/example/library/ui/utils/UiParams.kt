@@ -1,11 +1,9 @@
-package com.example.library.ui
+package com.example.library.ui.utils
 
 import androidx.compose.foundation.lazy.LazyListState
-import com.example.library.data.NavigationMenuType
-import com.example.library.network.Book
-import com.example.library.network.BookInfo
-import com.example.library.ui.utils.ContentType
-import com.example.library.ui.utils.NavigationType
+import com.example.library.data.api.Book
+import com.example.library.data.api.BookInfo
+import com.example.library.ui.navigation.NavigationMenuType
 
 data class NavigationConfig(
     val contentType: ContentType,

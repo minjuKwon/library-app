@@ -1,9 +1,9 @@
 package com.example.library.fake
 
-import com.example.library.network.Book
-import com.example.library.network.BookInfo
-import com.example.library.network.Image
-import com.example.library.network.Item
+import com.example.library.data.api.Book
+import com.example.library.data.api.BookInfo
+import com.example.library.data.api.Image
+import com.example.library.data.api.Item
 import kotlin.math.min
 
 object FakeDataSource {
@@ -71,7 +71,7 @@ object FakeDataSource {
             )
     ),15)
 
-    fun getListRange(limit:Int, offset:Int):Item{
+    fun getListRange(limit:Int, offset:Int): Item {
         return Item(item.book.subList(offset, min(offset+limit, item.totalCount)),item.totalCount)
     }
 }

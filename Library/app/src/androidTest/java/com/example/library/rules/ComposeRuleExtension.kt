@@ -1,4 +1,4 @@
-package com.example.library
+package com.example.library.rules
 
 import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes

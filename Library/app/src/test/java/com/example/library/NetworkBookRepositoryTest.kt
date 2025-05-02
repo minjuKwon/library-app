@@ -1,6 +1,6 @@
 package com.example.library
 
-import com.example.library.data.NetworkBookRepository
+import com.example.library.data.repository.NetworkBookRepository
 import com.example.library.fake.FakeVolumesApiService
 import com.example.library.fake.FakeDataSource
 import kotlinx.coroutines.test.runTest

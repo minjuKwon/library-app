@@ -6,29 +6,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationRail
-import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.PermanentDrawerSheet
-import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -36,15 +22,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.library.R
-import com.example.library.data.NavigationMenuType
-import com.example.library.getBookList
-import com.example.library.getTabPressed
-import com.example.library.isBookmarkListEmpty
-import com.example.library.ui.LibraryUiState
-import com.example.library.ui.DetailsScreenParams
-import com.example.library.ui.ListContentParams
-import com.example.library.ui.NavigationConfig
-import com.example.library.ui.TextFieldParams
+import com.example.library.ui.navigation.NavigationMenuType
+import com.example.library.ui.screens.search.getBookList
+import com.example.library.ui.screens.search.getTabPressed
+import com.example.library.ui.screens.search.isBookmarkListEmpty
+import com.example.library.ui.screens.search.LibraryUiState
+import com.example.library.ui.utils.DetailsScreenParams
+import com.example.library.ui.utils.ListContentParams
+import com.example.library.ui.utils.NavigationConfig
+import com.example.library.ui.utils.TextFieldParams
+import com.example.library.ui.screens.search.LibraryListAndDetailContent
+import com.example.library.ui.screens.search.LibraryListOnlyContent
 import com.example.library.ui.utils.ContentType
 import com.example.library.ui.utils.NavigationType
 
@@ -83,7 +71,7 @@ fun LibraryScreen(
                         detailsScreenParams=detailsScreenParams,
                     )
                 }else{
-                    if(getTabPressed(libraryUiState)==NavigationMenuType.Bookmark
+                    if(getTabPressed(libraryUiState) == NavigationMenuType.Bookmark
                         && isBookmarkListEmpty(libraryUiState)
                     ){
                         BookmarkEmptyScreen(modifier= Modifier.fillMaxSize().weight(1f))

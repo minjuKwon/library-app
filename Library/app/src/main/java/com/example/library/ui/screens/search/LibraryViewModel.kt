@@ -1,4 +1,4 @@
-package com.example.library.ui
+package com.example.library.ui.screens.search
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,10 +16,10 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.library.LibraryApplication
 import com.example.library.data.CacheLibraryPagingSource
-import com.example.library.data.NavigationMenuType
-import com.example.library.data.BookRepository
-import com.example.library.network.Book
-import com.example.library.network.BookInfo
+import com.example.library.domain.BookRepository
+import com.example.library.data.api.Book
+import com.example.library.data.api.BookInfo
+import com.example.library.ui.navigation.NavigationMenuType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -83,7 +83,7 @@ class LibraryViewModel(
                     bookRepository,
                     keyword=search,
                     pageNumber=page,
-                    pageSize=PAGE_SIZE
+                    pageSize= PAGE_SIZE
                 )
         }.flow.cachedIn(scope)
 
@@ -95,7 +95,7 @@ class LibraryViewModel(
                 }
                 _currentPage.value=page
                 when(libraryUiState){
-                    is LibraryUiState.Success->{
+                    is LibraryUiState.Success ->{
                         val pageDataBookmarked=pageData.map { page->
                             page.map { data->
                                 data.copy(
@@ -111,7 +111,7 @@ class LibraryViewModel(
                             .copy(list= PageData(pageDataBookmarked,totalItemCount))
                     }
                     else-> LibraryUiState.Success(
-                        list= PageData(pageData,totalItemCount)
+                        list = PageData(pageData, totalItemCount)
                     )
                 }
             }catch (e: IOException){
@@ -136,7 +136,7 @@ class LibraryViewModel(
         }
     }
 
-    fun resetHomeScreenState(bookInfo:BookInfo){
+    fun resetHomeScreenState(bookInfo: BookInfo){
         libraryUiState=updateCopiedUiState(libraryUiState){
             it.currentItem[it.currentTabType] = bookInfo
             it.copy(currentItem = it.currentItem, isShowingHomepage = true)
@@ -149,7 +149,7 @@ class LibraryViewModel(
         }
     }
 
-    fun updateBookmarkList(book:Book){
+    fun updateBookmarkList(book: Book){
         book.bookInfo.isBookmarked= !book.bookInfo.isBookmarked
         libraryUiState=updateCopiedUiState(libraryUiState){
             var tempList:MutableList<Book> = it.bookmarkList
@@ -170,12 +170,12 @@ class LibraryViewModel(
     }
 
     private fun updateCopiedUiState(
-        uiState:LibraryUiState,
+        uiState: LibraryUiState,
         copyOperation:(LibraryUiState.Success)-> LibraryUiState.Success
-    ):LibraryUiState
+    ): LibraryUiState
     {
         return when(uiState){
-            is LibraryUiState.Success-> copyOperation(uiState)
+            is LibraryUiState.Success -> copyOperation(uiState)
             else ->uiState
         }
     }

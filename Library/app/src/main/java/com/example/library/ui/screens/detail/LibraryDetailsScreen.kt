@@ -1,4 +1,4 @@
-package com.example.library.ui.screens
+package com.example.library.ui.screens.detail
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
@@ -26,10 +26,10 @@ import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
-import com.example.library.getCurrentItem
-import com.example.library.network.BookInfo
-import com.example.library.ui.LibraryUiState
-import com.example.library.ui.DetailsScreenParams
+import com.example.library.ui.screens.search.getCurrentItem
+import com.example.library.data.api.BookInfo
+import com.example.library.ui.screens.search.LibraryUiState
+import com.example.library.ui.utils.DetailsScreenParams
 
 @Composable
 fun LibraryDetailsScreen(
@@ -38,7 +38,7 @@ fun LibraryDetailsScreen(
     detailsScreenParams: DetailsScreenParams,
     modifier: Modifier =Modifier
 ){
-    val data=getCurrentItem(libraryUiState)
+    val data= getCurrentItem(libraryUiState)
     BackHandler {
         detailsScreenParams.onBackPressed(data)
     }

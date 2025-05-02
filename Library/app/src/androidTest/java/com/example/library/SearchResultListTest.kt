@@ -8,7 +8,8 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
 import com.example.library.fake.FakeNetworkBookRepository
-import com.example.library.ui.LibraryViewModel
+import com.example.library.rules.onNodeWithTagForStringId
+import com.example.library.ui.screens.search.LibraryViewModel
 import com.example.library.ui.LibraryApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel

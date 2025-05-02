@@ -1,4 +1,4 @@
-package com.example.library.ui.screens
+package com.example.library.ui.screens.search
 
 import android.app.Activity
 import androidx.compose.foundation.background
@@ -43,24 +43,20 @@ import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
-import com.example.library.data.NavigationMenuType
-import com.example.library.getBookmarkList
-import com.example.library.getTabPressed
-import com.example.library.getTotalItemCount
-import com.example.library.network.Book
-import com.example.library.network.BookInfo
-import com.example.library.ui.LibraryUiState
-import com.example.library.ui.DetailsScreenParams
-import com.example.library.ui.ListContentParams
-import com.example.library.ui.PAGE_SIZE
-import com.example.library.ui.TextFieldParams
+import com.example.library.ui.navigation.NavigationMenuType
+import com.example.library.data.api.Book
+import com.example.library.data.api.BookInfo
+import com.example.library.ui.utils.DetailsScreenParams
+import com.example.library.ui.utils.ListContentParams
+import com.example.library.ui.utils.TextFieldParams
+import com.example.library.ui.screens.detail.LibraryDetailsScreen
 
 @Composable
 fun LibraryListOnlyContent(
     libraryUiState: LibraryUiState,
     books:LazyPagingItems<Book>,
-    textFieldParams:TextFieldParams,
-    listContentParams:ListContentParams,
+    textFieldParams: TextFieldParams,
+    listContentParams: ListContentParams,
     modifier:Modifier= Modifier
 ){
     Column(
@@ -177,7 +173,7 @@ private fun LibraryList(
     pageGroupSize:Int,
     totalPages:Int,
     currentGroup: Int,
-    listContentParams:ListContentParams
+    listContentParams: ListContentParams
 ){
     LazyColumn(
         state=listContentParams.scrollState,
@@ -185,7 +181,7 @@ private fun LibraryList(
             .padding(dimensionResource(R.dimen.list_padding))
             .testTag(stringResource(R.string.test_list))
     ){
-        if(getTabPressed(libraryUiState)==NavigationMenuType.Bookmark){
+        if(getTabPressed(libraryUiState) == NavigationMenuType.Bookmark){
             items(getBookmarkList(libraryUiState),key={it.id}){
                 listContentParams.initCurrentItem(
                     getTabPressed(libraryUiState),
@@ -282,7 +278,7 @@ private fun LibraryListItem(
 }
 
 @Composable
-private fun ItemDescription(book:Book){
+private fun ItemDescription(book: Book){
     book.bookInfo.title?.let {
         Text(
             text= it,
@@ -396,8 +392,8 @@ private fun PageNumberButton(
 fun LibraryListAndDetailContent(
     libraryUiState: LibraryUiState,
     books:LazyPagingItems<Book>,
-    textFieldParams:TextFieldParams,
-    listContentParams:ListContentParams,
+    textFieldParams: TextFieldParams,
+    listContentParams: ListContentParams,
     detailsScreenParams: DetailsScreenParams,
     modifier:Modifier= Modifier
 ){

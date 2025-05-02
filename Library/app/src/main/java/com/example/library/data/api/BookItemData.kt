@@ -1,4 +1,4 @@
-package com.example.library.network
+package com.example.library.data.api
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -26,7 +26,7 @@ data class BookInfo(
     val publishedDate:String?=null,
     val description:String?=null,
     @SerialName(value="imageLinks")
-    val img:Image?=null,
+    val img: Image?=null,
     var isBookmarked:Boolean=false
 )
 

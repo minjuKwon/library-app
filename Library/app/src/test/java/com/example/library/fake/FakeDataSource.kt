@@ -1,9 +1,9 @@
 package com.example.library.fake
 
-import com.example.library.network.Book
-import com.example.library.network.BookInfo
-import com.example.library.network.Image
-import com.example.library.network.Item
+import com.example.library.data.api.Book
+import com.example.library.data.api.BookInfo
+import com.example.library.data.api.Image
+import com.example.library.data.api.Item
 
 object FakeDataSource {
     val item= Item(
