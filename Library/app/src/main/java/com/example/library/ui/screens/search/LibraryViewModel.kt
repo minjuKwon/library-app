@@ -4,22 +4,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.example.library.LibraryApplication
+import com.example.library.di.ApplicationScope
+import com.example.library.di.IoDispatcher
 import com.example.library.data.CacheLibraryPagingSource
 import com.example.library.domain.BookRepository
 import com.example.library.data.api.Book
 import com.example.library.data.api.BookInfo
 import com.example.library.ui.navigation.NavigationMenuType
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,24 +28,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
+import javax.inject.Inject
 
 const val PAGE_SIZE=10
 
-class LibraryViewModel(
+@HiltViewModel
+class LibraryViewModel @Inject constructor(
     private val bookRepository: BookRepository,
-    private val ioDispatcher:CoroutineDispatcher = Dispatchers.IO,
-    externalScope: CoroutineScope? = null
+    @IoDispatcher private val ioDispatcher:CoroutineDispatcher = Dispatchers.IO,
+    @ApplicationScope externalScope: CoroutineScope? = null
 ):ViewModel() {
-
-    companion object{
-        val Factory : ViewModelProvider.Factory = viewModelFactory{
-            initializer{
-                val application = (this[APPLICATION_KEY] as LibraryApplication)
-                val bookRepository = application.container.bookRepository
-                LibraryViewModel(bookRepository)
-            }
-        }
-    }
 
     private val scope = externalScope ?: viewModelScope
 

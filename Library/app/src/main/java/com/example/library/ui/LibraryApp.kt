@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.library.ui.screens.LibraryAppContent
 import com.example.library.ui.screens.search.LibraryViewModel
 import com.example.library.ui.utils.ContentType
@@ -19,7 +18,7 @@ import com.example.library.ui.utils.TextFieldParams
 @Composable
 fun LibraryApp(
     windowSize: WindowWidthSizeClass,
-    libraryViewModel: LibraryViewModel = viewModel(factory= LibraryViewModel.Factory),
+    libraryViewModel: LibraryViewModel,
     modifier:Modifier= Modifier
 ){
     val navigationType:NavigationType
