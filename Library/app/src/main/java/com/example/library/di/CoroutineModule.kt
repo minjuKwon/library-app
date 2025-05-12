@@ -16,15 +16,15 @@ import javax.inject.Singleton
 object CoroutineModule {
 
     @Provides
+    @Singleton
     @IoDispatcher
     fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
     @Singleton
     @ApplicationScope
-    fun provideApplicationScope(): CoroutineScope {
-        return CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    }
+    fun provideApplicationScope(): CoroutineScope
+        = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
 }
 
