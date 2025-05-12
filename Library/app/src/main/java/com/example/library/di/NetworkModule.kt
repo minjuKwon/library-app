@@ -1,6 +1,8 @@
 package com.example.library.di
 
+import com.example.library.BuildConfig
 import com.example.library.data.api.VolumesApiService
+import com.example.library.data.fake.FakeNetworkBookRepository
 import com.example.library.data.repository.NetworkBookRepository
 import com.example.library.domain.BookRepository
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -34,7 +36,11 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideNetworkBookRepository(volumesApiService: VolumesApiService): BookRepository {
-        return NetworkBookRepository(volumesApiService)
+        return if(BuildConfig.DEBUG){
+            FakeNetworkBookRepository()
+        }else {
+            NetworkBookRepository(volumesApiService)
+        }
     }
 
 }
