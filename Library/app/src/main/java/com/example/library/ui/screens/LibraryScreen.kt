@@ -83,7 +83,7 @@ fun LibraryScreen(
                                 textFieldParams=textFieldParams,
                                 listContentParams=listContentParams,
                                 modifier= Modifier
-                                    .padding(dimensionResource(R.dimen.list_only_content_column_padding))
+                                    .padding(dimensionResource(R.dimen.padding_sm))
                                     .fillMaxSize()
                                     .weight(1f)
                             )
@@ -156,7 +156,7 @@ private fun ErrorScreen(
         )
         Text(
             text=stringResource(R.string.error),
-            modifier=Modifier.padding(dimensionResource(R.dimen.error_screen_text_padding))
+            modifier=Modifier.padding(dimensionResource(R.dimen.padding_md))
         )
         Button(onClick = {retryAction(input)}) {
             Text(text=stringResource(R.string.retry))

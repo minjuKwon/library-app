@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,7 +40,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
@@ -48,7 +48,6 @@ import com.example.library.R
 import com.example.library.ui.navigation.NavigationMenuType
 import com.example.library.data.api.Book
 import com.example.library.data.api.BookInfo
-import com.example.library.data.api.Image
 import com.example.library.ui.utils.DetailsScreenParams
 import com.example.library.ui.utils.ListContentParams
 import com.example.library.ui.utils.TextFieldParams
@@ -112,7 +111,7 @@ private fun SearchTextField(
                 modifier= Modifier
                     .clickable { onSearch(input) }
                     .padding(
-                        dimensionResource(R.dimen.list_only_content_search_icon_padding)
+                        dimensionResource(R.dimen.padding_xs)
                     )
             )
         },
@@ -123,7 +122,7 @@ private fun SearchTextField(
                 modifier= Modifier
                     .clickable { onInputReset("") }
                     .padding(
-                        dimensionResource(R.dimen.list_only_content_search_icon_padding)
+                        dimensionResource(R.dimen.padding_xs)
                     )
             )
         },
@@ -137,7 +136,7 @@ private fun SearchTextField(
             .fillMaxWidth()
             .padding(
                 horizontal = dimensionResource(
-                    R.dimen.list_only_content_search_horizontal_padding
+                    R.dimen.padding_sm
                 )
             )
     )
@@ -152,10 +151,10 @@ private fun LibraryTotalItemText(
             .fillMaxWidth()
             .padding(
                 top = dimensionResource(
-                    R.dimen.list_only_content_total_text_top_padding
+                    R.dimen.padding_sm
                 ),
                 start = dimensionResource(
-                    R.dimen.list_only_content_total_text_start_padding
+                    R.dimen.padding_lg
                 )
             ),
         horizontalArrangement = Arrangement.Start,
@@ -181,7 +180,7 @@ private fun LibraryList(
     LazyColumn(
         state=listContentParams.scrollState,
         modifier= Modifier
-            .padding(dimensionResource(R.dimen.list_padding))
+            .padding(dimensionResource(R.dimen.padding_md))
             .testTag(stringResource(R.string.test_list))
     ){
         if(getTabPressed(libraryUiState) == NavigationMenuType.Bookmark){
@@ -236,7 +235,7 @@ private fun LibraryListItem(
             modifier= Modifier
                 .clickable { onBookItemPressed(book.bookInfo) }
                 .fillMaxWidth()
-                .padding(dimensionResource(R.dimen.list_item_padding)) ,
+                .padding(dimensionResource(R.dimen.padding_sm)) ,
             verticalAlignment = Alignment.CenterVertically
         ) {
 
@@ -244,7 +243,7 @@ private fun LibraryListItem(
                 modifier=Modifier
                     .height(dimensionResource(R.dimen.list_item_image_height))
                     .width(dimensionResource(R.dimen.list_item_image_width))
-                    .padding(dimensionResource(R.dimen.list_item_image_padding))
+                    .padding(dimensionResource(R.dimen.padding_xs))
             ){
                 book.bookInfo.img?.let {
                     AsyncImage(
@@ -252,13 +251,14 @@ private fun LibraryListItem(
                             .data(it.thumbnail).build(),
                         error= painterResource(R.drawable.baseline_broken_image_24),
                         contentDescription = null,
-                        contentScale= ContentScale.FillBounds
+                        contentScale= ContentScale.FillBounds,
+                        modifier=Modifier.fillMaxSize()
                     )
                 }
             }
 
             Column(
-                modifier=Modifier.padding(dimensionResource(R.dimen.list_item_text_column_padding))
+                modifier=Modifier.padding(dimensionResource(R.dimen.padding_xs))
             ) {
                 ItemDescription(book = book, onBookMarkPressed)
             }
@@ -277,7 +277,7 @@ private fun ItemDescription(
             text= it,
             style = MaterialTheme.typography.bodyLarge,
             modifier=Modifier
-                .padding(bottom=dimensionResource(R.dimen.list_item_text_padding))
+                .padding(bottom=dimensionResource(R.dimen.padding_xs))
                 .testTag(it)
         )
     }
@@ -290,7 +290,7 @@ private fun ItemDescription(
                 maxLines=1,
                 style=MaterialTheme.typography.bodySmall,
                 modifier=Modifier.padding(
-                    bottom=dimensionResource(R.dimen.list_item_text_padding)
+                    bottom=dimensionResource(R.dimen.padding_xs)
                 )
             )
         }
@@ -300,7 +300,7 @@ private fun ItemDescription(
             text= it,
             style=MaterialTheme.typography.bodySmall,
             modifier=Modifier.padding(
-                bottom=dimensionResource(R.dimen.list_item_text_padding)
+                bottom=dimensionResource(R.dimen.padding_xs)
             )
         )
     }
@@ -369,7 +369,7 @@ private fun PageNumberButton(
     Row(
         horizontalArrangement =Arrangement.SpaceBetween,
         modifier = Modifier
-            .padding(horizontal = dimensionResource(R.dimen.page_button_padding))
+            .padding(horizontal = dimensionResource(R.dimen.padding_xxl))
             .fillMaxWidth()
     ) {
         val startPage = currentGroup * pageGroupSize + 1

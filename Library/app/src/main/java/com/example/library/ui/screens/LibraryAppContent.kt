@@ -72,7 +72,7 @@ fun LibraryAppContent(
                             .wrapContentWidth()
                             .padding(
                                 dimensionResource(
-                                    R.dimen.permanent_navigation_drawer_content_padding
+                                    R.dimen.padding_md
                                 )
                             )
                     )
@@ -146,7 +146,7 @@ private fun NavigationDrawerContent(
                         text=naviItem.text,
                         modifier=Modifier
                             .padding(start= dimensionResource(
-                                R.dimen.permanent_navigation_drawer_content_text_padding)
+                                R.dimen.padding_xl)
                             )
                     )
                 },
@@ -156,7 +156,7 @@ private fun NavigationDrawerContent(
                         contentDescription=naviItem.text,
                         modifier=Modifier
                             .padding(start= dimensionResource(
-                                R.dimen.permanent_navigation_drawer_content_icon_padding)
+                                R.dimen.padding_sm)
                             )
                     )
                 }
@@ -188,7 +188,7 @@ fun BookNavigationRail(
                         )
                     },
                     modifier=Modifier.padding(
-                        dimensionResource(R.dimen.navigation_rail_item_padding)
+                        dimensionResource(R.dimen.padding_xxl)
                     )
                 )
             }

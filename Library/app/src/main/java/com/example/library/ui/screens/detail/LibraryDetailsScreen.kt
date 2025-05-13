@@ -53,7 +53,7 @@ fun LibraryDetailsScreen(
                     modifier= Modifier
                         .fillMaxWidth()
                         .align(Alignment.Start)
-                        .padding(dimensionResource(R.dimen.detail_screen_arrow_padding))
+                        .padding(dimensionResource(R.dimen.padding_xs))
                         .testTag(stringResource(R.string.test_back))
                 )
             }
@@ -85,7 +85,7 @@ private fun DetailsScreenContent(book: BookInfo){
         Box(
             contentAlignment = Alignment.Center,
             modifier=Modifier
-                .padding(dimensionResource(R.dimen.detail_screen_image_padding))
+                .padding(dimensionResource(R.dimen.padding_md))
         ){
             book.img?.let {
                 AsyncImage(
@@ -108,7 +108,7 @@ private fun DetailsScreenContent(book: BookInfo){
                 style= MaterialTheme.typography.titleSmall,
                 modifier= Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(dimensionResource(R.dimen.detail_screen_text_padding))
+                    .padding(dimensionResource(R.dimen.padding_md))
             )
         }
 
@@ -121,7 +121,7 @@ private fun DetailScreenContentInformation(
 ){
     Column(
         modifier=Modifier
-            .padding(dimensionResource(R.dimen.detail_screen_text_column_padding))
+            .padding(dimensionResource(R.dimen.padding_xs))
     ) {
 
         book.title?.let {
@@ -130,7 +130,7 @@ private fun DetailScreenContentInformation(
                 style = MaterialTheme.typography.titleLarge,
                 modifier= Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(dimensionResource(R.dimen.detail_screen_text_padding))
+                    .padding(dimensionResource(R.dimen.padding_md))
                     .testTag(it)
             )
         }
@@ -142,7 +142,7 @@ private fun DetailScreenContentInformation(
                     style= MaterialTheme.typography.titleSmall,
                     modifier=Modifier
                         .padding(
-                            end=dimensionResource(R.dimen.detail_screen_text_padding)
+                            end=dimensionResource(R.dimen.padding_md)
                         )
                 )
             }
@@ -155,7 +155,7 @@ private fun DetailScreenContentInformation(
                 modifier= Modifier
                     .align(Alignment.End)
                     .padding(
-                        end = dimensionResource(R.dimen.detail_screen_text_padding)
+                        end = dimensionResource(R.dimen.padding_md)
                     )
             )
         }
@@ -167,7 +167,7 @@ private fun DetailScreenContentInformation(
                 modifier= Modifier
                     .align(Alignment.End)
                     .padding(
-                        end = dimensionResource(R.dimen.detail_screen_text_padding)
+                        end = dimensionResource(R.dimen.padding_md)
                     )
             )
         }
