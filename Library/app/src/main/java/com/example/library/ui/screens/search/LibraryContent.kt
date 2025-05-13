@@ -1,7 +1,6 @@
 package com.example.library.ui.screens.search
 
 import android.app.Activity
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,14 +16,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,9 +36,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.core.content.ContextCompat
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
@@ -46,6 +48,7 @@ import com.example.library.R
 import com.example.library.ui.navigation.NavigationMenuType
 import com.example.library.data.api.Book
 import com.example.library.data.api.BookInfo
+import com.example.library.data.api.Image
 import com.example.library.ui.utils.DetailsScreenParams
 import com.example.library.ui.utils.ListContentParams
 import com.example.library.ui.utils.TextFieldParams
@@ -228,57 +231,47 @@ private fun LibraryListItem(
     onBookMarkPressed:(Book)->Unit,
     onBookItemPressed:(BookInfo)->Unit
 ){
-    Row(
-        modifier= Modifier
-            .clickable { onBookItemPressed(book.bookInfo) }
-            .fillMaxWidth()
-            .padding(dimensionResource(R.dimen.list_item_padding))
-            .background(
-                Color(
-                    ContextCompat.getColor(LocalContext.current, R.color.light_gray)
-                )
-            ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier=Modifier
-                .padding(dimensionResource(R.dimen.list_item_image_padding))
-        ){
-            book.bookInfo.img?.let {
-                AsyncImage(
-                    model=ImageRequest.Builder(context=LocalContext.current)
-                        .data(it.thumbnail).build(),
-                    contentDescription = null,
-                    contentScale= ContentScale.FillBounds,
-                    modifier= Modifier
-                        .height(dimensionResource(R.dimen.list_item_image_height))
-                        .width(dimensionResource(R.dimen.list_item_image_width))
-                )
-            }
-        }
-
-        Column(
-            modifier=Modifier.padding(dimensionResource(R.dimen.list_item_text_column_padding))
+    OutlinedCard{
+        Row(
+            modifier= Modifier
+                .clickable { onBookItemPressed(book.bookInfo) }
+                .fillMaxWidth()
+                .padding(dimensionResource(R.dimen.list_item_padding)) ,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            ItemDescription(book = book)
-            IconButton(
-                onClick = {onBookMarkPressed(book)}
-            ) {
-                Icon(
-                    imageVector = if(book.bookInfo.isBookmarked){Icons.Default.Bookmark}
-                    else {Icons.Default.BookmarkBorder},
-                    contentDescription = stringResource(R.string.bookmark),
-                )
-            }
-        }
 
+            Card(
+                modifier=Modifier
+                    .height(dimensionResource(R.dimen.list_item_image_height))
+                    .width(dimensionResource(R.dimen.list_item_image_width))
+                    .padding(dimensionResource(R.dimen.list_item_image_padding))
+            ){
+                book.bookInfo.img?.let {
+                    AsyncImage(
+                        model=ImageRequest.Builder(context=LocalContext.current)
+                            .data(it.thumbnail).build(),
+                        error= painterResource(R.drawable.baseline_broken_image_24),
+                        contentDescription = null,
+                        contentScale= ContentScale.FillBounds
+                    )
+                }
+            }
+
+            Column(
+                modifier=Modifier.padding(dimensionResource(R.dimen.list_item_text_column_padding))
+            ) {
+                ItemDescription(book = book, onBookMarkPressed)
+            }
+
+        }
     }
 }
 
 @Composable
-private fun ItemDescription(book: Book){
+private fun ItemDescription(
+    book: Book,
+    onBookMarkPressed:(Book)->Unit
+){
     book.bookInfo.title?.let {
         Text(
             text= it,
@@ -316,6 +309,25 @@ private fun ItemDescription(book: Book){
             text= it,
             style=MaterialTheme.typography.bodySmall
         )
+    }
+    Text(
+        text= "abc.13",
+        style=MaterialTheme.typography.bodySmall
+    )
+    Row(verticalAlignment = Alignment.CenterVertically){
+        Text(
+            text= "대출가능",
+            style=MaterialTheme.typography.bodySmall
+        )
+        IconButton(
+            onClick = {onBookMarkPressed(book)}
+        ) {
+            Icon(
+                imageVector = if(book.bookInfo.isBookmarked){Icons.Default.Favorite}
+                else {Icons.Default.FavoriteBorder},
+                contentDescription = stringResource(R.string.bookmark),
+            )
+        }
     }
 }
 
