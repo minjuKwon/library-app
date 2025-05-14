@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -135,9 +136,9 @@ private fun SearchTextField(
         modifier= Modifier
             .fillMaxWidth()
             .padding(
-                horizontal = dimensionResource(
-                    R.dimen.padding_sm
-                )
+                top =dimensionResource(R.dimen.padding_lg),
+                start = dimensionResource(R.dimen.padding_lg),
+                end = dimensionResource(R.dimen.padding_lg)
             )
     )
 }
@@ -150,12 +151,9 @@ private fun LibraryTotalItemText(
         modifier= Modifier
             .fillMaxWidth()
             .padding(
-                top = dimensionResource(
-                    R.dimen.padding_sm
-                ),
-                start = dimensionResource(
-                    R.dimen.padding_lg
-                )
+                top = dimensionResource(R.dimen.padding_md),
+                start = dimensionResource(R.dimen.padding_xl),
+                end= dimensionResource(R.dimen.padding_xl)
             ),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
@@ -180,7 +178,7 @@ private fun LibraryList(
     LazyColumn(
         state=listContentParams.scrollState,
         modifier= Modifier
-            .padding(dimensionResource(R.dimen.padding_md))
+            .padding(dimensionResource(R.dimen.padding_lg))
             .testTag(stringResource(R.string.test_list))
     ){
         if(getTabPressed(libraryUiState) == NavigationMenuType.Bookmark){
@@ -230,12 +228,15 @@ private fun LibraryListItem(
     onBookMarkPressed:(Book)->Unit,
     onBookItemPressed:(BookInfo)->Unit
 ){
-    OutlinedCard{
+    OutlinedCard(
+        modifier=Modifier
+            .padding(bottom=dimensionResource(R.dimen.padding_lg))
+    ){
         Row(
             modifier= Modifier
                 .clickable { onBookItemPressed(book.bookInfo) }
                 .fillMaxWidth()
-                .padding(dimensionResource(R.dimen.padding_sm)) ,
+                .padding(dimensionResource(R.dimen.padding_md)) ,
             verticalAlignment = Alignment.CenterVertically
         ) {
 
@@ -243,7 +244,7 @@ private fun LibraryListItem(
                 modifier=Modifier
                     .height(dimensionResource(R.dimen.list_item_image_height))
                     .width(dimensionResource(R.dimen.list_item_image_width))
-                    .padding(dimensionResource(R.dimen.padding_xs))
+                    .padding(dimensionResource(R.dimen.padding_sm))
             ){
                 book.bookInfo.img?.let {
                     AsyncImage(
@@ -258,7 +259,7 @@ private fun LibraryListItem(
             }
 
             Column(
-                modifier=Modifier.padding(dimensionResource(R.dimen.padding_xs))
+                modifier=Modifier.padding(horizontal =dimensionResource(R.dimen.padding_lg))
             ) {
                 ItemDescription(book = book, onBookMarkPressed)
             }
@@ -307,18 +308,26 @@ private fun ItemDescription(
     book.bookInfo.publishedDate?.let {
         Text(
             text= it,
-            style=MaterialTheme.typography.bodySmall
+            style=MaterialTheme.typography.bodySmall,
+            modifier=Modifier.padding(
+                bottom=dimensionResource(R.dimen.padding_xs)
+            )
         )
     }
     Text(
         text= "abc.13",
         style=MaterialTheme.typography.bodySmall
     )
-    Row(verticalAlignment = Alignment.CenterVertically){
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier=Modifier.fillMaxWidth(0.8f)
+    ){
         Text(
             text= "대출가능",
             style=MaterialTheme.typography.bodySmall
         )
+        Spacer(modifier=Modifier.weight(1f))
         IconButton(
             onClick = {onBookMarkPressed(book)}
         ) {
@@ -328,6 +337,7 @@ private fun ItemDescription(
                 contentDescription = stringResource(R.string.bookmark),
             )
         }
+        Spacer(modifier=Modifier.weight(1f))
     }
 }
 
