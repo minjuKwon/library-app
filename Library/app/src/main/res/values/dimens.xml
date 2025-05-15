@@ -10,8 +10,8 @@
     <dimen name="list_item_image_height">128.dp</dimen>
     <dimen name="list_item_image_width">80.dp</dimen>
 
-    <dimen name="detail_screen_spacer_height">12.dp</dimen>
     <dimen name="detail_screen_image_height">160.dp</dimen>
+    <dimen name="detail_screen_image_width">140.dp</dimen>
 
     <dimen name="loading_screen_image_size">200.dp</dimen>
 </resources>
