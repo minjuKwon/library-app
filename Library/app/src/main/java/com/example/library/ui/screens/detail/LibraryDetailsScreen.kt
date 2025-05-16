@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.filled.ThumbUpOffAlt
@@ -27,13 +26,8 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
@@ -45,6 +39,8 @@ import coil.request.ImageRequest
 import com.example.library.R
 import com.example.library.ui.screens.search.getCurrentItem
 import com.example.library.data.api.BookInfo
+import com.example.library.ui.BackIconButton
+import com.example.library.ui.TextRadioButton
 import com.example.library.ui.screens.search.LibraryUiState
 import com.example.library.ui.utils.DetailsScreenParams
 
@@ -61,22 +57,7 @@ fun LibraryDetailsScreen(
     }
     Column(modifier=modifier) {
         if(isNotFullScreen){
-            IconButton(
-                onClick = {detailsScreenParams.onBackPressed(data)},
-                modifier=Modifier.padding(
-                    horizontal=dimensionResource(R.dimen.padding_lg),
-                    vertical= dimensionResource(R.dimen.padding_xs)
-                )
-            ) {
-                Icon(
-                    imageVector= Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = stringResource(R.string.back),
-                    modifier= Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.Start)
-                        .testTag(stringResource(R.string.test_back))
-                )
-            }
+            BackIconButton { detailsScreenParams.onBackPressed(data) }
         }
         LazyColumn(
             modifier=Modifier
@@ -322,20 +303,7 @@ private fun CommentInformation(){
             .fillMaxWidth()
     ){
         Text("123")
-        val options= listOf("공감순","최신순")
-        var selectedOption by remember{mutableStateOf("공감순")}
-        Row {
-            options.forEach { option->
-                Spacer(modifier=Modifier.width(dimensionResource(R.dimen.padding_lg)))
-                Text(
-                    text=option,
-                    color = if(selectedOption==option) Color.Black
-                    else Color.LightGray,
-                    modifier=Modifier
-                        .clickable { selectedOption= option }
-                )
-            }
-        }
+        TextRadioButton(listOf("공감순","최신순"))
     }
 }
 
