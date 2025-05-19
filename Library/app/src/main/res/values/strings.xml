@@ -29,6 +29,8 @@
     <string name="comment_upload">댓글 달기</string>
     <string name="thumbUp_comment">댓글 추천</string>
 
+    <string name="ranking_options">순위 옵션 더보기</string>
+
     <string name="test_itemCount">total book count </string>
     <string name="test_list">list</string>
     <string name="test_back">back</string>
