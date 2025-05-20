@@ -31,6 +31,16 @@
 
     <string name="ranking_options">순위 옵션 더보기</string>
 
+    <string name="edit">정보 수정</string>
+    <string name="log_out">로그아웃</string>
+    <string name="loan_history">대출 내역</string>
+    <string name="loan_status">대출 현황</string>
+    <string name="reservation_status">예약 현황</string>
+    <string name="unregister">회원 탈퇴</string>
+    <string name="no_account">로그인된 계정이 없습니다</string>
+    <string name="log_in">로그인</string>
+    <string name="register">회원가입</string>
+
     <string name="test_itemCount">total book count </string>
     <string name="test_list">list</string>
     <string name="test_back">back</string>
