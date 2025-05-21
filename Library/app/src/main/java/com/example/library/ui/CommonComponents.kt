@@ -1,5 +1,6 @@
 package com.example.library.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -218,4 +219,15 @@ fun TextRadioButton(
             )
         }
     }
+}
+
+@Composable
+fun Divider(){
+    Spacer(
+        Modifier
+            .height(dimensionResource(R.dimen.user_screen_spacer_height))
+            .fillMaxWidth()
+            .padding(horizontal=dimensionResource(R.dimen.padding_sm))
+            .background(Color.Black)
+    )
 }
