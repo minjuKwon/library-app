@@ -171,7 +171,7 @@ fun ItemLibraryDescription(
 
 @Composable
 fun BackIconButton(
-    text:Int? =null,
+    text:String? =null,
     onClick:()->Unit
 ){
     Column{
@@ -193,7 +193,7 @@ fun BackIconButton(
         }
         text?.let {
             Text(
-                text= stringResource(text),
+                text= text,
                 modifier=Modifier.padding(
                     horizontal = dimensionResource(R.dimen.padding_xxl)
                 )
