@@ -32,7 +32,7 @@ fun LibraryUserScreen(){
         Row{
             Text("김이름")
             Text(
-                stringResource(R.string.edit),
+                stringResource(R.string.edit_information),
                 Modifier.padding(start= dimensionResource(R.dimen.padding_md))
             )
             Text(
