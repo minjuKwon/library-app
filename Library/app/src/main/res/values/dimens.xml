@@ -17,4 +17,5 @@
 
     <dimen name="user_screen_spacer_height">1.dp</dimen>
     <dimen name="user_screen_no_account_icons_size">140.dp</dimen>
+    <dimen name="loan_status_section_card_height">100.dp</dimen>
 </resources>

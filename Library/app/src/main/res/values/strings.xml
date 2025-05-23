@@ -55,6 +55,24 @@
     <string name="edit">수정</string>
     <string name="confirm">확인</string>
 
+    <string name="index">순번</string>
+    <string name="title">제목</string>
+    <string name="author">저자</string>
+    <string name="loan_date">대출일</string>
+    <string name="return_date">반납일</string>
+    <string name="status">상태</string>
+    <string name="returned">반납\n완료</string>
+    <string name="borrowed">대출 중</string>
+    <string name="overdue">연체</string>
+    <string name="borrowed_book">대출 도서</string>
+    <string name="number_of_overdue_book">연체 권수</string>
+    <string name="suspension_end">대출 정지\n 만기일</string>
+    <string name="reservation_date">예약일</string>
+    <string name="reservation_rank">예약 순위</string>
+    <string name="is_reserved">예약\n여부</string>
+    <string name="cancel_reservation">예약\n취소</string>
+    <string name="reserved">예약 중</string>
+
     <string name="test_itemCount">total book count </string>
     <string name="test_list">list</string>
     <string name="test_back">back</string>
