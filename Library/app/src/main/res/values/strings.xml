@@ -40,6 +40,20 @@
     <string name="no_account">로그인된 계정이 없습니다</string>
     <string name="log_in">로그인</string>
     <string name="register">회원가입</string>
+    <string name="male">남</string>
+    <string name="female">여</string>
+    <string name="input_id">아이디 입력</string>
+    <string name="input_password">비밀번호 입력</string>
+    <string name="input_name">이름 입력</string>
+    <string name="input_age">나이 입력</string>
+    <string name="input_email">이메일 입력</string>
+    <string name="verify_password">비밀번호 확인</string>
+    <string name="change_password">비밀번호 변경</string>
+    <string name="current_password">현재 비밀번호 입력</string>
+    <string name="new_password">변경 비밀번호 입력</string>
+    <string name="confirm_new_password">변경 비밀번호 확인</string>
+    <string name="edit">수정</string>
+    <string name="confirm">확인</string>
 
     <string name="test_itemCount">total book count </string>
     <string name="test_list">list</string>
