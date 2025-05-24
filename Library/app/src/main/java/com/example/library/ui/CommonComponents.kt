@@ -150,7 +150,7 @@ fun ItemLibraryDescription(
         modifier= Modifier.fillMaxWidth(0.8f)
     ){
         Text(
-            text= "대출가능",
+            text= stringResource(R.string.available),
             style= MaterialTheme.typography.bodySmall
         )
         Spacer(modifier= Modifier.weight(1f))

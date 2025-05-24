@@ -42,7 +42,12 @@ fun LibraryRankingScreen(){
                 vertical=dimensionResource(R.dimen.padding_xl)
             )
     ){
-        TextRadioButton(listOf("대출 순","좋아요 순"))
+        TextRadioButton(
+            listOf(
+                stringResource(R.string.most_borrowed),
+                stringResource(R.string.most_liked)
+            )
+        )
         DropDownDateMenu()
         LazyColumn{
             for(idx in 1..3){
@@ -95,6 +100,6 @@ private fun DropDownDateMenu(){
                 )
             }
         }
-        Text("${selectedMenu}월")
+        Text(stringResource(R.string.month, menuItemData))
     }
 }

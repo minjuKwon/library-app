@@ -198,7 +198,7 @@ private fun DetailsScreenContentDescription(
                 style= MaterialTheme.typography.titleSmall,
             )
             Text(
-                text="더보기",
+                text=stringResource(R.string.see_more),
                 style=MaterialTheme.typography.labelSmall,
                 modifier =Modifier
                     .padding(top= dimensionResource(R.dimen.padding_xs))
@@ -227,22 +227,22 @@ private fun DetailsScreenLibraryInformation(){
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                Text(text="청구기호")
+                Text(text=stringResource(R.string.call_number))
                 Text(text="abcd.123")
             }
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                Text(text="위치")
+                Text(text=stringResource(R.string.location))
                 Text(text="3층 인문학실")
             }
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                Text(text="대출상태")
-                Text(text="대출가능")
+                Text(text=stringResource(R.string.book_status))
+                Text(text=stringResource(R.string.available))
             }
         }
     }
@@ -303,7 +303,12 @@ private fun CommentInformation(){
             .fillMaxWidth()
     ){
         Text("123")
-        TextRadioButton(listOf("공감순","최신순"))
+        TextRadioButton(
+            listOf(
+            stringResource(R.string.most_relatable),
+            stringResource(R.string.newest)
+            )
+        )
     }
 }
 
@@ -339,7 +344,7 @@ private fun CommentListItem(){
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier=Modifier.fillMaxWidth()
             ){
-                Text(text="더보기")
+                Text(text=stringResource(R.string.see_more))
                 Spacer(modifier=Modifier.weight(1f))
                 IconButton(
                     onClick = {}
