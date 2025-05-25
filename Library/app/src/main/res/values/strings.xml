@@ -1,46 +1,28 @@
 <resources>
     <string name="app_name">Library</string>
 
+    <string name="totalCount">총 도서 개수 : </string>
     <string name="search">검색하기</string>
     <string name="search_close">검색어 삭제</string>
     <string name="search_label">검색할 도서 명을 입력하시오</string>
     <string name="available">대출 가능</string>
     <string name="unavailable">대출 불가</string>
+    <string name="previous_page">&lt;</string>
+    <string name="next_page">&gt;</string>
+
+    <string name="back">뒤로 가기</string>
     <string name="see_more">더보기</string>
     <string name="call_number">청구기호</string>
     <string name="location">위치</string>
     <string name="book_status">대출 상태</string>
     <string name="most_relatable">공감순</string>
     <string name="newest">최신순</string>
+    <string name="comment_upload">댓글 달기</string>
+    <string name="thumbUp_comment">댓글 추천</string>
 
     <string name="most_borrowed">대출순</string>
     <string name="most_liked">좋아요순</string>
     <string name="month">%d</string>
-
-    <string name="back">뒤로 가기</string>
-
-    <string name="loading">로딩 중</string>
-    <string name="error">로딩 실패</string>
-    <string name="retry">재시도</string>
-
-    <string name="book">책목록</string>
-    <string name="bookmark">즐겨찾기</string>
-
-    <string name="empty_bookmark">책을 추가하여 나만의 서재를 완성해보세요</string>
-
-    <string name="totalCount">총 도서 개수 : </string>
-
-    <string name="load_data_error">데이터 로딩 중 오류 발생</string>
-    <string name="previous_page">&lt;</string>
-    <string name="next_page">&gt;</string>
-    
-    <string name="navigation_drawer">Navigation Drawer</string>
-    <string name="navigation_rail">Navigation Rail</string>
-    <string name="navigation_bottom">Navigation Bottom</string>
-
-    <string name="comment_upload">댓글 달기</string>
-    <string name="thumbUp_comment">댓글 추천</string>
-
     <string name="ranking_options">순위 옵션 더보기</string>
 
     <string name="edit_information">정보 수정</string>
@@ -84,6 +66,19 @@
     <string name="is_reserved">예약\n여부</string>
     <string name="cancel_reservation">예약\n취소</string>
     <string name="reserved">예약 중</string>
+    <string name="empty_bookmark">책을 추가하여 나만의 서재를 완성해보세요</string>
+
+    <string name="navigation_drawer">Navigation Drawer</string>
+    <string name="navigation_rail">Navigation Rail</string>
+    <string name="navigation_bottom">Navigation Bottom</string>
+
+    <string name="book">책목록</string>
+    <string name="bookmark">즐겨찾기</string>
+
+    <string name="load_data_error">데이터 로딩 중 오류 발생</string>
+    <string name="loading">로딩 중</string>
+    <string name="error">로딩 실패</string>
+    <string name="retry">재시도</string>
 
     <string name="test_itemCount">total book count </string>
     <string name="test_list">list</string>
