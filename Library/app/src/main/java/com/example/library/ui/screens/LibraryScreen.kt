@@ -19,13 +19,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.library.R
-import com.example.library.ui.navigation.NavigationMenuType
 import com.example.library.ui.screens.search.getBookList
 import com.example.library.ui.screens.search.getTabPressed
-import com.example.library.ui.screens.search.isBookmarkListEmpty
 import com.example.library.ui.screens.search.LibraryUiState
 import com.example.library.ui.utils.DetailsScreenParams
 import com.example.library.ui.utils.ListContentParams
@@ -71,32 +68,26 @@ fun LibraryScreen(
                         detailsScreenParams=detailsScreenParams,
                     )
                 }else{
-                    if(getTabPressed(libraryUiState) == NavigationMenuType.Bookmark
-                        && isBookmarkListEmpty(libraryUiState)
-                    ){
-                        BookmarkEmptyScreen(modifier= Modifier.fillMaxSize().weight(1f))
-                    }else{
-                        when(libraryUiState){
-                            is LibraryUiState.Success -> LibraryListOnlyContent(
-                                libraryUiState=libraryUiState,
-                                books=libraryUiState.list.book.collectAsLazyPagingItems(),
-                                textFieldParams=textFieldParams,
-                                listContentParams=listContentParams,
-                                modifier= Modifier
-                                    .padding(dimensionResource(R.dimen.padding_sm))
-                                    .fillMaxSize()
-                                    .weight(1f)
+                    when(libraryUiState){
+                        is LibraryUiState.Success -> LibraryListOnlyContent(
+                            libraryUiState=libraryUiState,
+                            books=libraryUiState.list.book.collectAsLazyPagingItems(),
+                            textFieldParams=textFieldParams,
+                            listContentParams=listContentParams,
+                            modifier= Modifier
+                                .padding(dimensionResource(R.dimen.padding_sm))
+                                .fillMaxSize()
+                                .weight(1f)
+                        )
+                        is LibraryUiState.Loading -> {
+                            LoadingScreen(modifier= Modifier.fillMaxSize().weight(1f))
+                        }
+                        is LibraryUiState.Error -> {
+                            ErrorScreen(
+                                input=textFieldParams.textFieldKeyword,
+                                retryAction = textFieldParams.onSearch,
+                                modifier= Modifier.fillMaxSize().weight(1f)
                             )
-                            is LibraryUiState.Loading -> {
-                                LoadingScreen(modifier= Modifier.fillMaxSize().weight(1f))
-                            }
-                            is LibraryUiState.Error -> {
-                                ErrorScreen(
-                                    input=textFieldParams.textFieldKeyword,
-                                    retryAction = textFieldParams.onSearch,
-                                    modifier= Modifier.fillMaxSize().weight(1f)
-                                )
-                            }
                         }
                     }
                 }
@@ -115,19 +106,6 @@ fun LibraryScreen(
         }
     }
 
-}
-
-@Composable
-private fun BookmarkEmptyScreen(modifier:Modifier=Modifier){
-    Box(
-        modifier=modifier,
-        contentAlignment = Alignment.Center
-    ){
-        Text(
-            text=stringResource(R.string.empty_bookmark),
-            textAlign= TextAlign.Center
-        )
-    }
 }
 
 @Composable

@@ -7,8 +7,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -53,9 +54,14 @@ fun LibraryAppContent(
             text= stringResource(R.string.book)
         ),
         NavigationItemContent(
-            navigationMenuType= NavigationMenuType.Bookmark,
-            icon= Icons.Filled.Bookmark,
-            text= stringResource(R.string.bookmark)
+            navigationMenuType= NavigationMenuType.Ranking,
+            icon= Icons.Filled.Leaderboard,
+            text= stringResource(R.string.ranking)
+        ),
+        NavigationItemContent(
+            navigationMenuType= NavigationMenuType.Setting,
+            icon= Icons.Filled.AccountBox,
+            text= stringResource(R.string.setting)
         )
     )
 

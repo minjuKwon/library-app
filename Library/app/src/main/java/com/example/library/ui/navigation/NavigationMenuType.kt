@@ -1,5 +1,5 @@
 package com.example.library.ui.navigation
 
 enum class NavigationMenuType {
-    Books, Bookmark
+    Books, Ranking, Setting
 }

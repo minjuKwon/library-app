@@ -7,6 +7,7 @@
     <string name="search_label">검색할 도서 명을 입력하시오</string>
     <string name="available">대출 가능</string>
     <string name="unavailable">대출 불가</string>
+    <string name="liked">좋아요</string>
     <string name="previous_page">&lt;</string>
     <string name="next_page">&gt;</string>
 
@@ -73,7 +74,8 @@
     <string name="navigation_bottom">Navigation Bottom</string>
 
     <string name="book">책목록</string>
-    <string name="bookmark">즐겨찾기</string>
+    <string name="ranking">순위</string>
+    <string name="setting">설정</string>
 
     <string name="load_data_error">데이터 로딩 중 오류 발생</string>
     <string name="loading">로딩 중</string>

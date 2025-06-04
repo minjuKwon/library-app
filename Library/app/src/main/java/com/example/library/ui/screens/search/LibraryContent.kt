@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -31,7 +30,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.library.R
-import com.example.library.ui.navigation.NavigationMenuType
 import com.example.library.data.api.Book
 import com.example.library.ui.LibraryListItem
 import com.example.library.ui.utils.DetailsScreenParams
@@ -166,43 +164,29 @@ private fun LibraryList(
             .padding(dimensionResource(R.dimen.padding_lg))
             .testTag(stringResource(R.string.test_list))
     ){
-        if(getTabPressed(libraryUiState) == NavigationMenuType.Bookmark){
-            items(getBookmarkList(libraryUiState),key={it.id}){
-                listContentParams.initCurrentItem(
-                    getTabPressed(libraryUiState),
-                    getBookmarkList(libraryUiState)[0].bookInfo
-                )
-                LibraryListItem(
-                    book = it,
-                    onBookItemPressed= listContentParams.onBookItemPressed,
-                    onBookMarkPressed = listContentParams.onBookmarkPressed
-                )
-            }
-        }else{
-            items(count=books.itemCount){
-                books[it]?.let { it1 ->
-                    if(it==0){
-                        listContentParams.initCurrentItem(
-                            getTabPressed(libraryUiState), it1.bookInfo
-                        )
-                    }
-                    LibraryListItem(
-                        book = it1,
-                        onBookItemPressed= listContentParams.onBookItemPressed,
-                        onBookMarkPressed =listContentParams.onBookmarkPressed
+        items(count=books.itemCount){
+            books[it]?.let { it1 ->
+                if(it==0){
+                    listContentParams.initCurrentItem(
+                        getTabPressed(libraryUiState), it1.bookInfo
                     )
                 }
-            }
-            item{ LibraryUiStateIndicator(books) }
-            item {
-                PageNumberButton(
-                    pageGroupSize = pageGroupSize,
-                    totalPages = totalPages,
-                    currentGroup = currentGroup,
-                    currentPage = listContentParams.currentPage,
-                    updatePage = listContentParams.updatePage
+                LibraryListItem(
+                    book = it1,
+                    onBookItemPressed= listContentParams.onBookItemPressed,
+                    onBookMarkPressed =listContentParams.onBookmarkPressed
                 )
             }
+        }
+        item{ LibraryUiStateIndicator(books) }
+        item {
+            PageNumberButton(
+                pageGroupSize = pageGroupSize,
+                totalPages = totalPages,
+                currentGroup = currentGroup,
+                currentPage = listContentParams.currentPage,
+                updatePage = listContentParams.updatePage
+            )
         }
     }
 }

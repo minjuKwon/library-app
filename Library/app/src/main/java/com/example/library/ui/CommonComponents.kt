@@ -162,7 +162,7 @@ fun ItemLibraryDescription(
                     Icons.Default.Favorite}
                 else {
                     Icons.Default.FavoriteBorder},
-                contentDescription = stringResource(R.string.bookmark),
+                contentDescription = stringResource(R.string.liked),
             )
         }
         Spacer(modifier= Modifier.weight(1f))
