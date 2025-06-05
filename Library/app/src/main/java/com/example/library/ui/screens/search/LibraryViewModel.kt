@@ -16,7 +16,6 @@ import com.example.library.data.CacheLibraryPagingSource
 import com.example.library.domain.BookRepository
 import com.example.library.data.api.Book
 import com.example.library.data.api.BookInfo
-import com.example.library.ui.navigation.NavigationMenuType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -119,26 +118,6 @@ class LibraryViewModel @Inject constructor(
         _textFieldKeyword.value=input
     }
 
-    fun updateDetailsScreenState(bookInfo: BookInfo){
-        libraryUiState=updateCopiedUiState(libraryUiState){
-            it.currentItem[it.currentTabType] = bookInfo
-            it.copy(currentItem = it.currentItem, isShowingHomepage = false)
-        }
-    }
-
-    fun resetHomeScreenState(bookInfo: BookInfo){
-        libraryUiState=updateCopiedUiState(libraryUiState){
-            it.currentItem[it.currentTabType] = bookInfo
-            it.copy(currentItem = it.currentItem, isShowingHomepage = true)
-        }
-    }
-
-    fun updateCurrentBookTabType(navigationMenuType: NavigationMenuType){
-        libraryUiState=updateCopiedUiState(libraryUiState){
-            it.copy(currentTabType = navigationMenuType)
-        }
-    }
-
     fun updateBookmarkList(book: Book){
         book.bookInfo.isBookmarked= !book.bookInfo.isBookmarked
         libraryUiState=updateCopiedUiState(libraryUiState){
@@ -152,9 +131,10 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    fun initCurrentItem(navigationMenuType: NavigationMenuType, bookInfo: BookInfo){
+    fun updateCurrentItem(bookInfo: BookInfo){
         libraryUiState=updateCopiedUiState(libraryUiState){
-            it.currentItem[navigationMenuType]=bookInfo
+            it.currentItem =bookInfo
+            //it.currentItem[navigationMenuType]=bookInfo
             it.copy(currentItem = it.currentItem)
         }
     }

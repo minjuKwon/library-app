@@ -1,9 +1,7 @@
 package com.example.library.ui.screens.search
 
 import androidx.paging.PagingData
-import com.example.library.ui.navigation.NavigationMenuType
 import com.example.library.data.api.Book
-import com.example.library.data.api.BookInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -25,28 +23,6 @@ fun getTotalItemCount(
         libraryUiState=libraryUiState,
         onSuccess={it.list.totalCount},
         onFailure={0}
-    )
-}
-
-fun getTabPressed(
-    libraryUiState: LibraryUiState
-): NavigationMenuType
-{
-    return getDataByUiState(
-        libraryUiState=libraryUiState,
-        onSuccess={it.currentTabType},
-        onFailure={ NavigationMenuType.Books}
-    )
-}
-
-fun getCurrentItem(
-    libraryUiState: LibraryUiState
-): BookInfo
-{
-    return getDataByUiState(
-        libraryUiState=libraryUiState,
-        onSuccess={ it.currentItem[it.currentTabType] ?: defaultBookInfo },
-        onFailure={ defaultBookInfo }
     )
 }
 

@@ -1,6 +1,7 @@
 package com.example.library.ui.screens.search
 
 import android.app.Activity
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,12 +9,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -25,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.paging.LoadState
@@ -66,7 +70,6 @@ fun LibraryListOnlyContent(
         LibraryTotalItemText(totalItemCount)
 
         LibraryList(
-            libraryUiState= libraryUiState,
             books= books,
             pageGroupSize = pageGroupSize,
             totalPages= totalPages,
@@ -151,7 +154,6 @@ private fun LibraryTotalItemText(
 
 @Composable
 private fun LibraryList(
-    libraryUiState: LibraryUiState,
     books:LazyPagingItems<Book>,
     pageGroupSize:Int,
     totalPages:Int,
@@ -167,9 +169,7 @@ private fun LibraryList(
         items(count=books.itemCount){
             books[it]?.let { it1 ->
                 if(it==0){
-                    listContentParams.initCurrentItem(
-                        getTabPressed(libraryUiState), it1.bookInfo
-                    )
+                    listContentParams.initCurrentItem(it1.bookInfo)
                 }
                 LibraryListItem(
                     book = it1,
@@ -293,5 +293,39 @@ fun LibraryListAndDetailContent(
             )
         }
 
+    }
+}
+
+@Composable
+fun LoadingScreen(modifier: Modifier=Modifier){
+    Image(
+        painter= painterResource(R.drawable.baseline_rotate_left_24),
+        contentDescription=stringResource(R.string.loading),
+        modifier=modifier.size(dimensionResource(R.dimen.loading_screen_image_size))
+    )
+}
+
+@Composable
+fun ErrorScreen(
+    input:String,
+    retryAction:(String)->Unit,
+    modifier: Modifier=Modifier
+){
+    Column(
+        modifier=modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
+        Image(
+            painter = painterResource(R.drawable.baseline_error_outline_24),
+            contentDescription = stringResource(R.string.error)
+        )
+        Text(
+            text=stringResource(R.string.error),
+            modifier=Modifier.padding(dimensionResource(R.dimen.padding_md))
+        )
+        Button(onClick = {retryAction(input)}) {
+            Text(text=stringResource(R.string.retry))
+        }
     }
 }

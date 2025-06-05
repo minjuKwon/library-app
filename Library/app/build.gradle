@@ -79,6 +79,7 @@ dependencies {
     implementation "androidx.compose.material3:material3-window-size-class:1.3.2"
     implementation "androidx.paging:paging-runtime-ktx:3.3.6"
     implementation "androidx.paging:paging-compose:3.3.6"
+    implementation "androidx.navigation:navigation-compose:2.8.9"
 
     implementation 'androidx.hilt:hilt-navigation-fragment:1.0.0'
     implementation("com.google.dagger:hilt-android:2.51.1")

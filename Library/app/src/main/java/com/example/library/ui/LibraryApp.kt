@@ -6,6 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.library.ui.navigation.LibraryDestination
+import com.example.library.ui.navigation.navigateSingleTopTo
+import com.example.library.ui.navigation.navigationItemContentList
 import com.example.library.ui.screens.LibraryAppContent
 import com.example.library.ui.screens.search.LibraryViewModel
 import com.example.library.ui.utils.ContentType
@@ -21,15 +26,21 @@ fun LibraryApp(
     libraryViewModel: LibraryViewModel,
     modifier:Modifier= Modifier
 ){
-    val navigationType:NavigationType
-    val contentType:ContentType
-
     val scrollState  = rememberLazyListState()
+
+    val navController= rememberNavController()
+    val currentBackStack by navController.currentBackStackEntryAsState()
+    val currentDestination= currentBackStack?.destination
+    val currentTab = navigationItemContentList.find {
+            it.navigationMenuType.route == currentDestination?.route
+        }?.navigationMenuType?: LibraryDestination.Books
 
     val textFieldKeyword by libraryViewModel.textFieldKeyword
     val currentPage by libraryViewModel.currentPage.collectAsState()
     val isDataReadyForUi by libraryViewModel.isDataReadyForUi.collectAsState()
 
+    val navigationType:NavigationType
+    val contentType:ContentType
     when(windowSize){
         WindowWidthSizeClass.Compact->{
             navigationType=NavigationType.BOTTOM_NAVIGATION
@@ -50,11 +61,16 @@ fun LibraryApp(
     }
 
     LibraryAppContent(
+        navController=navController,
         libraryUiState=libraryViewModel.libraryUiState,
         navigationConfig = NavigationConfig(
             contentType=contentType,
             navigationType = navigationType,
-            onTabPressed = { libraryViewModel.updateCurrentBookTabType(it) }
+            currentTab= currentTab,
+            navigationItemContentList= navigationItemContentList,
+            onTabPressed = {type->
+                navController.navigateSingleTopTo(type.route)
+            }
         ),
         textFieldParams = TextFieldParams(
             textFieldKeyword=textFieldKeyword,
@@ -68,16 +84,16 @@ fun LibraryApp(
             onBookmarkPressed={libraryViewModel.updateBookmarkList(it)},
             onBookItemPressed={
                 libraryViewModel.updateDataReadyForUi(true)
-                libraryViewModel.updateDetailsScreenState(it)
+                libraryViewModel.updateCurrentItem(it)
             },
-            initCurrentItem={v1,v2->
-                libraryViewModel.initCurrentItem(v1,v2)
+            initCurrentItem={item->
+                libraryViewModel.updateCurrentItem(item)
             }
         ),
         detailsScreenParams = DetailsScreenParams(
             isDataReadyForUi= isDataReadyForUi,
             updateDataReadyForUi={libraryViewModel.updateDataReadyForUi(it)},
-            onBackPressed={libraryViewModel.resetHomeScreenState(it)}
+            onBackPressed={libraryViewModel.updateCurrentItem(it)}
         ),
         modifier=modifier
     )
