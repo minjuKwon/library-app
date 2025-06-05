@@ -23,7 +23,7 @@
 
     <string name="most_borrowed">대출순</string>
     <string name="most_liked">좋아요순</string>
-    <string name="month">%d</string>
+    <string name="month">%s</string>
     <string name="ranking_options">순위 옵션 더보기</string>
 
     <string name="edit_information">정보 수정</string>

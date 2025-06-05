@@ -100,6 +100,6 @@ private fun DropDownDateMenu(){
                 )
             }
         }
-        Text(stringResource(R.string.month, menuItemData))
+        Text(stringResource(R.string.month, selectedMenu))
     }
 }
