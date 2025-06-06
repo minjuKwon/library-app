@@ -27,9 +27,9 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.example.library.R
-import com.example.library.ui.navigation.LibraryDestination
+import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.navigation.graph.NavigationGraph
-import com.example.library.ui.navigation.NavigationItemContent
+import com.example.library.ui.navigation.destination.NavigationItemContent
 import com.example.library.ui.utils.DetailsScreenParams
 import com.example.library.ui.screens.search.LibraryUiState
 import com.example.library.ui.utils.ListContentParams

@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.example.library.ui.navigation.LibraryDestination
+import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.screens.search.LibraryUiState
 import com.example.library.ui.utils.DetailsScreenParams
 import com.example.library.ui.utils.ListContentParams

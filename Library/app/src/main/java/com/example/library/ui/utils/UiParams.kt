@@ -3,8 +3,8 @@ package com.example.library.ui.utils
 import androidx.compose.foundation.lazy.LazyListState
 import com.example.library.data.api.Book
 import com.example.library.data.api.BookInfo
-import com.example.library.ui.navigation.LibraryDestination
-import com.example.library.ui.navigation.NavigationItemContent
+import com.example.library.ui.navigation.destination.LibraryDestination
+import com.example.library.ui.navigation.destination.NavigationItemContent
 
 data class NavigationConfig(
     val contentType: ContentType,

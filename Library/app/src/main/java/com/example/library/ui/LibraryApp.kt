@@ -8,9 +8,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.library.ui.navigation.LibraryDestination
+import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.navigation.navigateSingleTopTo
-import com.example.library.ui.navigation.navigationItemContentList
+import com.example.library.ui.navigation.destination.navigationItemContentList
 import com.example.library.ui.screens.LibraryAppContent
 import com.example.library.ui.screens.search.LibraryViewModel
 import com.example.library.ui.utils.ContentType

@@ -9,7 +9,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.library.R
-import com.example.library.ui.navigation.LibraryDestination
+import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.screens.search.ErrorScreen
 import com.example.library.ui.screens.search.LibraryListAndDetailContent
 import com.example.library.ui.screens.search.LibraryListOnlyContent

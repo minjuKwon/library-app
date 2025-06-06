@@ -1,4 +1,4 @@
-package com.example.library.ui.navigation
+package com.example.library.ui.navigation.destination
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
