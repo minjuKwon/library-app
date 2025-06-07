@@ -3,6 +3,7 @@ package com.example.library.ui.screens.detail
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.filled.ThumbUpOffAlt
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,42 +39,53 @@ import androidx.compose.ui.text.input.ImeAction
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
-import com.example.library.ui.screens.search.getCurrentItem
 import com.example.library.data.api.BookInfo
 import com.example.library.ui.BackIconButton
 import com.example.library.ui.TextRadioButton
-import com.example.library.ui.screens.search.LibraryUiState
 import com.example.library.ui.utils.DetailsScreenParams
 
 @Composable
 fun LibraryDetailsScreen(
-    libraryUiState: LibraryUiState,
     isNotFullScreen:Boolean=true,
+    id:String,
     detailsScreenParams: DetailsScreenParams,
+    onBackPressed:()->Unit,
     modifier: Modifier =Modifier
 ){
-    val data= getCurrentItem(libraryUiState)
     BackHandler {
-        detailsScreenParams.onBackPressed(data)
+        onBackPressed()
     }
     Column(modifier=modifier) {
         if(isNotFullScreen){
-            BackIconButton { detailsScreenParams.onBackPressed(data) }
+            BackIconButton { onBackPressed() }
         }
         LazyColumn(
             modifier=Modifier
                 .padding(bottom= dimensionResource(R.dimen.padding_sm))
         ){
             item{
-                DetailsScreenContent(getCurrentItem(libraryUiState))
-                if (detailsScreenParams.isDataReadyForUi) {
-                    DetailsScreenContent(getCurrentItem(libraryUiState))
-                    detailsScreenParams.updateDataReadyForUi(false)
+                val data=detailsScreenParams.getCurrentItem(id)
+                when(detailsScreenParams.uiState){
+                    is LibraryDetailsUiState.Success->{
+                        DetailsScreenContent(data)
+                        if (detailsScreenParams.isDataReadyForUi) {
+                            DetailsScreenContent(data)
+                            detailsScreenParams.updateDataReadyForUi(false)
+                        }
+                    }
+                    is LibraryDetailsUiState.Loading->{
+                        Box(
+                            modifier=Modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ){
+                            CircularProgressIndicator()
+                        }
+                    }
                 }
             }
         }
     }
-
 }
 
 @Composable

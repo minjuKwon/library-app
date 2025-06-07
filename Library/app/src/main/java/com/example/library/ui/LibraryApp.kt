@@ -12,6 +12,7 @@ import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.navigation.navigateSingleTopTo
 import com.example.library.ui.navigation.destination.navigationItemContentList
 import com.example.library.ui.screens.LibraryAppContent
+import com.example.library.ui.screens.detail.LibraryDetailsViewModel
 import com.example.library.ui.screens.search.LibraryViewModel
 import com.example.library.ui.utils.ContentType
 import com.example.library.ui.utils.DetailsScreenParams
@@ -24,6 +25,7 @@ import com.example.library.ui.utils.TextFieldParams
 fun LibraryApp(
     windowSize: WindowWidthSizeClass,
     libraryViewModel: LibraryViewModel,
+    libraryDetailsViewModel: LibraryDetailsViewModel,
     modifier:Modifier= Modifier
 ){
     val scrollState  = rememberLazyListState()
@@ -37,7 +39,8 @@ fun LibraryApp(
 
     val textFieldKeyword by libraryViewModel.textFieldKeyword
     val currentPage by libraryViewModel.currentPage.collectAsState()
-    val isDataReadyForUi by libraryViewModel.isDataReadyForUi.collectAsState()
+
+    val isDataReadyForUi by libraryDetailsViewModel.isDataReadyForUi.collectAsState()
 
     val navigationType:NavigationType
     val contentType:ContentType
@@ -74,7 +77,10 @@ fun LibraryApp(
         ),
         textFieldParams = TextFieldParams(
             textFieldKeyword=textFieldKeyword,
-            updateKeyword={libraryViewModel.updateKeyword(it)},
+            updateKeyword={
+                libraryViewModel.updateKeyword(it)
+                libraryDetailsViewModel.updateKeyword(it)
+            },
             onSearch = { libraryViewModel.getInformation(it)}
         ),
         listContentParams = ListContentParams(
@@ -83,17 +89,16 @@ fun LibraryApp(
             updatePage={libraryViewModel.getInformation(page=it)},
             onBookmarkPressed={libraryViewModel.updateBookmarkList(it)},
             onBookItemPressed={
-                libraryViewModel.updateDataReadyForUi(true)
-                libraryViewModel.updateCurrentItem(it)
+                libraryDetailsViewModel.updateDataReadyForUi(true)
             },
-            initCurrentItem={item->
-                libraryViewModel.updateCurrentItem(item)
-            }
+            initCurrentItem={ libraryDetailsViewModel.initBook(it) }
         ),
         detailsScreenParams = DetailsScreenParams(
-            isDataReadyForUi= isDataReadyForUi,
-            updateDataReadyForUi={libraryViewModel.updateDataReadyForUi(it)},
-            onBackPressed={libraryViewModel.updateCurrentItem(it)}
+            uiState= libraryDetailsViewModel.uiState,
+            isDataReadyForUi = isDataReadyForUi,
+            textFieldKeyword = textFieldKeyword,
+            updateDataReadyForUi = { libraryDetailsViewModel.updateDataReadyForUi(it) },
+            getCurrentItem = {libraryDetailsViewModel.getBookById(it)}
         ),
         modifier=modifier
     )

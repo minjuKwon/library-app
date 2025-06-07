@@ -11,6 +11,7 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Modifier
 import com.example.library.ui.LibraryApp
+import com.example.library.ui.screens.detail.LibraryDetailsViewModel
 import com.example.library.ui.screens.search.LibraryViewModel
 import com.example.library.ui.theme.LibraryTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,8 +28,14 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val windowSize=calculateWindowSizeClass(this)
-                    val viewModel: LibraryViewModel by viewModels()
-                    LibraryApp(windowSize=windowSize.widthSizeClass, viewModel)
+                    val libraryViewModel: LibraryViewModel by viewModels()
+                    val libraryDetailsViewModel: LibraryDetailsViewModel by viewModels()
+
+                    LibraryApp(
+                        windowSize=windowSize.widthSizeClass,
+                        libraryViewModel,
+                        libraryDetailsViewModel
+                    )
                 }
             }
         }

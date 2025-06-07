@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.example.library.ui.navigation.destination.GraphRoutes
 import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.screens.search.LibraryUiState
 import com.example.library.ui.utils.DetailsScreenParams
@@ -26,17 +27,18 @@ fun NavigationGraph(
 
     NavHost(
         navController= navController,
-        startDestination = LibraryDestination.Books.route,
+        startDestination = GraphRoutes.HOME,
         modifier=modifier
     ){
         booksDestination(
             libraryUiState,
+            navController,
             navigationConfig,
             textFieldParams,
             listContentParams,
             detailsScreenParams
         )
-        rankingDestination()
+        rankingDestination(listContentParams)
         settingDestination(isLogIn)
     }
 }

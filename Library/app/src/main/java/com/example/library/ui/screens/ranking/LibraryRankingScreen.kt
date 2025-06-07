@@ -28,9 +28,12 @@ import com.example.library.data.api.BookInfo
 import com.example.library.data.api.Image
 import com.example.library.ui.LibraryListItem
 import com.example.library.ui.TextRadioButton
+import com.example.library.ui.utils.ListContentParams
 
 @Composable
-fun LibraryRankingScreen(){
+fun LibraryRankingScreen(
+    listContentParams:ListContentParams
+){
     val temp=Book("1",
         BookInfo("android_1",listOf("1_1","1_2"),"publisher1",
             "0101","description1", Image(),false)
@@ -59,7 +62,13 @@ fun LibraryRankingScreen(){
                             text="$idx",
                             modifier=Modifier.padding(end= dimensionResource(R.dimen.padding_xl))
                         )
-                        LibraryListItem(temp,{},{},false)
+                        LibraryListItem(
+                            temp,
+                            {},
+                            listContentParams.onBookItemPressed,
+                            {},
+                            false
+                        )
                     }
                 }
 

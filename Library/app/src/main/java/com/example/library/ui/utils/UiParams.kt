@@ -5,6 +5,7 @@ import com.example.library.data.api.Book
 import com.example.library.data.api.BookInfo
 import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.navigation.destination.NavigationItemContent
+import com.example.library.ui.screens.detail.LibraryDetailsUiState
 
 data class NavigationConfig(
     val contentType: ContentType,
@@ -25,12 +26,14 @@ data class ListContentParams(
     val currentPage:Int,
     val updatePage:(Int)->Unit,
     val onBookmarkPressed:(Book)->Unit,
-    val onBookItemPressed: (BookInfo) -> Unit,
+    val onBookItemPressed: () -> Unit,
     val initCurrentItem:(BookInfo)->Unit
 )
 
 data class DetailsScreenParams(
+    val uiState:LibraryDetailsUiState,
     val isDataReadyForUi:Boolean,
+    val textFieldKeyword:String,
     val updateDataReadyForUi: (Boolean)->Unit,
-    val onBackPressed:(BookInfo)->Unit
+    val getCurrentItem: (String)-> BookInfo
 )

@@ -49,9 +49,6 @@ class LibraryViewModel @Inject constructor(
     private val _currentPage = MutableStateFlow(1)
     val currentPage: StateFlow<Int> = _currentPage
 
-    private val _isDataReadyForUi = MutableStateFlow(false)
-    val isDataReadyForUi:StateFlow<Boolean> = _isDataReadyForUi
-
     init {
         getInformation()
     }
@@ -108,10 +105,6 @@ class LibraryViewModel @Inject constructor(
             }
         }
 
-    }
-
-    fun updateDataReadyForUi(b:Boolean){
-        _isDataReadyForUi.value= b
     }
 
     fun updateKeyword(input:String){

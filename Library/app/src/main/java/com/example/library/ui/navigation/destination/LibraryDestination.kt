@@ -9,7 +9,7 @@ sealed class LibraryDestination(val route:String){
         const val BOOK_ID_ARGS="book_id"
         val routeWithArgs="$route/{$BOOK_ID_ARGS}"
         val arguments = listOf(
-            navArgument(BOOK_ID_ARGS){type= NavType.IntType}
+            navArgument(BOOK_ID_ARGS){type= NavType.StringType}
         )
     }
     object Ranking: LibraryDestination("ranking")
@@ -35,4 +35,8 @@ object AuthRoutes{
     const val ROOT="auth"
     const val LOG_IN="$ROOT/log_in"
     const val REGISTER="$ROOT/register"
+}
+
+object GraphRoutes{
+    const val HOME="home"
 }

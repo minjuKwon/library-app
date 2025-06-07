@@ -40,13 +40,13 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
 import com.example.library.data.api.Book
-import com.example.library.data.api.BookInfo
 
 @Composable
 fun LibraryListItem(
     book: Book,
     onBookMarkPressed:(Book)->Unit,
-    onBookItemPressed:(BookInfo)->Unit,
+    onBookItemPressed:()->Unit,
+    onNavigateToDetails:(String)->Unit,
     isShowLibraryInfo:Boolean=true
 ){
     OutlinedCard(
@@ -55,7 +55,10 @@ fun LibraryListItem(
     ){
         Row(
             modifier= Modifier
-                .clickable { onBookItemPressed(book.bookInfo) }
+                .clickable {
+                    onBookItemPressed()
+                    onNavigateToDetails(book.id)
+                }
                 .fillMaxWidth()
                 .padding(dimensionResource(R.dimen.padding_md)) ,
             verticalAlignment = Alignment.CenterVertically

@@ -47,6 +47,7 @@ fun LibraryListOnlyContent(
     books:LazyPagingItems<Book>,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
+    onNavigateToDetails:(String)->Unit,
     modifier:Modifier= Modifier
 ){
     Column(
@@ -74,7 +75,8 @@ fun LibraryListOnlyContent(
             pageGroupSize = pageGroupSize,
             totalPages= totalPages,
             currentGroup= currentGroup,
-            listContentParams= listContentParams
+            listContentParams= listContentParams,
+            onNavigateToDetails= onNavigateToDetails
         )
 
     }
@@ -122,7 +124,7 @@ private fun SearchTextField(
         modifier= Modifier
             .fillMaxWidth()
             .padding(
-                top =dimensionResource(R.dimen.padding_lg),
+                top = dimensionResource(R.dimen.padding_lg),
                 start = dimensionResource(R.dimen.padding_lg),
                 end = dimensionResource(R.dimen.padding_lg)
             )
@@ -139,7 +141,7 @@ private fun LibraryTotalItemText(
             .padding(
                 top = dimensionResource(R.dimen.padding_md),
                 start = dimensionResource(R.dimen.padding_xl),
-                end= dimensionResource(R.dimen.padding_xl)
+                end = dimensionResource(R.dimen.padding_xl)
             ),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
@@ -158,7 +160,8 @@ private fun LibraryList(
     pageGroupSize:Int,
     totalPages:Int,
     currentGroup: Int,
-    listContentParams: ListContentParams
+    listContentParams: ListContentParams,
+    onNavigateToDetails:(String)->Unit,
 ){
     LazyColumn(
         state=listContentParams.scrollState,
@@ -174,7 +177,8 @@ private fun LibraryList(
                 LibraryListItem(
                     book = it1,
                     onBookItemPressed= listContentParams.onBookItemPressed,
-                    onBookMarkPressed =listContentParams.onBookmarkPressed
+                    onBookMarkPressed =listContentParams.onBookmarkPressed,
+                    onNavigateToDetails= onNavigateToDetails
                 )
             }
         }
@@ -245,9 +249,9 @@ private fun PageNumberButton(
             Text(
                 text=page.toString(),
                 color = if (page == currentPage) Color.Black else Color.LightGray,
-                modifier=Modifier
+                modifier= Modifier
                     .clickable { updatePage(page) }
-                    .testTag(stringResource(R.string.test_pageNum)+page)
+                    .testTag(stringResource(R.string.test_pageNum) + page)
             )
         }
         if (endPage < totalPages) {
@@ -263,10 +267,12 @@ private fun PageNumberButton(
 @Composable
 fun LibraryListAndDetailContent(
     libraryUiState: LibraryUiState,
+    currentItemId:String,
     books:LazyPagingItems<Book>,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
     detailsScreenParams: DetailsScreenParams,
+    onNavigateToDetails:(String)->Unit,
     modifier:Modifier= Modifier
 ){
     Row(modifier=modifier){
@@ -275,6 +281,7 @@ fun LibraryListAndDetailContent(
             books = books,
             textFieldParams=textFieldParams,
             listContentParams=listContentParams,
+            onNavigateToDetails = onNavigateToDetails,
             modifier=Modifier.weight(1f)
         )
 
@@ -282,13 +289,10 @@ fun LibraryListAndDetailContent(
 
         if(books.loadState.refresh is LoadState.NotLoading){
             LibraryDetailsScreen(
-                libraryUiState=libraryUiState,
                 isNotFullScreen = false,
-                detailsScreenParams= DetailsScreenParams(
-                    isDataReadyForUi = detailsScreenParams.isDataReadyForUi,
-                    updateDataReadyForUi = detailsScreenParams.updateDataReadyForUi,
-                    onBackPressed = { activity.finish() }
-                ),
+                id=currentItemId,
+                detailsScreenParams= detailsScreenParams,
+                onBackPressed= { activity.finish() },
                 modifier=Modifier.weight(1f)
             )
         }
