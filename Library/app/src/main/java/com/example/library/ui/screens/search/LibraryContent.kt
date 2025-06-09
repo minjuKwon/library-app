@@ -22,6 +22,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +34,9 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.library.R
@@ -47,6 +53,7 @@ fun LibraryListOnlyContent(
     books:LazyPagingItems<Book>,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
+    isNotFullScreen:Boolean,
     onNavigateToDetails:(String)->Unit,
     modifier:Modifier= Modifier
 ){
@@ -76,6 +83,7 @@ fun LibraryListOnlyContent(
             totalPages= totalPages,
             currentGroup= currentGroup,
             listContentParams= listContentParams,
+            isNotFullScreen=isNotFullScreen,
             onNavigateToDetails= onNavigateToDetails
         )
 
@@ -161,8 +169,26 @@ private fun LibraryList(
     totalPages:Int,
     currentGroup: Int,
     listContentParams: ListContentParams,
+    isNotFullScreen:Boolean,
     onNavigateToDetails:(String)->Unit,
 ){
+    val isVisible = remember { mutableStateOf(false) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> isVisible.value = true
+                else -> isVisible.value = false
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     LazyColumn(
         state=listContentParams.scrollState,
         modifier= Modifier
@@ -171,13 +197,14 @@ private fun LibraryList(
     ){
         items(count=books.itemCount){
             books[it]?.let { it1 ->
-                if(it==0){
-                    listContentParams.initCurrentItem(it1.bookInfo)
+                if(it==0&&isVisible.value){
+                    listContentParams.updateCurrentBook(it1)
                 }
                 LibraryListItem(
                     book = it1,
                     onBookItemPressed= listContentParams.onBookItemPressed,
                     onBookMarkPressed =listContentParams.onBookmarkPressed,
+                    isNotFullScreen=isNotFullScreen,
                     onNavigateToDetails= onNavigateToDetails
                 )
             }
@@ -267,7 +294,6 @@ private fun PageNumberButton(
 @Composable
 fun LibraryListAndDetailContent(
     libraryUiState: LibraryUiState,
-    currentItemId:String,
     books:LazyPagingItems<Book>,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
@@ -282,6 +308,7 @@ fun LibraryListAndDetailContent(
             textFieldParams=textFieldParams,
             listContentParams=listContentParams,
             onNavigateToDetails = onNavigateToDetails,
+            isNotFullScreen=false,
             modifier=Modifier.weight(1f)
         )
 
@@ -290,7 +317,6 @@ fun LibraryListAndDetailContent(
         if(books.loadState.refresh is LoadState.NotLoading){
             LibraryDetailsScreen(
                 isNotFullScreen = false,
-                id=currentItemId,
                 detailsScreenParams= detailsScreenParams,
                 onBackPressed= { activity.finish() },
                 modifier=Modifier.weight(1f)

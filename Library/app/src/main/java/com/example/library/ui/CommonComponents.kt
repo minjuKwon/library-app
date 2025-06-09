@@ -45,9 +45,10 @@ import com.example.library.data.api.Book
 fun LibraryListItem(
     book: Book,
     onBookMarkPressed:(Book)->Unit,
-    onBookItemPressed:()->Unit,
+    onBookItemPressed:(Book)->Unit,
     onNavigateToDetails:(String)->Unit,
-    isShowLibraryInfo:Boolean=true
+    isShowLibraryInfo:Boolean=true,
+    isNotFullScreen:Boolean=true
 ){
     OutlinedCard(
         modifier= Modifier
@@ -56,8 +57,8 @@ fun LibraryListItem(
         Row(
             modifier= Modifier
                 .clickable {
-                    onBookItemPressed()
-                    onNavigateToDetails(book.id)
+                    onBookItemPressed(book)
+                    if(isNotFullScreen) onNavigateToDetails(book.id)
                 }
                 .fillMaxWidth()
                 .padding(dimensionResource(R.dimen.padding_md)) ,

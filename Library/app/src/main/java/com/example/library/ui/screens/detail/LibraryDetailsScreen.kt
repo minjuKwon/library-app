@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.ImeAction
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
+import com.example.library.data.api.Book
 import com.example.library.data.api.BookInfo
 import com.example.library.ui.BackIconButton
 import com.example.library.ui.TextRadioButton
@@ -47,7 +48,7 @@ import com.example.library.ui.utils.DetailsScreenParams
 @Composable
 fun LibraryDetailsScreen(
     isNotFullScreen:Boolean=true,
-    id:String,
+    id:String="",
     detailsScreenParams: DetailsScreenParams,
     onBackPressed:()->Unit,
     modifier: Modifier =Modifier
@@ -64,14 +65,12 @@ fun LibraryDetailsScreen(
                 .padding(bottom= dimensionResource(R.dimen.padding_sm))
         ){
             item{
-                val data=detailsScreenParams.getCurrentItem(id)
                 when(detailsScreenParams.uiState){
                     is LibraryDetailsUiState.Success->{
-                        DetailsScreenContent(data)
-                        if (detailsScreenParams.isDataReadyForUi) {
-                            DetailsScreenContent(data)
-                            detailsScreenParams.updateDataReadyForUi(false)
-                        }
+                        val data:Book = if(isNotFullScreen) detailsScreenParams.getBookById(id)
+                        else detailsScreenParams.currentBook
+                        DetailsScreenContent(data.bookInfo)
+                        detailsScreenParams.updateDataReadyForUi(false)
                     }
                     is LibraryDetailsUiState.Loading->{
                         Box(

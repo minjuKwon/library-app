@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.library.data.api.BookInfo
+import com.example.library.data.api.Book
 import com.example.library.di.ApplicationScope
 import com.example.library.di.IoDispatcher
 import com.example.library.domain.BookRepository
@@ -34,20 +34,15 @@ class LibraryDetailsViewModel @Inject constructor(
 
     private val _textFieldKeyword = mutableStateOf("android")
 
-    private val _currentBook= mutableStateOf(defaultBookInfo)
+    private val _currentBook= mutableStateOf(Book("0", defaultBookInfo))
+    val currentBook= _currentBook
 
     private val _isDataReadyForUi = MutableStateFlow(false)
     val isDataReadyForUi: StateFlow<Boolean> = _isDataReadyForUi
 
-    fun initBook(
-        bookInfo: BookInfo
-    ){
-        _currentBook.value= bookInfo
-    }
-
     fun getBookById(
         id:String
-    ):BookInfo{
+    ):Book{
         if(_isDataReadyForUi.value){
             uiState=LibraryDetailsUiState.Loading
             scope.launch {
@@ -55,9 +50,7 @@ class LibraryDetailsViewModel @Inject constructor(
                     bookRepository
                         .searchVolume(_textFieldKeyword.value,10,0).book
                 }
-                _currentBook.value= list.find {
-                    it.id == id
-                }?.bookInfo ?: _currentBook.value
+                _currentBook.value= list.find { it.id == id } ?: _currentBook.value
                 uiState=LibraryDetailsUiState.Success
             }
 
@@ -71,6 +64,12 @@ class LibraryDetailsViewModel @Inject constructor(
 
     fun updateDataReadyForUi(b:Boolean){
         _isDataReadyForUi.value= b
+    }
+
+    fun updateCurrentItem(book: Book){
+        uiState=LibraryDetailsUiState.Loading
+        _currentBook.value= book
+        uiState=LibraryDetailsUiState.Success
     }
 
 }
