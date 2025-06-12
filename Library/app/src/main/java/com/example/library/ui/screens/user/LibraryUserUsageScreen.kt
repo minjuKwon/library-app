@@ -21,7 +21,9 @@ import com.example.library.ui.BackIconButton
 import com.example.library.ui.Divider
 
 @Composable
-fun LoanHistoryScreen(){
+fun LoanHistoryScreen(
+    onBackPressed:()->Unit
+){
     val textList= listOf(
         R.string.index, R.string.title, R.string.author,
         R.string.loan_date, R.string.return_date, R.string.status
@@ -31,11 +33,13 @@ fun LoanHistoryScreen(){
         "2025-\n00-00","2025-\n00-00","반납\n완료"
     )
 
-    UserUsageSection(textList, temp)
+    UserUsageSection(textList, temp, onBackPressed=onBackPressed)
 }
 
 @Composable
-fun LoanStatusScreen(){
+fun LoanStatusScreen(
+    onBackPressed:()->Unit
+){
     val textList= listOf(
         R.string.index, R.string.title, R.string.author,
         R.string.loan_date, R.string.return_date, R.string.status
@@ -45,7 +49,7 @@ fun LoanStatusScreen(){
         "2025-\n00-00","2025-\n00-00","반납\n완료"
     )
 
-    UserUsageSection(textList, temp){
+    UserUsageSection(textList, temp, onBackPressed=onBackPressed){
         LoanStatusSection()
     }
 }
@@ -105,7 +109,9 @@ private fun LoanStatusSectionCard(
 }
 
 @Composable
-fun ReservationStatusScreen(){
+fun ReservationStatusScreen(
+    onBackPressed:()->Unit
+){
     val textList= listOf(
         R.string.index, R.string.title, R.string.author,
         R.string.reservation_date, R.string.reservation_rank, R.string.is_reserved
@@ -115,7 +121,7 @@ fun ReservationStatusScreen(){
         "2025-00-00","1","예약중"
     )
 
-    UserUsageSection(textList, temp)
+    UserUsageSection(textList, temp, onBackPressed=onBackPressed)
 }
 
 @Composable
@@ -123,10 +129,11 @@ private fun UserUsageSection(
     titleList:List<Int>,
     contentList:List<String>,
     weightList:List<Float> =listOf(0.1f, 0.2f, 0.2f, 0.18f, 0.18f, 0.14f),
+    onBackPressed:()->Unit,
     extraContent:@Composable () -> Unit ={}
 ){
     Column{
-        BackIconButton(stringResource(R.string.reservation_status)){}
+        BackIconButton(stringResource(R.string.reservation_status)){onBackPressed()}
         extraContent()
         Column(
             modifier=Modifier.padding(

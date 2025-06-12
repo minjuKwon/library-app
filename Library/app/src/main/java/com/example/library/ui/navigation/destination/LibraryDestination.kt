@@ -18,7 +18,6 @@ sealed class LibraryDestination(val route:String){
     object LoanHistory: LibraryDestination(SettingRoutes.LOAN_HISTORY)
     object LoanStatus: LibraryDestination(SettingRoutes.LOAN_STATUS)
     object ReservationStatus: LibraryDestination(SettingRoutes.RESERVATION_STATUS)
-    object Auth: LibraryDestination(AuthRoutes.ROOT)
     object LogIn: LibraryDestination(AuthRoutes.LOG_IN)
     object Register: LibraryDestination(AuthRoutes.REGISTER)
 }
@@ -32,11 +31,15 @@ object SettingRoutes{
 }
 
 object AuthRoutes{
-    const val ROOT="auth"
-    const val LOG_IN="$ROOT/log_in"
-    const val REGISTER="$ROOT/register"
+    private const val ROOT="auth"
+    const val LOG_IN="${SettingRoutes.ROOT}/$ROOT/log_in"
+    const val REGISTER="${SettingRoutes.ROOT}/$ROOT/register"
 }
 
 object GraphRoutes{
     const val HOME="home"
+}
+
+object UserRoutes{
+    const val USER="user"
 }

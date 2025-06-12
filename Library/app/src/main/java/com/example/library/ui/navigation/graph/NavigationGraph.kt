@@ -1,12 +1,15 @@
 package com.example.library.ui.navigation.graph
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.library.ui.navigation.destination.GraphRoutes
-import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.screens.search.LibraryUiState
 import com.example.library.ui.utils.DetailsScreenParams
 import com.example.library.ui.utils.ListContentParams
@@ -23,7 +26,7 @@ fun NavigationGraph(
     detailsScreenParams: DetailsScreenParams,
     modifier:Modifier=Modifier
 ){
-    val isLogIn=true
+    var isLogIn by rememberSaveable {mutableStateOf(false) }
 
     NavHost(
         navController= navController,
@@ -39,6 +42,10 @@ fun NavigationGraph(
             detailsScreenParams
         )
         rankingDestination(listContentParams)
-        settingDestination(isLogIn)
+        settingDestination(
+            navController,
+            isLogIn,
+            onLoggedInChange={isLogIn=it}
+        )
     }
 }

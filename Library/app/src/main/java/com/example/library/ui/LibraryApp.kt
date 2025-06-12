@@ -34,7 +34,7 @@ fun LibraryApp(
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination= currentBackStack?.destination
     val currentTab = navigationItemContentList.find {
-            it.navigationMenuType.route == currentDestination?.route
+        currentDestination?.route?.startsWith(it.navigationMenuType.route) == true
         }?.navigationMenuType?: LibraryDestination.Books
 
     val textFieldKeyword by libraryViewModel.textFieldKeyword

@@ -1,5 +1,6 @@
 package com.example.library.ui.screens.user
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +22,14 @@ import com.example.library.R
 import com.example.library.ui.Divider
 
 @Composable
-fun LibraryUserScreen(){
+fun LibraryUserScreen(
+    onNavigationToEdit:()->Unit,
+    onLogOut:()->Unit,
+    onNavigationToLoanHistory:()->Unit,
+    onNavigationToLoanStatus:()->Unit,
+    onNavigationToReservation:()->Unit,
+    onUnregister:()->Unit,
+){
     Column(
         modifier=Modifier
             .padding(
@@ -33,11 +41,15 @@ fun LibraryUserScreen(){
             Text("김이름")
             Text(
                 stringResource(R.string.edit_information),
-                Modifier.padding(start= dimensionResource(R.dimen.padding_md))
+                Modifier
+                    .padding(start= dimensionResource(R.dimen.padding_md))
+                    .clickable { onNavigationToEdit() }
             )
             Text(
                 stringResource(R.string.log_out),
-                Modifier.padding(start= dimensionResource(R.dimen.padding_md))
+                Modifier
+                    .padding(start= dimensionResource(R.dimen.padding_md))
+                    .clickable { onLogOut() }
             )
         }
 
@@ -47,12 +59,14 @@ fun LibraryUserScreen(){
                 .padding(top= dimensionResource(R.dimen.padding_xl)),
         ){
             val list=listOf(
-                R.string.loan_history, R.string.loan_status,
-                R.string.reservation_status, R.string.unregister
+                R.string.loan_history to {onNavigationToLoanHistory()},
+                R.string.loan_status to {onNavigationToLoanStatus()},
+                R.string.reservation_status to {onNavigationToReservation()},
+                R.string.unregister to {onUnregister()}
             )
             Column{
-                list.forEachIndexed { index, i ->
-                    UserTextButton(i)
+                list.forEachIndexed { index, (i, onClick) ->
+                    UserTextButton(i,onClick)
                     if(index< list.lastIndex){
                         Divider()
                     }
@@ -63,18 +77,27 @@ fun LibraryUserScreen(){
 }
 
 @Composable
-private fun UserTextButton(id:Int){
+private fun UserTextButton(
+    id:Int,
+    onClick:()->Unit
+){
     Text(
         stringResource(id),
-        Modifier.padding(dimensionResource(R.dimen.padding_sm))
+        Modifier
+            .padding(dimensionResource(R.dimen.padding_sm))
+            .clickable { onClick() }
     )
 }
 
 @Composable
-fun NonMemberScreen(){
+fun NonMemberScreen(
+    onNavigationToLogIn:()->Unit,
+    onNavigationToRegister:()->Unit
+){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        modifier=Modifier.fillMaxWidth()
     ){
         Icon(
             imageVector = Icons.Filled.NoAccounts,
@@ -88,14 +111,14 @@ fun NonMemberScreen(){
         )
         Row{
             Button(
-                onClick = {},
+                onClick = onNavigationToLogIn,
                 modifier=Modifier
                     .padding(end =dimensionResource(R.dimen.padding_xl))
             ) {
                 Text(
                     text= stringResource(R.string.log_in))
             }
-            Button(onClick = {}) {
+            Button(onClick = onNavigationToRegister) {
                 Text(stringResource(R.string.register))
             }
         }

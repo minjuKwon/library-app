@@ -33,8 +33,15 @@ private fun paddingModifier()= Modifier
     )
 
 @Composable
-fun LogInScreen(){
-    CardLayout(stringResource(R.string.log_in)){
+fun LogInScreen(
+    onLoggedInChange:(Boolean)->Unit,
+    onBackPressed:()->Unit,
+    onNavigationToSetting:()->Unit
+){
+    CardLayout(
+        iconText = stringResource(R.string.log_in),
+        onBackPressed = onBackPressed
+    ){
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -71,7 +78,10 @@ fun LogInScreen(){
                         bottom = dimensionResource(R.dimen.padding_xl)
                     )
             )
-            Button(onClick = {}) {
+            Button(onClick = {
+                onLoggedInChange(true)
+                onNavigationToSetting()
+            }) {
                 Text(stringResource(R.string.log_in))
             }
 
@@ -80,10 +90,16 @@ fun LogInScreen(){
 }
 
 @Composable
-fun RegisterScreen(){
+fun RegisterScreen(
+    onBackPressed:()->Unit,
+    onNavigationToLogIn:()->Unit
+){
     LazyColumn{
         item{
-            CardLayout(stringResource(R.string.register)){
+            CardLayout(
+                iconText = stringResource(R.string.register),
+                onBackPressed = onBackPressed
+            ){
                 TextField(
                     value="",
                     onValueChange = {},
@@ -158,7 +174,7 @@ fun RegisterScreen(){
                 )
                 Divider()
 
-                RegisterButton()
+                RegisterButton(onNavigationToLogIn)
             }
         }
     }
@@ -190,22 +206,29 @@ private fun RegisterSexAndAgeSection(){
 }
 
 @Composable
-private fun RegisterButton(){
+private fun RegisterButton(
+    onNavigationToLogIn:()->Unit
+){
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier=Modifier
             .fillMaxWidth()
             .padding(vertical = dimensionResource(R.dimen.padding_sm))
     ){
-        Button(onClick = {}) {
+        Button(onClick = onNavigationToLogIn) {
             Text(stringResource(R.string.register))
         }
     }
 }
 
 @Composable
-fun UserInformationEditScreen(){
-    CardLayout("아이디"){
+fun UserInformationEditScreen(
+    onBackPressed:()->Unit
+){
+    CardLayout(
+        iconText = "아이디",
+        onBackPressed= onBackPressed
+    ){
         EditUserNameSection()
         Divider()
 
@@ -349,10 +372,11 @@ private fun EditEmailSection(){
 @Composable
 private fun CardLayout(
     iconText:String,
+    onBackPressed:()->Unit,
     content: @Composable () -> Unit
 ){
     Column{
-        BackIconButton(iconText){}
+        BackIconButton(iconText){onBackPressed()}
         OutlinedCard(
             modifier= Modifier
                 .padding(dimensionResource(R.dimen.padding_xl))
