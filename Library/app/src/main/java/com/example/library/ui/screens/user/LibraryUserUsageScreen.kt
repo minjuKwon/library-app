@@ -33,7 +33,12 @@ fun LoanHistoryScreen(
         "2025-\n00-00","2025-\n00-00","반납\n완료"
     )
 
-    UserUsageSection(textList, temp, onBackPressed=onBackPressed)
+    UserUsageSection(
+        screenTitle = stringResource(R.string.loan_history),
+        titleList = textList,
+        contentList = temp,
+        onBackPressed=onBackPressed
+    )
 }
 
 @Composable
@@ -49,7 +54,12 @@ fun LoanStatusScreen(
         "2025-\n00-00","2025-\n00-00","반납\n완료"
     )
 
-    UserUsageSection(textList, temp, onBackPressed=onBackPressed){
+    UserUsageSection(
+        screenTitle = stringResource(R.string.loan_status),
+        titleList = textList,
+        contentList = temp,
+        onBackPressed=onBackPressed
+    ){
         LoanStatusSection()
     }
 }
@@ -121,11 +131,17 @@ fun ReservationStatusScreen(
         "2025-00-00","1","예약중"
     )
 
-    UserUsageSection(textList, temp, onBackPressed=onBackPressed)
+    UserUsageSection(
+        screenTitle=stringResource(R.string.reservation_status),
+        titleList=textList,
+        contentList=temp,
+        onBackPressed=onBackPressed
+    )
 }
 
 @Composable
 private fun UserUsageSection(
+    screenTitle:String,
     titleList:List<Int>,
     contentList:List<String>,
     weightList:List<Float> =listOf(0.1f, 0.2f, 0.2f, 0.18f, 0.18f, 0.14f),
@@ -133,7 +149,7 @@ private fun UserUsageSection(
     extraContent:@Composable () -> Unit ={}
 ){
     Column{
-        BackIconButton(stringResource(R.string.reservation_status)){onBackPressed()}
+        BackIconButton(screenTitle){onBackPressed()}
         extraContent()
         Column(
             modifier=Modifier.padding(
