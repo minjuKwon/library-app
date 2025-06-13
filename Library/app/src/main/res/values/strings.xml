@@ -10,6 +10,7 @@
     <string name="liked">좋아요</string>
     <string name="previous_page">&lt;</string>
     <string name="next_page">&gt;</string>
+    <string name="toast_finish">뒤로가기 버튼을 한번 더 누르시면 앱이 종료됩니다</string>
 
     <string name="back">뒤로 가기</string>
     <string name="see_more">더보기</string>

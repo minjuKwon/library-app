@@ -1,6 +1,8 @@
 package com.example.library.ui.screens.search
 
 import android.app.Activity
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,8 +25,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,6 +58,7 @@ fun LibraryListOnlyContent(
     books:LazyPagingItems<Book>,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
+    isAtRoot:Boolean,
     isNotFullScreen:Boolean,
     onNavigateToDetails:(String)->Unit,
     modifier:Modifier= Modifier
@@ -61,12 +67,13 @@ fun LibraryListOnlyContent(
         modifier= modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         val pageGroupSize = 3
         val pageSize = PAGE_SIZE
         val totalItemCount= getTotalItemCount(libraryUiState)
         val totalPages = (totalItemCount+pageSize-1)/pageSize
         val currentGroup = (listContentParams.currentPage-1)/pageGroupSize
+
+        HandleDoubleBackToExit(isAtRoot)
 
         SearchTextField(
             input = textFieldParams.textFieldKeyword,
@@ -87,6 +94,26 @@ fun LibraryListOnlyContent(
             onNavigateToDetails= onNavigateToDetails
         )
 
+    }
+}
+
+@Composable
+private fun HandleDoubleBackToExit(
+    isAtRoot: Boolean
+){
+    val context= LocalContext.current
+    var backPressedTime by remember { mutableLongStateOf(0L) }
+    //백 스택의 루트일 때(첫 화면), 뒤로가기 버튼을 연속 두번 누르면(2000미만) 앱 종료
+    if(isAtRoot){
+        BackHandler {
+            val currentTime= System.currentTimeMillis()
+            if(currentTime- backPressedTime<2000){
+                (context as Activity).finish()
+            }else{
+                backPressedTime= currentTime
+                Toast.makeText(context,R.string.toast_finish,Toast.LENGTH_LONG).show()
+            }
+        }
     }
 }
 
@@ -294,6 +321,7 @@ private fun PageNumberButton(
 @Composable
 fun LibraryListAndDetailContent(
     libraryUiState: LibraryUiState,
+    isAtRoot:Boolean,
     books:LazyPagingItems<Book>,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
@@ -308,6 +336,7 @@ fun LibraryListAndDetailContent(
             textFieldParams=textFieldParams,
             listContentParams=listContentParams,
             onNavigateToDetails = onNavigateToDetails,
+            isAtRoot=isAtRoot,
             isNotFullScreen=false,
             modifier=Modifier.weight(1f)
         )

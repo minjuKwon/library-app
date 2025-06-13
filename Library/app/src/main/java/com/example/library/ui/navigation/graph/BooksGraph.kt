@@ -43,6 +43,7 @@ fun NavGraphBuilder.booksDestination(
             if(navigationConfig.contentType== ContentType.LIST_AND_DETAIL){
                 LibraryListAndDetailContent(
                     libraryUiState = libraryUiState,
+                    isAtRoot=navController.previousBackStackEntry == null,
                     books = getBookList(libraryUiState).collectAsLazyPagingItems() ,
                     listContentParams=listContentParams,
                     textFieldParams=textFieldParams,
@@ -59,6 +60,7 @@ fun NavGraphBuilder.booksDestination(
                             books=libraryUiState.list.book.collectAsLazyPagingItems(),
                             textFieldParams=textFieldParams,
                             listContentParams=listContentParams,
+                            isAtRoot= navController.previousBackStackEntry == null,
                             isNotFullScreen = true,
                             onNavigateToDetails={
                                 navController
