@@ -11,6 +11,7 @@ import com.example.library.fake.FakeNetworkBookRepository
 import com.example.library.rules.onNodeWithTagForStringId
 import com.example.library.ui.screens.search.LibraryViewModel
 import com.example.library.ui.LibraryApp
+import com.example.library.ui.screens.detail.LibraryDetailsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -105,12 +106,13 @@ class SearchResultListTest {
             ioDispatcher = testDispatcher,
             externalScope = testScope
         )
+        val dummyViewModel= LibraryDetailsViewModel(fakeRepository, testDispatcher, testScope)
         composeTestRule.runOnIdle {
             testDispatcher.scheduler.advanceUntilIdle()
         }
 
         composeTestRule.setContent {
-            LibraryApp(WindowWidthSizeClass.Compact,libraryViewModel)
+            LibraryApp(WindowWidthSizeClass.Compact,libraryViewModel,dummyViewModel)
         }
 
         composeTestRule.runOnIdle {

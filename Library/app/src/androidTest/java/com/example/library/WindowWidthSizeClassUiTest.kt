@@ -7,6 +7,7 @@ import com.example.library.fake.FakeNetworkBookRepository
 import com.example.library.rules.onNodeWithTagForStringId
 import com.example.library.ui.screens.search.LibraryViewModel
 import com.example.library.ui.LibraryApp
+import com.example.library.ui.screens.detail.LibraryDetailsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -45,9 +46,10 @@ class WindowWidthSizeClassUiTest {
             ioDispatcher = dispatcher,
             externalScope = scope
         )
+        val dummyViewModel= LibraryDetailsViewModel(fakeRepository, dispatcher, scope)
 
         composeTestRule.setContent {
-            LibraryApp(windowWidthSizeClass,viewModel)
+            LibraryApp(windowWidthSizeClass,viewModel, dummyViewModel)
         }
         composeTestRule.onNodeWithTagForStringId(
             stringId
