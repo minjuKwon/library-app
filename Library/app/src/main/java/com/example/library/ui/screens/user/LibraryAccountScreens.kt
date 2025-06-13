@@ -14,8 +14,18 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -38,6 +48,16 @@ fun LogInScreen(
     onBackPressed:()->Unit,
     onNavigationToSetting:()->Unit
 ){
+    val focusRequester= remember{FocusRequester()}
+    //포커스를 UI 이후 안전하게 요청할 수 있도록 설정
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
+    var inputId by remember{mutableStateOf("")}
+    var inputPassword by remember{ mutableStateOf("") }
+    val focusManager= LocalFocusManager.current
+
     CardLayout(
         iconText = stringResource(R.string.log_in),
         onBackPressed = onBackPressed
@@ -49,27 +69,34 @@ fun LogInScreen(
                 .padding(dimensionResource(R.dimen.padding_xxl))
         ){
             TextField(
-                value="",
-                onValueChange = {},
+                value=inputId,
+                onValueChange = {inputId=it},
                 label= {Text(stringResource(R.string.input_id))},
                 keyboardOptions= KeyboardOptions.Default.copy(
                     imeAction= ImeAction.Next,
-                    keyboardType = KeyboardType.Text
+                    keyboardType = KeyboardType.Password
                 ),
                 keyboardActions= KeyboardActions(
-                    onNext = {},
-                )
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Next)
+                    }
+                ),
+                modifier=Modifier.focusRequester(focusRequester)
             )
             TextField(
-                value="",
-                onValueChange = {},
+                value=inputPassword,
+                onValueChange = {inputPassword=it},
                 label= {Text(stringResource(R.string.input_password))},
                 keyboardOptions= KeyboardOptions.Default.copy(
                     imeAction= ImeAction.Done,
                     keyboardType = KeyboardType.Password
                 ),
                 keyboardActions= KeyboardActions(
-                    onDone = {},
+                    onDone = {
+                        focusManager.clearFocus(true)
+                        onLoggedInChange(true)
+                        onNavigationToSetting()
+                    }
                 ),
                 modifier= Modifier
                     .fillMaxWidth()
@@ -94,6 +121,19 @@ fun RegisterScreen(
     onBackPressed:()->Unit,
     onNavigationToLogIn:()->Unit
 ){
+    val focusRequester= remember{FocusRequester()}
+    LaunchedEffect(Unit){
+        focusRequester.requestFocus()
+    }
+
+    var inputName by remember{mutableStateOf("")}
+    var inputId by remember{mutableStateOf("")}
+    var inputPassword by remember{mutableStateOf("")}
+    var inputVerifiedPassword by remember{mutableStateOf("")}
+    var inputEmail by remember{mutableStateOf("")}
+
+    val focusManager= LocalFocusManager.current
+
     LazyColumn{
         item{
             CardLayout(
@@ -101,74 +141,86 @@ fun RegisterScreen(
                 onBackPressed = onBackPressed
             ){
                 TextField(
-                    value="",
-                    onValueChange = {},
+                    value=inputName,
+                    onValueChange = {inputName=it},
                     label= {Text(stringResource(R.string.input_name))},
                     keyboardOptions= KeyboardOptions.Default.copy(
                         imeAction= ImeAction.Next,
                         keyboardType = KeyboardType.Text
                     ),
                     keyboardActions= KeyboardActions(
-                        onNext = {},
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Next)
+                        },
                     ),
-                    modifier= paddingModifier().fillMaxWidth(0.7f)
+                    modifier= paddingModifier()
+                        .fillMaxWidth(0.7f)
+                        .focusRequester(focusRequester)
                 )
                 Divider()
 
-                RegisterSexAndAgeSection()
+                RegisterSexAndAgeSection(focusManager)
                 Divider()
 
                 TextField(
-                    value="",
-                    onValueChange = {},
+                    value=inputId,
+                    onValueChange = {inputId=it},
                     label= {Text(stringResource(R.string.input_id))},
                     keyboardOptions= KeyboardOptions.Default.copy(
                         imeAction= ImeAction.Next,
-                        keyboardType = KeyboardType.Text
+                        keyboardType = KeyboardType.Password
                     ),
                     keyboardActions= KeyboardActions(
-                        onNext = {},
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Next)
+                        },
                     ),
                     modifier= paddingModifier()
                 )
                 TextField(
-                    value="",
-                    onValueChange = {},
+                    value=inputPassword,
+                    onValueChange = {inputPassword=it},
                     label= {Text(stringResource(R.string.input_password))},
                     keyboardOptions= KeyboardOptions.Default.copy(
                         imeAction= ImeAction.Next,
                         keyboardType = KeyboardType.Password
                     ),
                     keyboardActions= KeyboardActions(
-                        onNext = {},
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Next)
+                        },
                     ),
                     modifier= Modifier.padding(start= dimensionResource(R.dimen.padding_xl))
                 )
                 TextField(
-                    value="",
-                    onValueChange = {},
+                    value=inputVerifiedPassword,
+                    onValueChange = {inputVerifiedPassword=it},
                     label= {Text(stringResource(R.string.verify_password))},
                     keyboardOptions= KeyboardOptions.Default.copy(
                         imeAction= ImeAction.Next,
                         keyboardType = KeyboardType.Password
                     ),
                     keyboardActions= KeyboardActions(
-                        onNext = {},
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Next)
+                        },
                     ),
                     modifier= paddingModifier()
                 )
                 Divider()
 
                 TextField(
-                    value="",
-                    onValueChange = {},
+                    value=inputEmail,
+                    onValueChange = {inputEmail=it},
                     label= {Text(stringResource(R.string.input_email))},
                     keyboardOptions= KeyboardOptions.Default.copy(
                         imeAction= ImeAction.Done,
                         keyboardType = KeyboardType.Email
                     ),
                     keyboardActions= KeyboardActions(
-                        onDone = {},
+                        onDone = {
+                            onNavigationToLogIn()
+                        },
                     ),
                     modifier= paddingModifier()
                 )
@@ -181,22 +233,27 @@ fun RegisterScreen(
 }
 
 @Composable
-private fun RegisterSexAndAgeSection(){
+private fun RegisterSexAndAgeSection(
+    focusManager: FocusManager
+){
+    var inputAge by remember{mutableStateOf("")}
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier= paddingModifier()
     ){
         TextRadioButton(listOf("남","여"))
         TextField(
-            value="",
-            onValueChange = {},
+            value=inputAge,
+            onValueChange = {inputAge=it},
             label= {Text(stringResource(R.string.input_age))},
             keyboardOptions= KeyboardOptions.Default.copy(
                 imeAction= ImeAction.Next,
                 keyboardType = KeyboardType.Number
             ),
             keyboardActions= KeyboardActions(
-                onNext = {},
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Next)
+                },
             ),
             modifier= Modifier
                 .fillMaxWidth(0.6f)
