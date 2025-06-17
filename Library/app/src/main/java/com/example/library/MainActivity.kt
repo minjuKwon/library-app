@@ -33,8 +33,8 @@ class MainActivity : ComponentActivity() {
 
                     LibraryApp(
                         windowSize=windowSize.widthSizeClass,
-                        libraryViewModel,
-                        libraryDetailsViewModel
+                        libraryViewModel= libraryViewModel,
+                        libraryDetailsViewModel = libraryDetailsViewModel
                     )
                 }
             }
