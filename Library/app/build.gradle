@@ -94,6 +94,8 @@ dependencies {
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
 
     androidTestImplementation 'com.google.dagger:hilt-android-testing:2.51.1'
+    androidTestImplementation("androidx.lifecycle:lifecycle-runtime-testing:2.6.2")
+
     kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.51.1'
 
     debugImplementation 'androidx.compose.ui:ui-tooling'

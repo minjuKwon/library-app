@@ -7,6 +7,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
+import androidx.lifecycle.testing.TestLifecycleOwner
 import com.example.library.fake.FakeNetworkBookRepository
 import com.example.library.rules.onNodeWithTagForStringId
 import com.example.library.ui.screens.search.LibraryViewModel
@@ -45,13 +46,13 @@ class SearchResultListTest {
 
         initial(testDispatcher, testScope)
 
-        verifyListItemText(0, "android_1")
+        verifyListItemText(testDispatcher,0, "android_1")
 
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_list)
             .performScrollToIndex(9)
 
-        verifyListItemText(9, "android_10")
+        verifyListItemText(testDispatcher,9, "android_10")
 
         testScope.cancel()
     }
@@ -65,13 +66,13 @@ class SearchResultListTest {
 
         moveNextPage(9,"2", testDispatcher)
 
-        verifyListItemText(0, "android_11")
+        verifyListItemText(testDispatcher,0, "android_11")
 
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_list)
             .performScrollToIndex(4)
 
-        verifyListItemText(4, "android_15")
+        verifyListItemText(testDispatcher,4, "android_15")
 
 
         testScope.cancel()
@@ -106,33 +107,54 @@ class SearchResultListTest {
             ioDispatcher = testDispatcher,
             externalScope = testScope
         )
-        val dummyViewModel= LibraryDetailsViewModel(fakeRepository, testDispatcher, testScope)
+
         composeTestRule.runOnIdle {
             testDispatcher.scheduler.advanceUntilIdle()
         }
+
+        val testLifecycleOwner = TestLifecycleOwner()
+        val dummyViewModel= LibraryDetailsViewModel(fakeRepository, testDispatcher, testScope)
 
         composeTestRule.setContent {
-            LibraryApp(WindowWidthSizeClass.Compact,libraryViewModel,dummyViewModel)
+            LibraryApp(
+                WindowWidthSizeClass.Compact,
+                testLifecycleOwner,
+                libraryViewModel,
+                dummyViewModel
+            )
         }
 
         composeTestRule.runOnIdle {
             testDispatcher.scheduler.advanceUntilIdle()
         }
+
     }
 
-    private fun verifyListItemText(index:Int, str:String){
+    private fun verifyListItemText(
+        testDispatcher: TestDispatcher,
+        index:Int,
+        str:String
+    ){
         composeTestRule
             .onNodeWithTag(str, useUnmergedTree = true)
             .assertTextEquals(str)
         composeTestRule
             .onNodeWithTag(str, useUnmergedTree = true)
             .performClick()
+        composeTestRule.runOnIdle {
+            testDispatcher.scheduler.advanceUntilIdle()
+        }
+
         composeTestRule
             .onNodeWithTag(str)
             .assertTextEquals(str)
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_back,useUnmergedTree=true)
             .performClick()
+        composeTestRule.runOnIdle {
+            testDispatcher.scheduler.advanceUntilIdle()
+        }
+
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_list)
             .performScrollToIndex(index)

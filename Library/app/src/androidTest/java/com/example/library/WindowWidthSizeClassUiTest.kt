@@ -3,6 +3,8 @@ package com.example.library
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.testing.TestLifecycleOwner
 import com.example.library.fake.FakeNetworkBookRepository
 import com.example.library.rules.onNodeWithTagForStringId
 import com.example.library.ui.screens.search.LibraryViewModel
@@ -47,9 +49,14 @@ class WindowWidthSizeClassUiTest {
             externalScope = scope
         )
         val dummyViewModel= LibraryDetailsViewModel(fakeRepository, dispatcher, scope)
-
+        val testLifecycleOwner = TestLifecycleOwner()
         composeTestRule.setContent {
-            LibraryApp(windowWidthSizeClass,viewModel, dummyViewModel)
+            LibraryApp(
+                windowSize = windowWidthSizeClass,
+                lifecycleOwner = testLifecycleOwner,
+                libraryViewModel = viewModel,
+                libraryDetailsViewModel = dummyViewModel
+            )
         }
         composeTestRule.onNodeWithTagForStringId(
             stringId
