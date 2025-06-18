@@ -26,6 +26,7 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -109,7 +110,10 @@ fun LogInScreen(
                 onLoggedInChange(true)
                 onNavigationToSetting()
             }) {
-                Text(stringResource(R.string.log_in))
+                Text(
+                    text=stringResource(R.string.log_in),
+                    modifier=Modifier.testTag(stringResource(R.string.test_logIn))
+                )
             }
 
         }

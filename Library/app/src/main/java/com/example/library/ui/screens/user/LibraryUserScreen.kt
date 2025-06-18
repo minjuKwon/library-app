@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.example.library.R
@@ -44,12 +45,14 @@ fun LibraryUserScreen(
                 Modifier
                     .padding(start= dimensionResource(R.dimen.padding_md))
                     .clickable { onNavigationToEdit() }
+                    .testTag(stringResource(R.string.test_account_edit))
             )
             Text(
                 stringResource(R.string.log_out),
                 Modifier
                     .padding(start= dimensionResource(R.dimen.padding_md))
                     .clickable { onLogOut() }
+                    .testTag(stringResource(R.string.test_logOut))
             )
         }
 
@@ -66,8 +69,14 @@ fun LibraryUserScreen(
             )
             Column{
                 list.forEachIndexed { index, (i, onClick) ->
-                    UserTextButton(i,onClick)
-                    if(index< list.lastIndex){
+                    if(index== list.lastIndex){
+                        UserTextButton(
+                            i,
+                            onClick,
+                            Modifier.testTag(stringResource(R.string.test_unregister))
+                        )
+                    }else{
+                        UserTextButton(i,onClick)
                         Divider()
                     }
                 }
@@ -79,11 +88,12 @@ fun LibraryUserScreen(
 @Composable
 private fun UserTextButton(
     id:Int,
-    onClick:()->Unit
+    onClick:()->Unit,
+    modifier:Modifier=Modifier
 ){
     Text(
         stringResource(id),
-        Modifier
+        modifier
             .padding(dimensionResource(R.dimen.padding_sm))
             .clickable { onClick() }
     )
@@ -104,6 +114,7 @@ fun NonMemberScreen(
             contentDescription = null,
             modifier=Modifier
                 .size(dimensionResource(R.dimen.user_screen_no_account_icons_size))
+                .testTag(stringResource(R.string.test_noMember))
         )
         Text(
             stringResource(R.string.no_account),
@@ -116,7 +127,9 @@ fun NonMemberScreen(
                     .padding(end =dimensionResource(R.dimen.padding_xl))
             ) {
                 Text(
-                    text= stringResource(R.string.log_in))
+                    text= stringResource(R.string.log_in),
+                    modifier=Modifier.testTag(stringResource(R.string.test_logIn))
+                )
             }
             Button(onClick = onNavigationToRegister) {
                 Text(stringResource(R.string.register))

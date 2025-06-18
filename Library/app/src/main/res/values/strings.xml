@@ -87,4 +87,9 @@
     <string name="test_list">list</string>
     <string name="test_back">back</string>
     <string name="test_pageNum">page</string>
+    <string name="test_noMember">no member</string>
+    <string name="test_logIn">log in</string>
+    <string name="test_account_edit">edit</string>
+    <string name="test_unregister">unregister</string>
+    <string name="test_logOut">log out</string>
 </resources>
