@@ -17,6 +17,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -24,28 +26,28 @@ class SearchResultListTest {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+    private val testDispatcher = StandardTestDispatcher()
+    private val testScope = CoroutineScope(testDispatcher)
 
-    @Test
-    fun mainScreen_searchResults_showsCorrectItemCount(){
-        val testDispatcher = StandardTestDispatcher()
-        val testScope = CoroutineScope(testDispatcher)
-
+    @Before
+    fun setUp(){
         initial(testDispatcher, testScope)
+    }
 
-        composeTestRule
-            .onNodeWithTagForStringId(R.string.test_itemCount)
-            .assertTextEquals(" 15")
-
+    @After
+    fun closeResource(){
         testScope.cancel()
     }
 
     @Test
+    fun mainScreen_searchResults_showsCorrectItemCount(){
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_itemCount)
+            .assertTextEquals(" 15")
+    }
+
+    @Test
     fun mainScreen_searchResults_showsCorrectItemList(){
-        val testDispatcher = StandardTestDispatcher()
-        val testScope = CoroutineScope(testDispatcher)
-
-        initial(testDispatcher, testScope)
-
         verifyListItemText(testDispatcher,0, "android_1")
 
         composeTestRule
@@ -53,17 +55,10 @@ class SearchResultListTest {
             .performScrollToIndex(9)
 
         verifyListItemText(testDispatcher,9, "android_10")
-
-        testScope.cancel()
     }
 
     @Test
     fun mainScreen_onNextPage_showsNextItemList(){
-        val testDispatcher = StandardTestDispatcher()
-        val testScope = CoroutineScope(testDispatcher)
-
-        initial(testDispatcher, testScope)
-
         moveNextPage(9,"2", testDispatcher)
 
         verifyListItemText(testDispatcher,0, "android_11")
@@ -73,9 +68,6 @@ class SearchResultListTest {
             .performScrollToIndex(4)
 
         verifyListItemText(testDispatcher,4, "android_15")
-
-
-        testScope.cancel()
     }
 
     private fun moveNextPage(
