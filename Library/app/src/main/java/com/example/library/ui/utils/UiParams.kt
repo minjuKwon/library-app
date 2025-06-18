@@ -24,6 +24,8 @@ data class ListContentParams(
     val scrollState: LazyListState,
     val currentPage:Int,
     val updatePage:(Int)->Unit,
+    val updateBackPressedTime:(Long)->Unit,
+    val isBackPressedDouble:()->Boolean,
     val onBookmarkPressed:(Book)->Unit,
     val onBookItemPressed: (Book) -> Unit,
     val updateCurrentBook:(Book)->Unit

@@ -73,7 +73,7 @@ fun LibraryListOnlyContent(
         val totalPages = (totalItemCount+pageSize-1)/pageSize
         val currentGroup = (listContentParams.currentPage-1)/pageGroupSize
 
-        HandleDoubleBackToExit(isAtRoot)
+        HandleDoubleBackToExit(isAtRoot,listContentParams)
 
         SearchTextField(
             input = textFieldParams.textFieldKeyword,
@@ -99,18 +99,18 @@ fun LibraryListOnlyContent(
 
 @Composable
 private fun HandleDoubleBackToExit(
-    isAtRoot: Boolean
+    isAtRoot: Boolean,
+    listContentParams: ListContentParams
 ){
     val context= LocalContext.current
-    var backPressedTime by remember { mutableLongStateOf(0L) }
-    //백 스택의 루트일 때(첫 화면), 뒤로가기 버튼을 연속 두번 누르면(2000미만) 앱 종료
+
     if(isAtRoot){
         BackHandler {
             val currentTime= System.currentTimeMillis()
-            if(currentTime- backPressedTime<2000){
+            if(listContentParams.isBackPressedDouble()){
                 (context as Activity).finish()
             }else{
-                backPressedTime= currentTime
+                listContentParams.updateBackPressedTime(currentTime)
                 Toast.makeText(context,R.string.toast_finish,Toast.LENGTH_LONG).show()
             }
         }

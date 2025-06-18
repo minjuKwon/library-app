@@ -92,6 +92,8 @@ fun LibraryApp(
                 scrollState=scrollState,
                 currentPage=currentPage,
                 updatePage={libraryViewModel.getInformation(page=it)},
+                updateBackPressedTime = {libraryViewModel.updateBackPressedTime(it)},
+                isBackPressedDouble={libraryViewModel.isBackPressedDouble()},
                 onBookmarkPressed={libraryViewModel.updateBookmarkList(it)},
                 onBookItemPressed={
                     libraryDetailsViewModel.updateDataReadyForUi(true)

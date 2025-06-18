@@ -49,6 +49,8 @@ class LibraryViewModel @Inject constructor(
     private val _currentPage = MutableStateFlow(1)
     val currentPage: StateFlow<Int> = _currentPage
 
+    private val _backPressedTime= MutableStateFlow(0L)
+
     init {
         getInformation()
     }
@@ -109,6 +111,16 @@ class LibraryViewModel @Inject constructor(
 
     fun updateKeyword(input:String){
         _textFieldKeyword.value=input
+    }
+
+    fun updateBackPressedTime(currentTime:Long){
+        _backPressedTime.value= currentTime
+    }
+
+    fun isBackPressedDouble():Boolean{
+        //백 스택의 루트일 때(첫 화면), 뒤로가기 버튼을 연속 두번 누르면(2000미만) 앱 종료
+        val currentTime= System.currentTimeMillis()
+        return currentTime - _backPressedTime.value<2000
     }
 
     fun updateBookmarkList(book: Book){
