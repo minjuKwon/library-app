@@ -167,12 +167,12 @@ fun RegisterScreen(
                 Divider()
 
                 TextField(
-                    value=inputId,
-                    onValueChange = {inputId=it},
-                    label= {Text(stringResource(R.string.input_id))},
+                    value=inputEmail,
+                    onValueChange = {inputEmail=it},
+                    label= {Text(stringResource(R.string.input_email))},
                     keyboardOptions= KeyboardOptions.Default.copy(
                         imeAction= ImeAction.Next,
-                        keyboardType = KeyboardType.Password
+                        keyboardType = KeyboardType.Email
                     ),
                     keyboardActions= KeyboardActions(
                         onNext = {
@@ -201,29 +201,13 @@ fun RegisterScreen(
                     onValueChange = {inputVerifiedPassword=it},
                     label= {Text(stringResource(R.string.verify_password))},
                     keyboardOptions= KeyboardOptions.Default.copy(
-                        imeAction= ImeAction.Next,
-                        keyboardType = KeyboardType.Password
-                    ),
-                    keyboardActions= KeyboardActions(
-                        onNext = {
-                            focusManager.moveFocus(FocusDirection.Next)
-                        },
-                    ),
-                    modifier= paddingModifier()
-                )
-                Divider()
-
-                TextField(
-                    value=inputEmail,
-                    onValueChange = {inputEmail=it},
-                    label= {Text(stringResource(R.string.input_email))},
-                    keyboardOptions= KeyboardOptions.Default.copy(
                         imeAction= ImeAction.Done,
-                        keyboardType = KeyboardType.Email
+                        keyboardType = KeyboardType.Password
                     ),
                     keyboardActions= KeyboardActions(
                         onDone = {
                             onNavigationToLogIn()
+
                         },
                     ),
                     modifier= paddingModifier()
