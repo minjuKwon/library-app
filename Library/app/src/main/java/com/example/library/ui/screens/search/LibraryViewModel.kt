@@ -15,7 +15,6 @@ import com.example.library.di.IoDispatcher
 import com.example.library.data.CacheLibraryPagingSource
 import com.example.library.domain.BookRepository
 import com.example.library.data.api.Book
-import com.example.library.data.api.BookInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -133,14 +132,6 @@ class LibraryViewModel @Inject constructor(
                 (tempList-book) as MutableList<Book>
             }
             it.copy(bookmarkList = tempList)
-        }
-    }
-
-    fun updateCurrentItem(bookInfo: BookInfo){
-        libraryUiState=updateCopiedUiState(libraryUiState){
-            it.currentItem =bookInfo
-            //it.currentItem[navigationMenuType]=bookInfo
-            it.copy(currentItem = it.currentItem)
         }
     }
 

@@ -131,7 +131,6 @@ fun RegisterScreen(
     }
 
     var inputName by remember{mutableStateOf("")}
-    var inputId by remember{mutableStateOf("")}
     var inputPassword by remember{mutableStateOf("")}
     var inputVerifiedPassword by remember{mutableStateOf("")}
     var inputEmail by remember{mutableStateOf("")}
