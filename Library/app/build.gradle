@@ -6,6 +6,7 @@ plugins {
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -83,6 +84,8 @@ dependencies {
 
     implementation 'androidx.hilt:hilt-navigation-fragment:1.0.0'
     implementation("com.google.dagger:hilt-android:2.51.1")
+    implementation 'com.google.firebase:firebase-auth:22.3.1'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.7.1'
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
 
     testImplementation 'junit:junit:4.13.2'
