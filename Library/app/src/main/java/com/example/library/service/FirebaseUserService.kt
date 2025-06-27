@@ -9,9 +9,9 @@ class FirebaseUserService @Inject constructor(
 ) {
     suspend fun register(password:String, user: User){
         val created= userRepository.createUser(user.email, password)
-        val saved= userRepository.saveUser(user)
+        if(created.isFailure) throw created.exceptionOrNull()?:SignUpFailedException()
 
-        if(created.isFailure) throw SignUpFailedException()
+        val saved= userRepository.saveUser(user)
         if(saved.isFailure) throw SaveUserInfoException()
     }
 }

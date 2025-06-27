@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.library.data.User
 import com.example.library.di.ApplicationScope
 import com.example.library.service.FirebaseUserService
+import com.google.firebase.auth.FirebaseAuthException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,6 +29,8 @@ class UserViewModel @Inject constructor(
             try{
                 firebaseUserService.register(password, user)
                 _event.emit(UserUiState.Success)
+            }catch(e:FirebaseAuthException){
+                _event.emit(UserUiState.Failure(e.errorCode))
             }catch(e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }

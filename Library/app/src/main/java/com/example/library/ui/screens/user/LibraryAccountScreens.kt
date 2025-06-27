@@ -143,8 +143,14 @@ fun RegisterScreen(
                     onNavigationToLogIn()
                 }
                 is UserUiState.Failure -> {
-                    Toast.makeText(context, R.string.fail_register, Toast.LENGTH_LONG).show()
-                    onBackPressed()
+                    val message= when(it.message){
+                        "ERROR_INVALID_EMAIL" -> R.string.invalid_email
+                        "ERROR_EMAIL_ALREADY_IN_USE" -> R.string.already_email
+                        "ERROR_WEAK_PASSWORD" -> R.string.weak_password
+                        else -> R.string.fail_register
+                    }
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    if(it.message=="사용자 정보 저장 실패") onBackPressed()
                 }
             }
         }
