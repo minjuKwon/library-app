@@ -32,6 +32,7 @@ import com.example.library.ui.navigation.graph.NavigationGraph
 import com.example.library.ui.navigation.destination.NavigationItemContent
 import com.example.library.ui.utils.DetailsScreenParams
 import com.example.library.ui.screens.search.LibraryUiState
+import com.example.library.ui.screens.user.UserViewModel
 import com.example.library.ui.utils.ListContentParams
 import com.example.library.ui.utils.NavigationConfig
 import com.example.library.ui.utils.TextFieldParams
@@ -45,6 +46,7 @@ fun LibraryAppContent(
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
     detailsScreenParams: DetailsScreenParams,
+    userViewModel: UserViewModel,
     modifier: Modifier = Modifier
 ){
 
@@ -75,6 +77,7 @@ fun LibraryAppContent(
                 navigationConfig= navigationConfig,
                 textFieldParams= textFieldParams,
                 listContentParams= listContentParams,
+                userViewModel=userViewModel,
                 detailsScreenParams= detailsScreenParams,
             )
         }
@@ -100,6 +103,7 @@ fun LibraryAppContent(
                         textFieldParams= textFieldParams,
                         listContentParams= listContentParams,
                         detailsScreenParams= detailsScreenParams,
+                        userViewModel=userViewModel,
                         modifier=Modifier.weight(1f)
                     )
 

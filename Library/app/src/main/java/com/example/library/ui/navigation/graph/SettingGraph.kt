@@ -15,9 +15,11 @@ import com.example.library.ui.screens.user.NonMemberScreen
 import com.example.library.ui.screens.user.RegisterScreen
 import com.example.library.ui.screens.user.ReservationStatusScreen
 import com.example.library.ui.screens.user.UserInformationEditScreen
+import com.example.library.ui.screens.user.UserViewModel
 
 fun NavGraphBuilder.settingDestination(
     navController: NavHostController,
+    userViewModel: UserViewModel,
     isLogIn:Boolean,
     onLoggedInChange:(Boolean)->Unit
 ){
@@ -71,6 +73,7 @@ fun NavGraphBuilder.settingDestination(
 
         composable(route= LibraryDestination.Register.route) {
             RegisterScreen(
+                userViewModel=userViewModel,
                 onBackPressed = {navController.popBackStack()},
                 onNavigationToLogIn={
                     navController.navigate(LibraryDestination.LogIn.route){

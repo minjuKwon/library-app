@@ -1,5 +1,6 @@
 package com.example.library.ui.screens.user
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,6 +26,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
@@ -32,6 +34,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.example.library.R
+import com.example.library.data.Gender
+import com.example.library.data.User
 import com.example.library.ui.BackIconButton
 import com.example.library.ui.Divider
 import com.example.library.ui.TextRadioButton
@@ -122,20 +126,38 @@ fun LogInScreen(
 
 @Composable
 fun RegisterScreen(
+    userViewModel:UserViewModel,
     onBackPressed:()->Unit,
     onNavigationToLogIn:()->Unit
 ){
     val focusRequester= remember{FocusRequester()}
+    val event= userViewModel.event
+    val context= LocalContext.current
+
     LaunchedEffect(Unit){
         focusRequester.requestFocus()
+        event.collect{
+            when(it){
+                is UserUiState.Success->{
+                    Toast.makeText(context, R.string.success_register, Toast.LENGTH_LONG).show()
+                    onNavigationToLogIn()
+                }
+                is UserUiState.Failure -> {
+                    Toast.makeText(context, R.string.fail_register, Toast.LENGTH_LONG).show()
+                    onBackPressed()
+                }
+            }
+        }
     }
 
+    var inputEmail by remember{mutableStateOf("")}
     var inputName by remember{mutableStateOf("")}
     var inputPassword by remember{mutableStateOf("")}
     var inputVerifiedPassword by remember{mutableStateOf("")}
-    var inputEmail by remember{mutableStateOf("")}
+    var userInfo by remember{ mutableStateOf(User())}
 
     val focusManager= LocalFocusManager.current
+    val radioText= listOf("남","여")
 
     LazyColumn{
         item{
@@ -162,7 +184,20 @@ fun RegisterScreen(
                 )
                 Divider()
 
-                RegisterSexAndAgeSection(focusManager)
+                RegisterSexAndAgeSection(
+                    focusManager= focusManager,
+                    list=radioText,
+                    onAgeChange = {
+                        userInfo=userInfo.copy(age=Integer.parseInt(it))
+                    },
+                    onSexChange = {
+                        if(it == radioText[0]){
+                            userInfo= userInfo.copy(gender=Gender.MALE)
+                        }else if(it == radioText[1]){
+                            userInfo= userInfo.copy(gender=Gender.FEMALE)
+                        }
+                    }
+                )
                 Divider()
 
                 TextField(
@@ -205,15 +240,26 @@ fun RegisterScreen(
                     ),
                     keyboardActions= KeyboardActions(
                         onDone = {
-                            onNavigationToLogIn()
-
+                            Toast.makeText(context, R.string.loading_register, Toast.LENGTH_LONG).show()
+                            userViewModel.register(
+                                inputPassword,
+                                userInfo.copy(email=inputEmail, name=inputName)
+                            )
                         },
                     ),
                     modifier= paddingModifier()
                 )
                 Divider()
 
-                RegisterButton(onNavigationToLogIn)
+                RegisterButton(
+                    onNavigationToLogIn={
+                        Toast.makeText(context, R.string.loading_register, Toast.LENGTH_LONG).show()
+                        userViewModel.register(
+                            inputPassword,
+                            userInfo.copy(email=inputEmail, name=inputName)
+                        )
+                    }
+                )
             }
         }
     }
@@ -221,17 +267,23 @@ fun RegisterScreen(
 
 @Composable
 private fun RegisterSexAndAgeSection(
-    focusManager: FocusManager
+    focusManager: FocusManager,
+    list:List<String>,
+    onSexChange:(String)->Unit,
+    onAgeChange:(String)->Unit
 ){
     var inputAge by remember{mutableStateOf("")}
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier= paddingModifier()
     ){
-        TextRadioButton(listOf("남","여"))
+        TextRadioButton(list, onSexChange)
         TextField(
             value=inputAge,
-            onValueChange = {inputAge=it},
+            onValueChange = {
+                inputAge=it
+                onAgeChange(it)
+            },
             label= {Text(stringResource(R.string.input_age))},
             keyboardOptions= KeyboardOptions.Default.copy(
                 imeAction= ImeAction.Next,

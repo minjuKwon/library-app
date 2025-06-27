@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import com.example.library.ui.LibraryApp
 import com.example.library.ui.screens.detail.LibraryDetailsViewModel
 import com.example.library.ui.screens.search.LibraryViewModel
+import com.example.library.ui.screens.user.UserViewModel
 import com.example.library.ui.theme.LibraryTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,11 +31,13 @@ class MainActivity : ComponentActivity() {
                     val windowSize=calculateWindowSizeClass(this)
                     val libraryViewModel: LibraryViewModel by viewModels()
                     val libraryDetailsViewModel: LibraryDetailsViewModel by viewModels()
+                    val userViwModel: UserViewModel by viewModels()
 
                     LibraryApp(
                         windowSize=windowSize.widthSizeClass,
                         libraryViewModel= libraryViewModel,
-                        libraryDetailsViewModel = libraryDetailsViewModel
+                        libraryDetailsViewModel = libraryDetailsViewModel,
+                        userViewModel = userViwModel
                     )
                 }
             }

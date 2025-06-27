@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.library.ui.navigation.destination.GraphRoutes
 import com.example.library.ui.screens.search.LibraryUiState
+import com.example.library.ui.screens.user.UserViewModel
 import com.example.library.ui.utils.DetailsScreenParams
 import com.example.library.ui.utils.ListContentParams
 import com.example.library.ui.utils.NavigationConfig
@@ -24,6 +25,7 @@ fun NavigationGraph(
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
     detailsScreenParams: DetailsScreenParams,
+    userViewModel: UserViewModel,
     modifier:Modifier=Modifier
 ){
     var isLogIn by rememberSaveable {mutableStateOf(false) }
@@ -44,6 +46,7 @@ fun NavigationGraph(
         rankingDestination(listContentParams)
         settingDestination(
             navController,
+            userViewModel,
             isLogIn,
             onLoggedInChange={isLogIn=it}
         )

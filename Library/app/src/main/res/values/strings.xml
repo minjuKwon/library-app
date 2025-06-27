@@ -51,6 +51,10 @@
     <string name="edit">수정</string>
     <string name="confirm">확인</string>
 
+    <string name="success_register">회원가입이 완료되었습니다</string>
+    <string name="fail_register">회원가입에 실패하였습니다\n잠시 후 다시 시도해주세요</string>
+    <string name="loading_register">회원 가입 중...</string>
+
     <string name="index">순번</string>
     <string name="title">제목</string>
     <string name="author">저자</string>

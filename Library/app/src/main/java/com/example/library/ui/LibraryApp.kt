@@ -17,6 +17,7 @@ import com.example.library.ui.navigation.destination.navigationItemContentList
 import com.example.library.ui.screens.LibraryAppContent
 import com.example.library.ui.screens.detail.LibraryDetailsViewModel
 import com.example.library.ui.screens.search.LibraryViewModel
+import com.example.library.ui.screens.user.UserViewModel
 import com.example.library.ui.utils.ContentType
 import com.example.library.ui.utils.DetailsScreenParams
 import com.example.library.ui.utils.ListContentParams
@@ -30,6 +31,7 @@ fun LibraryApp(
     lifecycleOwner:LifecycleOwner= LocalLifecycleOwner.current,
     libraryViewModel: LibraryViewModel,
     libraryDetailsViewModel: LibraryDetailsViewModel,
+    userViewModel: UserViewModel,
     modifier:Modifier= Modifier
 ){
     val scrollState  = rememberLazyListState()
@@ -109,6 +111,7 @@ fun LibraryApp(
                 updateDataReadyForUi = { libraryDetailsViewModel.updateDataReadyForUi(it) },
                 getBookById = {libraryDetailsViewModel.getBookById(it)},
             ),
+            userViewModel=userViewModel,
             modifier=modifier
         )
     }

@@ -208,9 +208,11 @@ fun BackIconButton(
 
 @Composable
 fun TextRadioButton(
-    options:List<String>
+    options:List<String>,
+    onSexChange:(String)->Unit={}
 ){
     var selectedOption by remember{ mutableStateOf(options[0]) }
+    onSexChange(selectedOption)
     Row {
         options.forEach { option->
             Spacer(modifier=Modifier.width(dimensionResource(R.dimen.padding_lg)))
