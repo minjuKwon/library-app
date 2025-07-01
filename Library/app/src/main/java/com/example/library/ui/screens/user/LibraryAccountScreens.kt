@@ -235,11 +235,19 @@ fun RegisterScreen(
                     ),
                     keyboardActions= KeyboardActions(
                         onDone = {
-                            Toast.makeText(context, R.string.loading_register, Toast.LENGTH_LONG).show()
-                            userViewModel.register(
+                            userInfo=userInfo.copy(email=inputEmail, name=inputName)
+                            val result=checkRegisterInputAndShowToast(
+                                context,
+                                userInfo,
                                 inputPassword,
-                                userInfo.copy(email=inputEmail, name=inputName)
+                                inputVerifiedPassword
                             )
+                            if(result){
+                                userViewModel.register(
+                                    inputPassword,
+                                    userInfo
+                                )
+                            }
                         },
                     ),
                     modifier= paddingModifier()
@@ -248,11 +256,19 @@ fun RegisterScreen(
 
                 RegisterButton(
                     onNavigationToLogIn={
-                        Toast.makeText(context, R.string.loading_register, Toast.LENGTH_LONG).show()
-                        userViewModel.register(
+                        userInfo=userInfo.copy(email=inputEmail, name=inputName)
+                        val result=checkRegisterInputAndShowToast(
+                            context,
+                            userInfo,
                             inputPassword,
-                            userInfo.copy(email=inputEmail, name=inputName)
+                            inputVerifiedPassword
                         )
+                        if(result){
+                            userViewModel.register(
+                                inputPassword,
+                                userInfo
+                            )
+                        }
                     }
                 )
             }
@@ -322,6 +338,40 @@ private fun RegisterSexAndAgeSection(
                 .fillMaxWidth(0.6f)
                 .padding(start= dimensionResource(R.dimen.padding_xl))
         )
+    }
+}
+
+private fun checkRegisterInputAndShowToast(
+    context:Context,
+    user: User,
+    password:String,
+    verifiedPassword:String
+):Boolean{
+    when{
+        user.name.isBlank() ->{
+            Toast.makeText(context, R.string.blank_name, Toast.LENGTH_LONG).show()
+            return false
+        }
+        user.age ==0 ->{
+            Toast.makeText(context, R.string.blank_age, Toast.LENGTH_LONG).show()
+            return false
+        }
+        user.email.isBlank() ->{
+            Toast.makeText(context, R.string.blank_email, Toast.LENGTH_LONG).show()
+            return false
+        }
+        password.isBlank() ->{
+            Toast.makeText(context, R.string.blank_password, Toast.LENGTH_LONG).show()
+            return false
+        }
+        password != verifiedPassword ->{
+            Toast.makeText(context, R.string.invalid_password, Toast.LENGTH_LONG).show()
+            return false
+        }
+        else->{
+            Toast.makeText(context, R.string.loading_register, Toast.LENGTH_LONG).show()
+            return true
+        }
     }
 }
 
