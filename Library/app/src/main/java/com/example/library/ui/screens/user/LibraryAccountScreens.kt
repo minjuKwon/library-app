@@ -1,5 +1,6 @@
 package com.example.library.ui.screens.user
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,7 @@ import com.example.library.data.User
 import com.example.library.ui.BackIconButton
 import com.example.library.ui.Divider
 import com.example.library.ui.TextRadioButton
+import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 private fun paddingModifier()= Modifier
@@ -131,30 +133,17 @@ fun RegisterScreen(
     onNavigationToLogIn:()->Unit
 ){
     val focusRequester= remember{FocusRequester()}
-    val event= userViewModel.event
     val context= LocalContext.current
 
     LaunchedEffect(Unit){
         focusRequester.requestFocus()
-        event.collect{
-            when(it){
-                is UserUiState.Success->{
-                    Toast.makeText(context, R.string.success_register, Toast.LENGTH_LONG).show()
-                    onNavigationToLogIn()
-                }
-                is UserUiState.Failure -> {
-                    val message= when(it.message){
-                        "ERROR_INVALID_EMAIL" -> R.string.invalid_email
-                        "ERROR_EMAIL_ALREADY_IN_USE" -> R.string.already_email
-                        "ERROR_WEAK_PASSWORD" -> R.string.weak_password
-                        else -> R.string.fail_register
-                    }
-                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                    if(it.message=="사용자 정보 저장 실패") onBackPressed()
-                }
-            }
-        }
     }
+    HandleUserUiState(
+        context,
+        userViewModel.event,
+        onBackPressed,
+        onNavigationToLogIn
+    )
 
     var inputEmail by remember{mutableStateOf("")}
     var inputName by remember{mutableStateOf("")}
@@ -266,6 +255,35 @@ fun RegisterScreen(
                         )
                     }
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HandleUserUiState(
+    context: Context,
+    event: SharedFlow<UserUiState>,
+    onBackPressed:()->Unit,
+    onNavigationToLogIn:()->Unit
+){
+    LaunchedEffect(Unit){
+        event.collect{
+            when(it){
+                is UserUiState.Success->{
+                    Toast.makeText(context, R.string.success_register, Toast.LENGTH_LONG).show()
+                    onNavigationToLogIn()
+                }
+                is UserUiState.Failure -> {
+                    val message= when(it.message){
+                        "ERROR_INVALID_EMAIL" -> R.string.invalid_email
+                        "ERROR_EMAIL_ALREADY_IN_USE" -> R.string.already_email
+                        "ERROR_WEAK_PASSWORD" -> R.string.weak_password
+                        else -> R.string.fail_register
+                    }
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    if(it.message=="사용자 정보 저장 실패") onBackPressed()
+                }
             }
         }
     }
