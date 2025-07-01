@@ -183,7 +183,11 @@ fun RegisterScreen(
                     focusManager= focusManager,
                     list=radioText,
                     onAgeChange = {
-                        userInfo=userInfo.copy(age=Integer.parseInt(it))
+                        userInfo = if(it.isBlank()){
+                            userInfo.copy(age=0)
+                        }else{
+                            userInfo.copy(age=Integer.parseInt(it))
+                        }
                     },
                     onSexChange = {
                         if(it == radioText[0]){
