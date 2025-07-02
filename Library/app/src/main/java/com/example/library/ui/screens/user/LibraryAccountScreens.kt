@@ -139,10 +139,21 @@ fun RegisterScreen(
         focusRequester.requestFocus()
     }
     HandleUserUiState(
-        context,
-        userViewModel.event,
-        onBackPressed,
-        onNavigationToLogIn
+        event= userViewModel.event,
+        onSuccess = {
+            Toast.makeText(context, R.string.success_register, Toast.LENGTH_LONG).show()
+            onNavigationToLogIn()
+        },
+        onFailure = { state:UserUiState.Failure->
+            val message= when(state.message){
+                "ERROR_INVALID_EMAIL" -> R.string.invalid_email
+                "ERROR_EMAIL_ALREADY_IN_USE" -> R.string.already_email
+                "ERROR_WEAK_PASSWORD" -> R.string.weak_password
+                else -> R.string.fail_register
+            }
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            if(state.message=="사용자 정보 저장 실패") onBackPressed()
+        }
     )
 
     var inputEmail by remember{mutableStateOf("")}
@@ -282,27 +293,18 @@ fun RegisterScreen(
 
 @Composable
 private fun HandleUserUiState(
-    context: Context,
     event: SharedFlow<UserUiState>,
-    onBackPressed:()->Unit,
-    onNavigationToLogIn:()->Unit
+    onSuccess:()->Unit,
+    onFailure:(UserUiState.Failure)->Unit
 ){
     LaunchedEffect(Unit){
         event.collect{
             when(it){
                 is UserUiState.Success->{
-                    Toast.makeText(context, R.string.success_register, Toast.LENGTH_LONG).show()
-                    onNavigationToLogIn()
+                    onSuccess()
                 }
                 is UserUiState.Failure -> {
-                    val message= when(it.message){
-                        "ERROR_INVALID_EMAIL" -> R.string.invalid_email
-                        "ERROR_EMAIL_ALREADY_IN_USE" -> R.string.already_email
-                        "ERROR_WEAK_PASSWORD" -> R.string.weak_password
-                        else -> R.string.fail_register
-                    }
-                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                    if(it.message=="사용자 정보 저장 실패") onBackPressed()
+                    onFailure(it)
                 }
             }
         }
