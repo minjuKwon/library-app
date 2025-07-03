@@ -63,6 +63,7 @@ fun NavGraphBuilder.settingDestination(
 
         composable(route= LibraryDestination.LogIn.route) {
             LogInScreen(
+                userViewModel= userViewModel,
                 onLoggedInChange=onLoggedInChange,
                 onBackPressed = {navController.popBackStack()},
                 onNavigationToSetting={

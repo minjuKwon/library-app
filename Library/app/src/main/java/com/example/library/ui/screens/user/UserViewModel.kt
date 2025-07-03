@@ -36,4 +36,18 @@ class UserViewModel @Inject constructor(
             }
         }
     }
+
+    fun signIn(email:String, password: String){
+        scope.launch {
+            try{
+                firebaseUserService.signIn(email, password)
+                _event.emit(UserUiState.Success)
+            }catch(e:FirebaseAuthException){
+                _event.emit(UserUiState.Failure(e.errorCode))
+            }catch (e:Exception){
+                _event.emit(UserUiState.Failure(e.message?:"실패"))
+            }
+        }
+    }
+
 }

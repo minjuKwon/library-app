@@ -54,9 +54,14 @@
     <string name="loading_register">회원 가입 중…</string>
     <string name="success_register">회원가입이 완료되었습니다</string>
     <string name="fail_register">회원가입에 실패하였습니다\n잠시 후 다시 시도해주세요</string>
-    <string name="invalid_email">유효하지 않는 이메일 형식입니다\n다시 입력해주세요</string>
+    <string name="loading_signIn">로그인 중…</string>
+    <string name="fail_signIn">로그인에 실패하였습니다\n잠시 후 다시 시도해주세요</string>
+    <string name="invalid_email">이메일 형식으로 입력해주세요</string>
     <string name="weak_password">비밀번호는 최소 6자 이상이어야 합니다</string>
     <string name="already_email">이미 가입된 이메일입니다\n다른 이메일로 가입해주세요</string>
+    <string name="invalid_credential">아이디 또는 비밀번호가 일치하지 않습니다</string>
+    <string name="wait">잠시 후 다시 시도해주세요</string>
+
     <string name="blank_name">이름을 입력해주세요</string>
     <string name="blank_age">나이를 입력해주세요</string>
     <string name="blank_email">이메일을 입력해주세요</string>

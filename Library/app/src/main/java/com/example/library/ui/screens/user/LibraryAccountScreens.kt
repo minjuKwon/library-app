@@ -51,15 +51,35 @@ private fun paddingModifier()= Modifier
 
 @Composable
 fun LogInScreen(
+    userViewModel:UserViewModel,
     onLoggedInChange:(Boolean)->Unit,
     onBackPressed:()->Unit,
     onNavigationToSetting:()->Unit
 ){
     val focusRequester= remember{FocusRequester()}
+    val context= LocalContext.current
+
     //포커스를 UI 이후 안전하게 요청할 수 있도록 설정
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
+
+    HandleUserUiState(
+        event= userViewModel.event,
+        onSuccess = {
+            onLoggedInChange(true)
+            onNavigationToSetting()
+        },
+        onFailure = { state:UserUiState.Failure ->
+            val message= when(state.message){
+                "ERROR_INVALID_EMAIL" -> R.string.invalid_email
+                "ERROR_INVALID_CREDENTIAL" -> R.string.invalid_credential
+                "ERROR_TOO_MANY_REQUESTS" -> R.string.wait
+                else -> R.string.fail_signIn
+            }
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        }
+    )
 
     var inputId by remember{mutableStateOf("")}
     var inputPassword by remember{ mutableStateOf("") }
@@ -101,8 +121,8 @@ fun LogInScreen(
                 keyboardActions= KeyboardActions(
                     onDone = {
                         focusManager.clearFocus(true)
-                        onLoggedInChange(true)
-                        onNavigationToSetting()
+                        val result=checkLogInInputAndShowToast(context, inputId, inputPassword)
+                        if(result) userViewModel.signIn(inputId, inputPassword)
                     }
                 ),
                 modifier= Modifier
@@ -113,8 +133,8 @@ fun LogInScreen(
                     )
             )
             Button(onClick = {
-                onLoggedInChange(true)
-                onNavigationToSetting()
+                val result=checkLogInInputAndShowToast(context, inputId, inputPassword)
+                if(result) userViewModel.signIn(inputId, inputPassword)
             }) {
                 Text(
                     text=stringResource(R.string.log_in),
@@ -122,6 +142,27 @@ fun LogInScreen(
                 )
             }
 
+        }
+    }
+}
+
+private fun checkLogInInputAndShowToast(
+    context:Context,
+    email:String,
+    password: String
+):Boolean{
+    when{
+        email.isBlank() ->{
+            Toast.makeText(context, R.string.blank_email, Toast.LENGTH_LONG).show()
+            return false
+        }
+        password.isBlank() ->{
+            Toast.makeText(context, R.string.blank_password, Toast.LENGTH_LONG).show()
+            return false
+        }
+        else->{
+            Toast.makeText(context, R.string.loading_signIn, Toast.LENGTH_LONG).show()
+            return true
         }
     }
 }
