@@ -101,7 +101,7 @@ fun LogInScreen(
                 label= {Text(stringResource(R.string.input_id))},
                 keyboardOptions= KeyboardOptions.Default.copy(
                     imeAction= ImeAction.Next,
-                    keyboardType = KeyboardType.Password
+                    keyboardType = KeyboardType.Email
                 ),
                 keyboardActions= KeyboardActions(
                     onNext = {
