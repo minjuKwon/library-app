@@ -52,7 +52,6 @@ private fun paddingModifier()= Modifier
 @Composable
 fun LogInScreen(
     userViewModel:UserViewModel,
-    onLoggedInChange:(Boolean)->Unit,
     onBackPressed:()->Unit,
     onNavigationToSetting:()->Unit
 ){
@@ -67,7 +66,7 @@ fun LogInScreen(
     HandleUserUiState(
         event= userViewModel.event,
         onSuccess = {
-            onLoggedInChange(true)
+            userViewModel.updateLogInState(true)
             onNavigationToSetting()
         },
         onFailure = { state:UserUiState.Failure ->

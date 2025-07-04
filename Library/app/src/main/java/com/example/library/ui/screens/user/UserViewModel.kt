@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuthException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,6 +24,9 @@ class UserViewModel @Inject constructor(
 
     private val _event= MutableSharedFlow<UserUiState>()
     val event= _event.asSharedFlow()
+
+    private val _isLogIn= MutableStateFlow(false)
+    val isLogIn= _isLogIn
 
     fun register(password:String, user: User){
         scope.launch {
@@ -48,6 +52,10 @@ class UserViewModel @Inject constructor(
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
         }
+    }
+
+    fun updateLogInState(b:Boolean){
+        _isLogIn.value= b
     }
 
 }

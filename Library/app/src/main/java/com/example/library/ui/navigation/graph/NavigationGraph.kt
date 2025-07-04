@@ -1,12 +1,7 @@
 package com.example.library.ui.navigation.graph
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.library.ui.navigation.destination.GraphRoutes
@@ -28,8 +23,6 @@ fun NavigationGraph(
     userViewModel: UserViewModel,
     modifier:Modifier=Modifier
 ){
-    var isLogIn by rememberSaveable {mutableStateOf(false) }
-
     NavHost(
         navController= navController,
         startDestination = GraphRoutes.HOME,
@@ -46,9 +39,7 @@ fun NavigationGraph(
         rankingDestination(listContentParams)
         settingDestination(
             navController,
-            userViewModel,
-            isLogIn,
-            onLoggedInChange={isLogIn=it}
+            userViewModel
         )
     }
 }

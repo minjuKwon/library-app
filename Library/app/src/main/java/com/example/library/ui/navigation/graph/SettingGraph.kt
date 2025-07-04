@@ -1,5 +1,7 @@
 package com.example.library.ui.navigation.graph
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -19,22 +21,21 @@ import com.example.library.ui.screens.user.UserViewModel
 
 fun NavGraphBuilder.settingDestination(
     navController: NavHostController,
-    userViewModel: UserViewModel,
-    isLogIn:Boolean,
-    onLoggedInChange:(Boolean)->Unit
+    userViewModel: UserViewModel
 ){
     navigation(
         startDestination = LibraryDestination.Setting.route,
         route= UserRoutes.USER
     ){
         composable(route= LibraryDestination.Setting.route){
+            val isLogIn by userViewModel.isLogIn.collectAsState()
             if(isLogIn){
                 LibraryUserScreen(
                     onNavigationToEdit={
                         navController.navigate(LibraryDestination.UserEdit.route)
                     },
                     onLogOut={
-                        onLoggedInChange(false)
+                        userViewModel.updateLogInState(false)
                         navController.navigateToSetting()
                     },
                     onNavigationToLoanHistory={
@@ -47,7 +48,7 @@ fun NavGraphBuilder.settingDestination(
                         navController.navigate(LibraryDestination.ReservationStatus.route)
                     },
                     onUnregister={
-                        onLoggedInChange(false)
+                        userViewModel.updateLogInState(false)
                         navController.navigateToSetting()
                     }
                 )
@@ -64,7 +65,6 @@ fun NavGraphBuilder.settingDestination(
         composable(route= LibraryDestination.LogIn.route) {
             LogInScreen(
                 userViewModel= userViewModel,
-                onLoggedInChange=onLoggedInChange,
                 onBackPressed = {navController.popBackStack()},
                 onNavigationToSetting={
                     navController.navigateToSetting()
