@@ -57,10 +57,12 @@ fun LogInScreen(
 ){
     val focusRequester= remember{FocusRequester()}
     val context= LocalContext.current
+    var isClick by remember { mutableStateOf(false) }
 
     //포커스를 UI 이후 안전하게 요청할 수 있도록 설정
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
+        isClick=false
     }
 
     HandleUserUiState(
@@ -120,8 +122,11 @@ fun LogInScreen(
                 keyboardActions= KeyboardActions(
                     onDone = {
                         focusManager.clearFocus(true)
-                        val result=checkLogInInputAndShowToast(context, inputId, inputPassword)
-                        if(result) userViewModel.signIn(inputId, inputPassword)
+                        if(!isClick){
+                            val result=checkLogInInputAndShowToast(context, inputId, inputPassword)
+                            if(result) userViewModel.signIn(inputId, inputPassword)
+                            isClick=true
+                        }
                     }
                 ),
                 modifier= Modifier
@@ -132,8 +137,11 @@ fun LogInScreen(
                     )
             )
             Button(onClick = {
-                val result=checkLogInInputAndShowToast(context, inputId, inputPassword)
-                if(result) userViewModel.signIn(inputId, inputPassword)
+                if(!isClick){
+                    val result=checkLogInInputAndShowToast(context, inputId, inputPassword)
+                    if(result) userViewModel.signIn(inputId, inputPassword)
+                    isClick=true
+                }
             }) {
                 Text(
                     text=stringResource(R.string.log_in),
@@ -174,9 +182,11 @@ fun RegisterScreen(
 ){
     val focusRequester= remember{FocusRequester()}
     val context= LocalContext.current
+    var isClick by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit){
         focusRequester.requestFocus()
+        isClick=false
     }
     HandleUserUiState(
         event= userViewModel.event,
@@ -290,6 +300,31 @@ fun RegisterScreen(
                     ),
                     keyboardActions= KeyboardActions(
                         onDone = {
+                            if(!isClick){
+                                userInfo=userInfo.copy(email=inputEmail, name=inputName)
+                                val result=checkRegisterInputAndShowToast(
+                                    context,
+                                    userInfo,
+                                    inputPassword,
+                                    inputVerifiedPassword
+                                )
+                                if(result){
+                                    userViewModel.register(
+                                        inputPassword,
+                                        userInfo
+                                    )
+                                }
+                                isClick=true
+                            }
+                        },
+                    ),
+                    modifier= paddingModifier()
+                )
+                Divider()
+
+                RegisterButton(
+                    onNavigationToLogIn={
+                        if(!isClick){
                             userInfo=userInfo.copy(email=inputEmail, name=inputName)
                             val result=checkRegisterInputAndShowToast(
                                 context,
@@ -303,26 +338,7 @@ fun RegisterScreen(
                                     userInfo
                                 )
                             }
-                        },
-                    ),
-                    modifier= paddingModifier()
-                )
-                Divider()
-
-                RegisterButton(
-                    onNavigationToLogIn={
-                        userInfo=userInfo.copy(email=inputEmail, name=inputName)
-                        val result=checkRegisterInputAndShowToast(
-                            context,
-                            userInfo,
-                            inputPassword,
-                            inputVerifiedPassword
-                        )
-                        if(result){
-                            userViewModel.register(
-                                inputPassword,
-                                userInfo
-                            )
+                            isClick=true
                         }
                     }
                 )
