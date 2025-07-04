@@ -14,6 +14,7 @@ import com.example.library.R
 import com.example.library.ui.navigation.destination.GraphRoutes
 import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.navigation.destination.LibraryDestination.Details.routeWithArgs
+import com.example.library.ui.navigation.navigateSingle
 import com.example.library.ui.screens.detail.LibraryDetailsScreen
 import com.example.library.ui.screens.search.ErrorScreen
 import com.example.library.ui.screens.search.LibraryListAndDetailContent
@@ -49,7 +50,7 @@ fun NavGraphBuilder.booksDestination(
                     textFieldParams=textFieldParams,
                     detailsScreenParams=detailsScreenParams,
                     onNavigateToDetails={ itemId->
-                        navController.navigate("${LibraryDestination.Details.route}/$itemId")
+                        navController.navigateSingle("${LibraryDestination.Details.route}/$itemId")
                     }
                 )
             }else{
@@ -64,7 +65,7 @@ fun NavGraphBuilder.booksDestination(
                             isNotFullScreen = true,
                             onNavigateToDetails={
                                 navController
-                                    .navigate("${LibraryDestination.Details.route}/$it")
+                                    .navigateSingle("${LibraryDestination.Details.route}/$it")
                             },
                             modifier= Modifier
                                 .padding(dimensionResource(R.dimen.padding_sm))

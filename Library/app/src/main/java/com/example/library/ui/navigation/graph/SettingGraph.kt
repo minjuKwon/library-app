@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.navigation.destination.UserRoutes
+import com.example.library.ui.navigation.navigateSingle
 import com.example.library.ui.navigation.navigateToSetting
 import com.example.library.ui.screens.user.LibraryUserScreen
 import com.example.library.ui.screens.user.LoanHistoryScreen
@@ -32,20 +33,20 @@ fun NavGraphBuilder.settingDestination(
             if(isLogIn){
                 LibraryUserScreen(
                     onNavigationToEdit={
-                        navController.navigate(LibraryDestination.UserEdit.route)
+                        navController.navigateSingle(LibraryDestination.UserEdit.route)
                     },
                     onLogOut={
                         userViewModel.updateLogInState(false)
                         navController.navigateToSetting()
                     },
                     onNavigationToLoanHistory={
-                        navController.navigate(LibraryDestination.LoanHistory.route)
+                        navController.navigateSingle(LibraryDestination.LoanHistory.route)
                     },
                     onNavigationToLoanStatus={
-                        navController.navigate(LibraryDestination.LoanStatus.route)
+                        navController.navigateSingle(LibraryDestination.LoanStatus.route)
                     },
                     onNavigationToReservation={
-                        navController.navigate(LibraryDestination.ReservationStatus.route)
+                        navController.navigateSingle(LibraryDestination.ReservationStatus.route)
                     },
                     onUnregister={
                         userViewModel.updateLogInState(false)
@@ -55,9 +56,9 @@ fun NavGraphBuilder.settingDestination(
             }else{
                 NonMemberScreen(
                     onNavigationToLogIn =
-                    {navController.navigate(LibraryDestination.LogIn.route)},
+                    {navController.navigateSingle(LibraryDestination.LogIn.route)},
                     onNavigationToRegister =
-                    {navController.navigate(LibraryDestination.Register.route)}
+                    {navController.navigateSingle(LibraryDestination.Register.route)}
                 )
             }
         }
@@ -79,6 +80,7 @@ fun NavGraphBuilder.settingDestination(
                 onNavigationToLogIn={
                     navController.navigate(LibraryDestination.LogIn.route){
                         popUpTo(LibraryDestination.Setting.route)
+                        launchSingleTop=true
                     }
                 }
             )

@@ -15,4 +15,10 @@ fun NavHostController.navigateToSetting()=
         popUpTo(LibraryDestination.Setting.route){
             inclusive=true
         }
+        launchSingleTop=true
+    }
+
+fun NavHostController.navigateSingle(route:String)=
+    this.navigate(route){
+        launchSingleTop=true
     }
