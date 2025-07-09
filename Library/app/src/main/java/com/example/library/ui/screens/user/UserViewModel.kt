@@ -65,6 +65,19 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun unregister(password: String){
+        scope.launch {
+            try {
+                firebaseUserService.unregister(password)
+                _event.emit(UserUiState.Success)
+            }catch (e:FirebaseAuthException){
+                _event.emit(UserUiState.Failure(e.errorCode))
+            }catch (e:Exception){
+                _event.emit(UserUiState.Failure(e.message?:"실패"))
+            }
+        }
+    }
+
     fun updateLogInState(b:Boolean){
         _isLogIn.value= b
     }

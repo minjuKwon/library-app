@@ -47,10 +47,6 @@ fun NavGraphBuilder.settingDestination(
                     },
                     onNavigationToReservation={
                         navController.navigateSingle(LibraryDestination.ReservationStatus.route)
-                    },
-                    onUnregister={
-                        userViewModel.updateLogInState(false)
-                        navController.navigateToSetting()
                     }
                 )
             }else{
