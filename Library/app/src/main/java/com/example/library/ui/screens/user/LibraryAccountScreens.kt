@@ -39,8 +39,8 @@ import com.example.library.data.Gender
 import com.example.library.data.User
 import com.example.library.ui.BackIconButton
 import com.example.library.ui.Divider
+import com.example.library.ui.HandleUserUiState
 import com.example.library.ui.TextRadioButton
-import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 private fun paddingModifier()= Modifier
@@ -342,26 +342,6 @@ fun RegisterScreen(
                         }
                     }
                 )
-            }
-        }
-    }
-}
-
-@Composable
-private fun HandleUserUiState(
-    event: SharedFlow<UserUiState>,
-    onSuccess:()->Unit,
-    onFailure:(UserUiState.Failure)->Unit
-){
-    LaunchedEffect(Unit){
-        event.collect{
-            when(it){
-                is UserUiState.Success->{
-                    onSuccess()
-                }
-                is UserUiState.Failure -> {
-                    onFailure(it)
-                }
             }
         }
     }

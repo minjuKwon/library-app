@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +41,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
 import com.example.library.data.api.Book
+import com.example.library.ui.screens.user.UserUiState
+import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 fun LibraryListItem(
@@ -236,4 +239,24 @@ fun Divider(){
             .padding(horizontal=dimensionResource(R.dimen.padding_sm))
             .background(Color.Black)
     )
+}
+
+@Composable
+fun HandleUserUiState(
+    event: SharedFlow<UserUiState>,
+    onSuccess:()->Unit,
+    onFailure:(UserUiState.Failure)->Unit
+){
+    LaunchedEffect(Unit){
+        event.collect{
+            when(it){
+                is UserUiState.Success->{
+                    onSuccess()
+                }
+                is UserUiState.Failure -> {
+                    onFailure(it)
+                }
+            }
+        }
+    }
 }
