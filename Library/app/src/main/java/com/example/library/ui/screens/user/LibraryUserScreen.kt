@@ -1,5 +1,6 @@
 package com.example.library.ui.screens.user
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,21 +17,38 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.example.library.R
 import com.example.library.ui.Divider
+import com.example.library.ui.HandleUserUiState
 
 @Composable
 fun LibraryUserScreen(
+    userViewModel:UserViewModel,
     onNavigationToEdit:()->Unit,
-    onLogOut:()->Unit,
+    onNavigationToSetting:()->Unit,
     onNavigationToLoanHistory:()->Unit,
     onNavigationToLoanStatus:()->Unit,
     onNavigationToReservation:()->Unit,
     onUnregister:()->Unit,
 ){
+
+    val context = LocalContext.current
+
+    HandleUserUiState(
+        event= userViewModel.event,
+        onSuccess = {
+            userViewModel.updateLogInState(false)
+            onNavigationToSetting()
+        },
+        onFailure = { state:UserUiState.Failure ->
+            Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
+        }
+    )
+
     Column(
         modifier=Modifier
             .padding(
@@ -51,7 +69,7 @@ fun LibraryUserScreen(
                 stringResource(R.string.log_out),
                 Modifier
                     .padding(start= dimensionResource(R.dimen.padding_md))
-                    .clickable { onLogOut() }
+                    .clickable { userViewModel.signOut() }
                     .testTag(stringResource(R.string.test_logOut))
             )
         }

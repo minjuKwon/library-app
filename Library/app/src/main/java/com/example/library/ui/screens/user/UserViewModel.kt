@@ -54,6 +54,17 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun signOut(){
+        scope.launch {
+            try{
+                firebaseUserService.signOut()
+                _event.emit(UserUiState.Success)
+            }catch (e:Exception){
+                _event.emit(UserUiState.Failure(e.message?:"실패"))
+            }
+        }
+    }
+
     fun updateLogInState(b:Boolean){
         _isLogIn.value= b
     }

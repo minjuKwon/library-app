@@ -21,8 +21,14 @@ class FirebaseUserService @Inject constructor(
         if(success.isFailure) throw success.exceptionOrNull()?:SignInFailedException()
         return success.getOrNull()
     }
+
+    suspend fun signOut(){
+        val success= userRepository.signOutUser()
+        if(success.isFailure) throw SignOutFailedException()
+    }
 }
 
 class SignUpFailedException:Exception("회원가입 실패")
 class SaveUserInfoException:Exception("사용자 정보 저장 실패")
 class SignInFailedException:Exception("로그인 실패")
+class SignOutFailedException:Exception("로그아웃 실패")

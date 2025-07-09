@@ -32,11 +32,11 @@ fun NavGraphBuilder.settingDestination(
             val isLogIn by userViewModel.isLogIn.collectAsState()
             if(isLogIn){
                 LibraryUserScreen(
+                    userViewModel=userViewModel,
                     onNavigationToEdit={
                         navController.navigateSingle(LibraryDestination.UserEdit.route)
                     },
-                    onLogOut={
-                        userViewModel.updateLogInState(false)
+                    onNavigationToSetting={
                         navController.navigateToSetting()
                     },
                     onNavigationToLoanHistory={

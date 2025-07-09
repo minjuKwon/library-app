@@ -36,6 +36,15 @@ class FirebaseUserRepository @Inject constructor(
             }
         }
 
+    override suspend fun signOutUser(): Result<Unit> {
+        return try{
+            firebaseAuth.signOut()
+            Result.success(Unit)
+        }catch(e:Exception){
+            Result.failure(e)
+        }
+    }
+
     override suspend fun saveUser(user: User): Result<Unit> =
         withContext(Dispatchers.IO){
             val uid= firebaseAuth.currentUser?.uid?:
