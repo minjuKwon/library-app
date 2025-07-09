@@ -124,8 +124,10 @@ fun LogInScreen(
                         focusManager.clearFocus(true)
                         if(!isClick){
                             val result=checkLogInInputAndShowToast(context, inputId, inputPassword)
-                            if(result) userViewModel.signIn(inputId, inputPassword)
-                            isClick=true
+                            if(result){
+                                userViewModel.signIn(inputId, inputPassword)
+                                isClick=true
+                            }
                         }
                     }
                 ),
@@ -139,8 +141,10 @@ fun LogInScreen(
             Button(onClick = {
                 if(!isClick){
                     val result=checkLogInInputAndShowToast(context, inputId, inputPassword)
-                    if(result) userViewModel.signIn(inputId, inputPassword)
-                    isClick=true
+                    if(result){
+                        userViewModel.signIn(inputId, inputPassword)
+                        isClick=true
+                    }
                 }
             }) {
                 Text(
@@ -313,8 +317,8 @@ fun RegisterScreen(
                                         inputPassword,
                                         userInfo
                                     )
+                                    isClick=true
                                 }
-                                isClick=true
                             }
                         },
                     ),
@@ -337,8 +341,8 @@ fun RegisterScreen(
                                     inputPassword,
                                     userInfo
                                 )
+                                isClick=true
                             }
-                            isClick=true
                         }
                     }
                 )
