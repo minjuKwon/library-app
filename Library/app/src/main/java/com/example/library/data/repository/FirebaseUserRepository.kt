@@ -16,19 +16,20 @@ class FirebaseUserRepository @Inject constructor(
     private val fireStore:FirebaseFirestore
 ):UserRepository {
 
-    override suspend fun createUser(email: String, password: String): Result<Unit> =
+    override suspend fun createUser(email: String, password: String): Result<FirebaseUser?> =
         withContext(Dispatchers.IO){
             return@withContext try{
-                firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-                Result.success(Unit)
+                val result=firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+                Result.success(result.user)
             }catch(e:Exception){
                 Result.failure(e)
             }
     }
 
-    override suspend fun removeUser(): Result<Unit> = withContext(Dispatchers.IO){
+    override suspend fun removeUser(user:FirebaseUser?): Result<Unit> = withContext(Dispatchers.IO){
         return@withContext try{
-            firebaseAuth.currentUser?.delete()?.await()
+            val data= user?:firebaseAuth.currentUser
+            data?.delete()?.await()
             Result.success(Unit)
         }catch (e:Exception){
             Result.failure(e)

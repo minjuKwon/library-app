@@ -13,7 +13,11 @@ class FirebaseUserService @Inject constructor(
         if(created.isFailure) throw created.exceptionOrNull()?:SignUpFailedException()
 
         val saved= userRepository.saveUser(user)
-        if(saved.isFailure) throw SaveUserInfoException()
+        if(saved.isFailure) {
+            val result= created.getOrNull()
+            if(result!=null) userRepository.removeUser(result)
+            throw SaveUserInfoException()
+        }
     }
 
     suspend fun signIn(email:String, password: String):FirebaseUser?{
