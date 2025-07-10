@@ -9,6 +9,6 @@ interface UserRepository {
     suspend fun signInUser(email:String, password: String): Result<FirebaseUser?>
     suspend fun signOutUser():Result<Unit>
     suspend fun saveUser(user:User):Result<Unit>
-    suspend fun deleteUser():Result<Unit>
-    suspend fun reAuthenticateUser(password: String): Result<Unit>
+    suspend fun deleteUser(user:FirebaseUser):Result<User>
+    suspend fun reAuthenticateUser(password: String): Result<FirebaseUser>
 }

@@ -32,13 +32,18 @@ class FirebaseUserService @Inject constructor(
         if(reAuthenticate.isFailure) 
             throw reAuthenticate.exceptionOrNull()?:ReAuthenticateFailedException()
 
-        val delete= userRepository.deleteUser()
-        if(delete.isFailure)
-            throw delete.exceptionOrNull()?:DeleteUserInfoException()
+        val user= reAuthenticate.getOrNull()
+        if(user!=null){
+            val delete= userRepository.deleteUser(user)
+            if(delete.isFailure)
+                throw delete.exceptionOrNull()?:DeleteUserInfoException()
 
-        val unRegister= userRepository.removeUser()
-        if(unRegister.isFailure){
-            throw unRegister.exceptionOrNull()?:UnRegisterFailedException()
+            val unRegister= userRepository.removeUser()
+            if(unRegister.isFailure){
+                val backupUser = delete.getOrNull()
+                if(backupUser!=null) userRepository.saveUser(backupUser)
+                throw unRegister.exceptionOrNull()?:UnRegisterFailedException()
+            }
         }
     }
 
