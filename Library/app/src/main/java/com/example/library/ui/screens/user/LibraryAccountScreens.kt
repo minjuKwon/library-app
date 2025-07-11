@@ -439,13 +439,41 @@ private fun RegisterButton(
 
 @Composable
 fun UserInformationEditScreen(
-    onBackPressed:()->Unit
+    userViewModel:UserViewModel,
+    onBackPressed:()->Unit,
+    onNavigationToSetting:()->Unit
 ){
+    val context= LocalContext.current
+    var isClickName by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        isClickName=false
+    }
+
+    HandleUserUiState(
+        event= userViewModel.event,
+        onSuccess = {
+            Toast.makeText(context, R.string.success_edit, Toast.LENGTH_LONG).show()
+            onNavigationToSetting()
+        },
+        onFailure = {
+            Toast.makeText(context, R.string.wait, Toast.LENGTH_LONG).show()
+        }
+    )
+
     CardLayout(
         iconText = "아이디",
         onBackPressed= onBackPressed
     ){
-        EditUserNameSection()
+        EditUserNameSection(
+            context= context,
+            onEdit = {
+                if(!isClickName){
+                    userViewModel.updateUserInfo(mapOf("name" to it))
+                    isClickName=true
+                }
+            }
+        )
         Divider()
 
         EditSexAndAgeText()
@@ -474,14 +502,48 @@ fun UserInformationEditScreen(
 }
 
 @Composable
-private fun EditUserNameSection(){
+private fun EditUserNameSection(
+    context: Context,
+    onEdit:(String)->Unit
+){
+    var inputName by remember{mutableStateOf("김이름")}
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier= paddingModifier().fillMaxWidth()
     ){
-        Text("김이름")
-        Spacer(modifier= Modifier.weight(1f))
-        Button(onClick = {}) {
+        TextField(
+            value=inputName,
+            onValueChange = {inputName=it},
+            label= {Text(stringResource(R.string.input_name))},
+            keyboardOptions= KeyboardOptions.Default.copy(
+                imeAction= ImeAction.Done,
+                keyboardType = KeyboardType.Text
+            ),
+            keyboardActions= KeyboardActions(
+                onNext = {
+                    if(inputName.isBlank()){
+                        Toast.makeText(context, R.string.blank_name, Toast.LENGTH_LONG).show()
+                    }else{
+                        onEdit(inputName)
+                    }
+                },
+            ),
+            modifier= Modifier
+                .weight(0.6f)
+                .padding(
+                    end = dimensionResource(R.dimen.padding_xl),
+                    top = dimensionResource(R.dimen.padding_md),
+                    bottom = dimensionResource(R.dimen.padding_md)
+                )
+        )
+        Button(onClick = {
+            if(inputName.isBlank()){
+                Toast.makeText(context, R.string.blank_name, Toast.LENGTH_LONG).show()
+            }else{
+                onEdit(inputName)
+            }
+        }) {
             Text(stringResource(R.string.edit))
         }
     }

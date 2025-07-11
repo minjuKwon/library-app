@@ -1,5 +1,7 @@
 package com.example.library.ui.screens.user
 
+import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.library.data.User
@@ -71,6 +73,19 @@ class UserViewModel @Inject constructor(
                 firebaseUserService.unregister(password)
                 _event.emit(UserUiState.Success)
             }catch (e:FirebaseAuthException){
+                _event.emit(UserUiState.Failure(e.errorCode))
+            }catch (e:Exception){
+                _event.emit(UserUiState.Failure(e.message?:"실패"))
+            }
+        }
+    }
+
+    fun updateUserInfo(data: Map<String, Any>){
+        scope.launch {
+            try {
+                firebaseUserService.updateUserInfo(data)
+                _event.emit(UserUiState.Success)
+            }catch(e:FirebaseAuthException){
                 _event.emit(UserUiState.Failure(e.errorCode))
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))

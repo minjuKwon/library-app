@@ -51,6 +51,11 @@ class FirebaseUserService @Inject constructor(
         }
     }
 
+    suspend fun updateUserInfo(data: Map<String, Any>){
+        val result= userRepository.updateUser(data)
+        if(result.isFailure) throw result.exceptionOrNull()?:UpdateUserInfoException()
+    }
+
 }
 
 class SignUpFailedException:Exception("회원가입 실패")
@@ -60,3 +65,4 @@ class SignOutFailedException:Exception("로그아웃 실패")
 class ReAuthenticateFailedException:Exception("사용자 인증 실패")
 class UnRegisterFailedException:Exception("회원가입 실패")
 class DeleteUserInfoException:Exception("사용자 정보 삭제 실패")
+class UpdateUserInfoException:Exception("사용자 정보 수정 실패")

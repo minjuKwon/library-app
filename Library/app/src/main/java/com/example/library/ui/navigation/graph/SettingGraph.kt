@@ -84,7 +84,11 @@ fun NavGraphBuilder.settingDestination(
 
         composable(route=LibraryDestination.UserEdit.route){
             UserInformationEditScreen(
-                onBackPressed = {navController.popBackStack()}
+                userViewModel=userViewModel,
+                onBackPressed = {navController.popBackStack()},
+                onNavigationToSetting={
+                    navController.navigateToSetting()
+                }
             )
         }
 

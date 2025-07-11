@@ -36,6 +36,21 @@ class FirebaseUserRepository @Inject constructor(
         }
     }
 
+    override suspend fun updateUser(data: Map<String, Any>):Result<Unit> =
+        withContext(Dispatchers.IO){
+            val uid= firebaseAuth.currentUser?.uid?:
+                return@withContext Result.failure(IllegalStateException("No Account"))
+            return@withContext try{
+                fireStore.collection(USER_COLLECTION)
+                    .document(uid)
+                    .update(data)
+                    .await()
+                Result.success(Unit)
+            }catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+
     override suspend fun signInUser(email: String, password: String): Result<FirebaseUser?> =
         withContext(Dispatchers.IO){
             return@withContext try{
