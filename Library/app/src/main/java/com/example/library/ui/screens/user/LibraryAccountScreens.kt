@@ -540,9 +540,6 @@ fun UserInformationEditScreen(
                 }
             }
         )
-        Divider()
-
-        EditEmailSection()
     }
 }
 
@@ -708,25 +705,6 @@ private fun ConfirmNewPasswordTextField(
                 .padding(start= dimensionResource(R.dimen.padding_xl))
         ) {
             Text(stringResource(R.string.confirm))
-        }
-    }
-}
-
-@Composable
-private fun EditEmailSection(){
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier=Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal= dimensionResource(R.dimen.padding_xl),
-                vertical = dimensionResource(R.dimen.padding_sm),
-            )
-    ){
-        Text("book@mail.com")
-        Spacer(modifier= Modifier.weight(1f))
-        Button(onClick = {}) {
-            Text(stringResource(R.string.edit))
         }
     }
 }
