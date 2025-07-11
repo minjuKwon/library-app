@@ -56,6 +56,17 @@ class FirebaseUserService @Inject constructor(
         if(result.isFailure) throw result.exceptionOrNull()?:UpdateUserInfoException()
     }
 
+    suspend fun verifyCurrentPassword(password: String){
+        val reAuthenticate= userRepository.reAuthenticateUser(password)
+        if(reAuthenticate.isFailure)
+            throw reAuthenticate.exceptionOrNull()?:ReAuthenticateFailedException()
+    }
+
+    suspend fun updatePassword(password: String){
+        val result= userRepository.updatePassword(password)
+        if(result.isFailure) throw result.exceptionOrNull()?:UpdatePasswordException()
+    }
+
 }
 
 class SignUpFailedException:Exception("회원가입 실패")
@@ -66,3 +77,4 @@ class ReAuthenticateFailedException:Exception("사용자 인증 실패")
 class UnRegisterFailedException:Exception("회원가입 실패")
 class DeleteUserInfoException:Exception("사용자 정보 삭제 실패")
 class UpdateUserInfoException:Exception("사용자 정보 수정 실패")
+class UpdatePasswordException:Exception("비밀번호 수정 실패")

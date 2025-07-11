@@ -29,6 +29,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -444,10 +445,21 @@ fun UserInformationEditScreen(
     onNavigationToSetting:()->Unit
 ){
     val context= LocalContext.current
+    val focusManager= LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusRequester= remember{FocusRequester()}
+    val isVerifyPassword by userViewModel.isVerifyPassword
+
+    var newPassword by remember{ mutableStateOf("") }
     var isClickName by remember { mutableStateOf(false) }
+    var isClickCurrentPassword by remember { mutableStateOf(false) }
+    var isClickNewPassword by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         isClickName=false
+        isClickCurrentPassword=false
+        isClickNewPassword=false
+        userViewModel.updatePasswordCheckState(false)
     }
 
     HandleUserUiState(
@@ -456,8 +468,13 @@ fun UserInformationEditScreen(
             Toast.makeText(context, R.string.success_edit, Toast.LENGTH_LONG).show()
             onNavigationToSetting()
         },
-        onFailure = {
-            Toast.makeText(context, R.string.wait, Toast.LENGTH_LONG).show()
+        onFailure = { state:UserUiState.Failure ->
+            val message= when(state.message){
+                "ERROR_INVALID_CREDENTIAL" -> R.string.invalid_password
+                "ERROR_WEAK_PASSWORD" -> R.string.weak_password
+                else -> R.string.wait
+            }
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         }
     )
 
@@ -480,21 +497,49 @@ fun UserInformationEditScreen(
         Divider()
 
         Text(stringResource(R.string.change_password),modifier=paddingModifier())
-        CurrentPasswordTextField()
+        CurrentPasswordTextField(
+            context=context,
+            onVerify = {
+                if(isVerifyPassword){
+                    Toast.makeText(context, R.string.already_reauthorization,Toast.LENGTH_LONG).show()
+                }else{
+                    if(!isClickCurrentPassword){
+                        keyboardController?.hide()
+                        userViewModel.verifyCurrentPassword(it)
+                        isClickCurrentPassword=true
+                        Toast.makeText(context, R.string.already_reauthorization,Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        )
         TextField(
-            value="",
-            onValueChange = {},
+            value=newPassword,
+            onValueChange = {newPassword=it},
             label= {Text(stringResource(R.string.new_password))},
             keyboardOptions= KeyboardOptions.Default.copy(
                 imeAction= ImeAction.Next,
                 keyboardType = KeyboardType.Password
             ),
             keyboardActions= KeyboardActions(
-                onNext = {},
+                onNext = {focusManager.moveFocus(FocusDirection.Next)},
             ),
-            modifier= paddingModifier()
+            modifier= paddingModifier().focusRequester(focusRequester)
         )
-        ConfirmNewPasswordTextField()
+        ConfirmNewPasswordTextField(
+            context=context,
+            newPassword = newPassword,
+            onConfirm = {
+                if(isVerifyPassword){
+                    if(!isClickNewPassword){
+                        keyboardController?.hide()
+                        userViewModel.updatePassword(it)
+                        isClickNewPassword=true
+                    }
+                }else{
+                    Toast.makeText(context, R.string.check_password, Toast.LENGTH_LONG).show()
+                }
+            }
+        )
         Divider()
 
         EditEmailSection()
@@ -563,7 +608,12 @@ private fun EditSexAndAgeText(){
 }
 
 @Composable
-private fun CurrentPasswordTextField(){
+private fun CurrentPasswordTextField(
+    context: Context,
+    onVerify:(String)->Unit
+){
+    var inputPassword by remember{mutableStateOf("")}
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier=Modifier
@@ -571,20 +621,32 @@ private fun CurrentPasswordTextField(){
             .padding(horizontal= dimensionResource(R.dimen.padding_xl))
     ){
         TextField(
-            value="",
-            onValueChange = {},
+            value=inputPassword,
+            onValueChange = {inputPassword=it},
             label= {Text(stringResource(R.string.current_password))},
             keyboardOptions= KeyboardOptions.Default.copy(
                 imeAction= ImeAction.Done,
                 keyboardType = KeyboardType.Password
             ),
             keyboardActions= KeyboardActions(
-                onDone = {},
+                onDone = {
+                    if(inputPassword.isBlank()){
+                        Toast.makeText(context, R.string.blank_password, Toast.LENGTH_LONG).show()
+                    }else{
+                        onVerify(inputPassword)
+                    }
+                },
             ),
             modifier=Modifier.fillMaxWidth(0.6f)
         )
         Button(
-            onClick = {},
+            onClick = {
+                if(inputPassword.isBlank()){
+                    Toast.makeText(context, R.string.blank_password, Toast.LENGTH_LONG).show()
+                }else{
+                    onVerify(inputPassword)
+                }
+            },
             modifier=Modifier
                 .padding(start= dimensionResource(R.dimen.padding_xl))
         ) {
@@ -594,7 +656,13 @@ private fun CurrentPasswordTextField(){
 }
 
 @Composable
-private fun ConfirmNewPasswordTextField(){
+private fun ConfirmNewPasswordTextField(
+    context: Context,
+    newPassword:String,
+    onConfirm:(String)->Unit,
+){
+    var inputPassword by remember{mutableStateOf("")}
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier=Modifier
@@ -606,20 +674,36 @@ private fun ConfirmNewPasswordTextField(){
             )
     ){
         TextField(
-            value="",
-            onValueChange = {},
+            value=inputPassword,
+            onValueChange = {inputPassword=it},
             label= {Text(stringResource(R.string.confirm_new_password))},
             keyboardOptions= KeyboardOptions.Default.copy(
                 imeAction= ImeAction.Done,
                 keyboardType = KeyboardType.Password
             ),
             keyboardActions= KeyboardActions(
-                onDone = {},
+                onDone = {
+                    if(inputPassword.isBlank()){
+                        Toast.makeText(context, R.string.blank_password, Toast.LENGTH_LONG).show()
+                    }else if(inputPassword!=newPassword){
+                        Toast.makeText(context, R.string.incorrect_new_password, Toast.LENGTH_LONG).show()
+                    }else{
+                        onConfirm(inputPassword)
+                    }
+                },
             ),
             modifier=Modifier.fillMaxWidth(0.6f)
         )
         Button(
-            onClick = {},
+            onClick = {
+                if(inputPassword.isBlank()){
+                    Toast.makeText(context, R.string.blank_password, Toast.LENGTH_LONG).show()
+                }else if(inputPassword!=newPassword){
+                    Toast.makeText(context, R.string.incorrect_new_password, Toast.LENGTH_LONG).show()
+                }else{
+                    onConfirm(inputPassword)
+                }
+            },
             modifier=Modifier
                 .padding(start= dimensionResource(R.dimen.padding_xl))
         ) {

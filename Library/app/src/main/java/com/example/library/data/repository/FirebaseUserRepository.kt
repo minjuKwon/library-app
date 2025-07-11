@@ -117,6 +117,18 @@ class FirebaseUserRepository @Inject constructor(
             }
     }
 
+    override suspend fun updatePassword(password: String): Result<Unit> =
+        withContext(Dispatchers.IO){
+            val user= firebaseAuth.currentUser
+                ?:return@withContext Result.failure(IllegalStateException("No Account"))
+            return@withContext try{
+                user.updatePassword(password).await()
+                Result.success(Unit)
+            }catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+
     companion object {
         const val USER_COLLECTION="users"
     }

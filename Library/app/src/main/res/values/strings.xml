@@ -62,6 +62,9 @@
     <string name="invalid_credential">아이디 또는 비밀번호가 일치하지 않습니다</string>
     <string name="wait">잠시 후 다시 시도해주세요</string>
 
+    <string name="already_reauthorization">사용자 인증이 완료되었습니다</string>
+    <string name="incorrect_new_password">변경된 비밀번호가 일치하지 않습니다</string>
+    <string name="check_password">현재 비밀번호를 입력해주세요</string>
     <string name="success_edit">사용자 정보가 수정되었습니다</string>
 
     <string name="blank_name">이름을 입력해주세요</string>

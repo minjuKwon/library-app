@@ -12,4 +12,5 @@ interface UserRepository {
     suspend fun saveUser(user:User):Result<Unit>
     suspend fun deleteUser(user:FirebaseUser):Result<User>
     suspend fun reAuthenticateUser(password: String): Result<FirebaseUser>
+    suspend fun updatePassword(password:String):Result<Unit>
 }

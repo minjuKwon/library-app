@@ -1,6 +1,5 @@
 package com.example.library.ui.screens.user
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,6 +28,9 @@ class UserViewModel @Inject constructor(
 
     private val _isLogIn= MutableStateFlow(false)
     val isLogIn= _isLogIn
+
+    private val _isVerifyPassword= mutableStateOf(false)
+    val isVerifyPassword= _isVerifyPassword
 
     fun register(password:String, user: User){
         scope.launch {
@@ -93,8 +95,38 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun verifyCurrentPassword(currentPassword: String){
+        scope.launch {
+            try {
+                firebaseUserService.verifyCurrentPassword(currentPassword)
+                _isVerifyPassword.value=true
+            }catch(e:FirebaseAuthException){
+                _event.emit(UserUiState.Failure(e.errorCode))
+            }catch (e:Exception){
+                _event.emit(UserUiState.Failure(e.message?:"실패"))
+            }
+        }
+    }
+
+    fun updatePassword(newPassword:String){
+        scope.launch {
+            try {
+                if(_isVerifyPassword.value) firebaseUserService.updatePassword(newPassword)
+                _event.emit(UserUiState.Success)
+            }catch(e:FirebaseAuthException){
+                _event.emit(UserUiState.Failure(e.errorCode))
+            }catch (e:Exception){
+                _event.emit(UserUiState.Failure(e.message?:"실패"))
+            }
+        }
+    }
+
     fun updateLogInState(b:Boolean){
         _isLogIn.value= b
+    }
+
+    fun updatePasswordCheckState(b:Boolean){
+        _isVerifyPassword.value=b
     }
 
 }
