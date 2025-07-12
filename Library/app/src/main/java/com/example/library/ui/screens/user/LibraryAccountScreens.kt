@@ -69,6 +69,7 @@ fun LogInScreen(
     HandleUserUiState(
         event= userViewModel.event,
         onSuccess = {
+            isClick=true
             userViewModel.updateLogInState(true)
             onNavigationToSetting()
         },
@@ -127,7 +128,6 @@ fun LogInScreen(
                             val result=checkLogInInputAndShowToast(context, inputId, inputPassword)
                             if(result){
                                 userViewModel.signIn(inputId, inputPassword)
-                                isClick=true
                             }
                         }
                     }
@@ -144,7 +144,6 @@ fun LogInScreen(
                     val result=checkLogInInputAndShowToast(context, inputId, inputPassword)
                     if(result){
                         userViewModel.signIn(inputId, inputPassword)
-                        isClick=true
                     }
                 }
             }) {
@@ -196,6 +195,7 @@ fun RegisterScreen(
     HandleUserUiState(
         event= userViewModel.event,
         onSuccess = {
+            isClick=true
             Toast.makeText(context, R.string.success_register, Toast.LENGTH_LONG).show()
             onNavigationToLogIn()
         },
@@ -318,7 +318,6 @@ fun RegisterScreen(
                                         inputPassword,
                                         userInfo
                                     )
-                                    isClick=true
                                 }
                             }
                         },
@@ -342,7 +341,6 @@ fun RegisterScreen(
                                     inputPassword,
                                     userInfo
                                 )
-                                isClick=true
                             }
                         }
                     }
@@ -465,6 +463,8 @@ fun UserInformationEditScreen(
     HandleUserUiState(
         event= userViewModel.event,
         onSuccess = {
+            isClickName=true
+            isClickNewPassword=true
             Toast.makeText(context, R.string.success_edit, Toast.LENGTH_LONG).show()
             onNavigationToSetting()
         },
@@ -487,7 +487,6 @@ fun UserInformationEditScreen(
             onEdit = {
                 if(!isClickName){
                     userViewModel.updateUserInfo(mapOf("name" to it))
-                    isClickName=true
                 }
             }
         )
@@ -533,7 +532,6 @@ fun UserInformationEditScreen(
                     if(!isClickNewPassword){
                         keyboardController?.hide()
                         userViewModel.updatePassword(it)
-                        isClickNewPassword=true
                     }
                 }else{
                     Toast.makeText(context, R.string.check_password, Toast.LENGTH_LONG).show()
