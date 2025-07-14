@@ -85,20 +85,32 @@ class FirebaseUserRepository @Inject constructor(
             }
         }
 
-    override suspend fun deleteUser(user:FirebaseUser): Result<User> =
+    override suspend fun getUser(uid: String): Result<User> =
         withContext(Dispatchers.IO){
             return@withContext try{
-                val docRef = fireStore.collection(USER_COLLECTION).document(user.uid)
+                val docRef = fireStore.collection(USER_COLLECTION).document(uid)
                 val snapshot = docRef.get().await()
                 if (!snapshot.exists()) {
                     return@withContext Result.failure(IllegalStateException("No user data"))
                 }
 
                 val data = snapshot.toObject(User::class.java) ?:
-                    return@withContext Result.failure(IllegalStateException("Failed to parse user data"))
+                return@withContext Result.failure(IllegalStateException("Failed to parse user data"))
 
-                docRef.delete().await()
                 Result.success(data)
+            }catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+
+    override suspend fun deleteUser(user:FirebaseUser): Result<User> =
+        withContext(Dispatchers.IO){
+            return@withContext try{
+                fireStore.collection(USER_COLLECTION)
+                    .document(user.uid)
+                    .delete()
+                    .await()
+                getUser(user.uid)
             }catch (e:Exception){
                 Result.failure(e)
             }
