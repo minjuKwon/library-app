@@ -1,5 +1,6 @@
 package com.example.library.di
 
+import com.example.library.data.SessionManager
 import com.example.library.data.repository.FirebaseUserRepository
 import com.example.library.domain.UserRepository
 import com.example.library.service.FirebaseUserService
@@ -38,8 +39,11 @@ object FirebaseModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseUserService(userRepository: UserRepository): FirebaseUserService {
-        return FirebaseUserService(userRepository)
+    fun provideFirebaseUserService(
+        userRepository: UserRepository,
+        sessionManager: SessionManager
+    ): FirebaseUserService {
+        return FirebaseUserService(userRepository, sessionManager)
     }
 
 }

@@ -11,7 +11,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,6 +25,14 @@ class UserViewModel @Inject constructor(
 ) : ViewModel(){
 
     private val scope= externalScope ?: viewModelScope
+
+    private val _userPreferences: StateFlow<User> =
+        firebaseUserService.userPreferences.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            User()
+    )
+    val userPreferences= _userPreferences
 
     private val _event= MutableSharedFlow<UserUiState>()
     val event= _event.asSharedFlow()

@@ -1,13 +1,18 @@
 package com.example.library.service
 
+import com.example.library.data.SessionManager
 import com.example.library.data.User
 import com.example.library.domain.UserRepository
-import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class FirebaseUserService @Inject constructor(
-    private val userRepository:UserRepository
+    private val userRepository:UserRepository,
+    private val sessionManager: SessionManager
 ) {
+
+    val userPreferences: Flow<User> = sessionManager.userPreferences
+
     suspend fun register(password:String, user: User){
         val created= userRepository.createUser(user.email, password)
         if(created.isFailure) throw created.exceptionOrNull()?:SignUpFailedException()
@@ -20,20 +25,27 @@ class FirebaseUserService @Inject constructor(
         }
     }
 
-    suspend fun signIn(email:String, password: String):FirebaseUser?{
+    suspend fun signIn(email:String, password: String){
         val success = userRepository.signInUser(email, password)
         if(success.isFailure) throw success.exceptionOrNull()?:SignInFailedException()
-        return success.getOrNull()
+
+        val uid= success.getOrNull()?.uid
+        if(uid!=null){
+            val data=userRepository.getUser(uid)
+            if(data.isFailure) throw data.exceptionOrNull()?:SaveSessionException()
+            data.getOrNull()?.let { sessionManager.saveSession(it) }
+        }
     }
 
     suspend fun signOut(){
         val success= userRepository.signOutUser()
         if(success.isFailure) throw SignOutFailedException()
+        sessionManager.removeSession()
     }
 
     suspend fun unregister(password: String){
         val reAuthenticate= userRepository.reAuthenticateUser(password)
-        if(reAuthenticate.isFailure) 
+        if(reAuthenticate.isFailure)
             throw reAuthenticate.exceptionOrNull()?:ReAuthenticateFailedException()
 
         val user= reAuthenticate.getOrNull()
@@ -78,3 +90,4 @@ class UnRegisterFailedException:Exception("회원가입 실패")
 class DeleteUserInfoException:Exception("사용자 정보 삭제 실패")
 class UpdateUserInfoException:Exception("사용자 정보 수정 실패")
 class UpdatePasswordException:Exception("비밀번호 수정 실패")
+class SaveSessionException:Exception("세션 저장 실패")

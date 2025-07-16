@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option java_package = "com.example.library";
+option java_multiple_files = true;
+
+message UserPreferences{
+  string email=1;
+  string name=2;
+  Gender gender=3;
+  int32 age=4;
+}
+
+enum Gender{
+    MALE=0;
+    FEMALE=1;
+}
