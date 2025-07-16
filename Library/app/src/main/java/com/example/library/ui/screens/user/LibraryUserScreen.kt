@@ -34,12 +34,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import com.example.library.R
+import com.example.library.data.User
 import com.example.library.ui.Divider
 import com.example.library.ui.HandleUserUiState
 
 @Composable
 fun LibraryUserScreen(
     userViewModel:UserViewModel,
+    userInfo: User,
     onNavigationToEdit:()->Unit,
     onNavigationToSetting:()->Unit,
     onNavigationToLoanHistory:()->Unit,
@@ -73,7 +75,7 @@ fun LibraryUserScreen(
             )
     ){
         Row{
-            Text("김이름")
+            Text(userInfo.name)
             Text(
                 stringResource(R.string.edit_information),
                 Modifier
@@ -118,6 +120,7 @@ fun LibraryUserScreen(
         }
     }
     UnRegisterDialog(
+        id= userInfo.email,
         isShow = openAlertDialog,
         onDismissRequest = {openAlertDialog=false},
         onConfirmation = {
@@ -143,6 +146,7 @@ private fun UserTextButton(
 
 @Composable
 private fun UnRegisterDialog(
+    id: String,
     isShow:Boolean,
     onDismissRequest: () -> Unit,
     onConfirmation: (String) -> Unit
@@ -161,6 +165,11 @@ private fun UnRegisterDialog(
                         textAlign= TextAlign.Center,
                         modifier= Modifier
                             .padding(dimensionResource(R.dimen.padding_sm))
+                    )
+                    Text(
+                        text= stringResource(R.string.id,id),
+                        modifier= Modifier
+                            .padding(top=dimensionResource(R.dimen.padding_lg))
                     )
                     OutlinedTextField(
                         value=inputPassword,

@@ -30,9 +30,11 @@ fun NavGraphBuilder.settingDestination(
     ){
         composable(route= LibraryDestination.Setting.route){
             val isLogIn by userViewModel.isLogIn.collectAsState()
+            val userInfo by userViewModel.userPreferences.collectAsState()
             if(isLogIn){
                 LibraryUserScreen(
                     userViewModel=userViewModel,
+                    userInfo= userInfo,
                     onNavigationToEdit={
                         navController.navigateSingle(LibraryDestination.UserEdit.route)
                     },
