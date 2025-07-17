@@ -141,6 +141,25 @@ class FirebaseUserRepository @Inject constructor(
             }
         }
 
+    override suspend fun sendEmail(user:FirebaseUser?):Result<Unit> =
+        withContext(Dispatchers.IO){
+            return@withContext try{
+                if(user==null) firebaseAuth.currentUser?.sendEmailVerification()
+                else user.sendEmailVerification().await()
+                Result.success(Unit)
+            }catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+
+    override suspend fun isVerified():Boolean{
+        firebaseAuth.currentUser?.let {
+            it.reload().await()
+            return it.isEmailVerified
+        }
+        return false
+    }
+
     companion object {
         const val USER_COLLECTION="users"
     }

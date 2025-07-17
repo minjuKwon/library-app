@@ -15,6 +15,7 @@ import com.example.library.ui.screens.user.LoanHistoryScreen
 import com.example.library.ui.screens.user.LoanStatusScreen
 import com.example.library.ui.screens.user.LogInScreen
 import com.example.library.ui.screens.user.NonMemberScreen
+import com.example.library.ui.screens.user.NotVerificationScreen
 import com.example.library.ui.screens.user.RegisterScreen
 import com.example.library.ui.screens.user.ReservationStatusScreen
 import com.example.library.ui.screens.user.UserInformationEditScreen
@@ -62,13 +63,23 @@ fun NavGraphBuilder.settingDestination(
         }
 
         composable(route= LibraryDestination.LogIn.route) {
-            LogInScreen(
-                userViewModel= userViewModel,
-                onBackPressed = {navController.popBackStack()},
-                onNavigationToSetting={
-                    navController.navigateToSetting()
-                }
-            )
+            val isVerifyUser by userViewModel.isVerifyUser
+            val isClickEmailLink by userViewModel.isClickEmailLink.collectAsState()
+
+            if(isVerifyUser){
+                LogInScreen(
+                    userViewModel= userViewModel,
+                    isClickEmailLink=isClickEmailLink,
+                    onBackPressed = {navController.popBackStack()},
+                    onNavigationToSetting={
+                        navController.navigateToSetting()
+                        userViewModel.checkUserIsVerified()
+                    }
+                )
+            }else{
+                userViewModel.updateEmailLinkState(true)
+                NotVerificationScreen(userViewModel= userViewModel)
+            }
         }
 
         composable(route= LibraryDestination.Register.route) {

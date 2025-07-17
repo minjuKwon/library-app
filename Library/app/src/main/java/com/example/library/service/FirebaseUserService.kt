@@ -3,6 +3,7 @@ package com.example.library.service
 import com.example.library.data.SessionManager
 import com.example.library.data.User
 import com.example.library.domain.UserRepository
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -18,20 +19,27 @@ class FirebaseUserService @Inject constructor(
         if(created.isFailure) throw created.exceptionOrNull()?:SignUpFailedException()
 
         val saved= userRepository.saveUser(user)
+        val result= created.getOrNull()
+
         if(saved.isFailure) {
-            val result= created.getOrNull()
             if(result!=null) userRepository.removeUser(result)
             throw SaveUserInfoException()
         }
+
+        result?.let { sendEmail(it) }
     }
 
     suspend fun signIn(email:String, password: String){
         val success = userRepository.signInUser(email, password)
         if(success.isFailure) throw success.exceptionOrNull()?:SignInFailedException()
 
-        val uid= success.getOrNull()?.uid
-        if(uid!=null){
-            val data=userRepository.getUser(uid)
+        val user= success.getOrNull()
+        if(user!=null){
+            if(!user.isEmailVerified){
+                sendEmail(user)
+                throw VerificationFailedException()
+            }
+            val data=userRepository.getUser(user.uid)
             if(data.isFailure) throw data.exceptionOrNull()?:SaveSessionException()
             data.getOrNull()?.let { sessionManager.saveSession(it) }
         }
@@ -79,6 +87,13 @@ class FirebaseUserService @Inject constructor(
         if(result.isFailure) throw result.exceptionOrNull()?:UpdatePasswordException()
     }
 
+    suspend fun sendEmail(user:FirebaseUser?){
+        val send = userRepository.sendEmail(user)
+        if(send.isFailure) throw send.exceptionOrNull()?:VerificationFailedException()
+    }
+
+    suspend fun isUserVerified():Boolean = userRepository.isVerified()
+
 }
 
 class SignUpFailedException:Exception("회원가입 실패")
@@ -91,3 +106,4 @@ class DeleteUserInfoException:Exception("사용자 정보 삭제 실패")
 class UpdateUserInfoException:Exception("사용자 정보 수정 실패")
 class UpdatePasswordException:Exception("비밀번호 수정 실패")
 class SaveSessionException:Exception("세션 저장 실패")
+class VerificationFailedException:Exception("사용자 인증 실패")

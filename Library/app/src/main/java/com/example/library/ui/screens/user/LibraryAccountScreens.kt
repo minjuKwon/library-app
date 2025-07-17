@@ -6,16 +6,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DoNotDisturbOn
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +40,9 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.library.R
 import com.example.library.data.Gender
 import com.example.library.data.User
@@ -53,6 +61,7 @@ private fun paddingModifier()= Modifier
 @Composable
 fun LogInScreen(
     userViewModel:UserViewModel,
+    isClickEmailLink:Boolean,
     onBackPressed:()->Unit,
     onNavigationToSetting:()->Unit
 ){
@@ -74,13 +83,16 @@ fun LogInScreen(
             onNavigationToSetting()
         },
         onFailure = { state:UserUiState.Failure ->
-            val message= when(state.message){
-                "ERROR_INVALID_EMAIL" -> R.string.invalid_email
-                "ERROR_INVALID_CREDENTIAL" -> R.string.invalid_credential
-                "ERROR_TOO_MANY_REQUESTS" -> R.string.wait
-                else -> R.string.fail_signIn
+            if(state.message=="사용자 인증 실패") userViewModel.checkUserIsVerified()
+            else{
+                val message= when(state.message){
+                    "ERROR_INVALID_EMAIL" -> R.string.invalid_email
+                    "ERROR_INVALID_CREDENTIAL" -> R.string.invalid_credential
+                    "ERROR_TOO_MANY_REQUESTS" -> R.string.wait
+                    else -> R.string.fail_signIn
+                }
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
             }
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         }
     )
 
@@ -98,6 +110,9 @@ fun LogInScreen(
             modifier= Modifier
                 .padding(dimensionResource(R.dimen.padding_xxl))
         ){
+            if(userViewModel.isVerifyUser.value&&isClickEmailLink){
+                Text(text= stringResource(R.string.already_reauthorization))
+            }
             TextField(
                 value=inputId,
                 onValueChange = {inputId=it},
@@ -174,6 +189,47 @@ private fun checkLogInInputAndShowToast(
         else->{
             Toast.makeText(context, R.string.loading_signIn, Toast.LENGTH_LONG).show()
             return true
+        }
+    }
+}
+
+@Composable
+fun NotVerificationScreen(
+    userViewModel:UserViewModel
+){
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner){
+        val observer = LifecycleEventObserver { _, event ->
+            when(event){
+                Lifecycle.Event.ON_RESUME ->{ userViewModel.checkUserIsVerified() }
+                else ->{}
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    Column(
+        modifier=Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector =  Icons.Default.DoNotDisturbOn,
+            contentDescription = null
+        )
+        Text(
+            text= stringResource(R.string.retry_verification),
+            modifier=Modifier.padding(dimensionResource(R.dimen.padding_md))
+        )
+        Button(
+            onClick = { userViewModel.sendVerificationEmail() }
+        ) {
+            Text(
+                text= stringResource(R.string.resend)
+            )
         }
     }
 }

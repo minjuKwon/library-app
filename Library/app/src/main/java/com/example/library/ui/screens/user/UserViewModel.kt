@@ -40,13 +40,20 @@ class UserViewModel @Inject constructor(
     private val _isLogIn= MutableStateFlow(false)
     val isLogIn= _isLogIn
 
+    private val _isClickEmailLink= MutableStateFlow(false)
+    val isClickEmailLink= _isClickEmailLink
+
     private val _isVerifyPassword= mutableStateOf(false)
     val isVerifyPassword= _isVerifyPassword
+
+    private val _isVerifyUser= mutableStateOf(true)
+    val isVerifyUser= _isVerifyUser
 
     fun register(password:String, user: User){
         scope.launch {
             try{
                 firebaseUserService.register(password, user)
+                _isVerifyUser.value=false
                 _event.emit(UserUiState.Success)
             }catch(e:FirebaseAuthException){
                 _event.emit(UserUiState.Failure(e.errorCode))
@@ -132,12 +139,35 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun sendVerificationEmail(){
+        scope.launch {
+            try {
+                firebaseUserService.sendEmail(null)
+                _event.emit(UserUiState.Success)
+            }catch(e:FirebaseAuthException){
+                _event.emit(UserUiState.Failure(e.errorCode))
+            }catch (e:Exception){
+                _event.emit(UserUiState.Failure(e.message?:"실패"))
+            }
+        }
+    }
+
+    fun checkUserIsVerified(){
+        scope.launch {
+            _isVerifyUser.value = firebaseUserService.isUserVerified()
+        }
+    }
+
     fun updateLogInState(b:Boolean){
         _isLogIn.value= b
     }
 
     fun updatePasswordCheckState(b:Boolean){
         _isVerifyPassword.value=b
+    }
+
+    fun updateEmailLinkState(b:Boolean){
+        _isClickEmailLink.value=b
     }
 
 }
