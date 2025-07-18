@@ -77,7 +77,6 @@ fun NavGraphBuilder.settingDestination(
                     }
                 )
             }else{
-                userViewModel.updateEmailLinkState(true)
                 NotVerificationScreen(userViewModel= userViewModel)
             }
         }

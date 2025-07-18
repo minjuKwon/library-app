@@ -65,6 +65,7 @@
     <string name="retry_verification">회원가입 된 이메일로 인증 링크를 보냈습니다\n
         해당 링크를 클릭하여 인증을 완료해주세요</string>
     <string name="resend">재전송</string>
+    <string name="send_email">이메일을 전송하였습니다</string>
 
     <string name="already_reauthorization">사용자 인증이 완료되었습니다</string>
     <string name="incorrect_new_password">변경된 비밀번호가 일치하지 않습니다</string>

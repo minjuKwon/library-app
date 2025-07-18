@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -197,6 +198,7 @@ private fun checkLogInInputAndShowToast(
 fun NotVerificationScreen(
     userViewModel:UserViewModel
 ){
+    val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
     DisposableEffect(lifecycleOwner){
@@ -211,6 +213,17 @@ fun NotVerificationScreen(
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
+
+    HandleUserUiState(
+        event= userViewModel.event,
+        onSuccess = {
+            userViewModel.updateEmailLinkState(true)
+            Toast.makeText(context, R.string.send_email, Toast.LENGTH_LONG).show()
+        },
+        onFailure = {
+            Toast.makeText(context, R.string.wait, Toast.LENGTH_LONG).show()
+        }
+    )
 
     Column(
         modifier=Modifier.fillMaxSize(),
