@@ -112,7 +112,10 @@ fun LogInScreen(
                 .padding(dimensionResource(R.dimen.padding_xxl))
         ){
             if(userViewModel.isVerifyUser.value&&isClickEmailLink){
-                Text(text= stringResource(R.string.already_reauthorization))
+                Text(
+                    text= stringResource(R.string.already_reauthorization),
+                    modifier=Modifier.padding(dimensionResource(R.dimen.padding_sm))
+                )
             }
             TextField(
                 value=inputId,
@@ -227,11 +230,13 @@ fun NotVerificationScreen(
 
     Column(
         modifier=Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Icon(
             imageVector =  Icons.Default.DoNotDisturbOn,
-            contentDescription = null
+            contentDescription = null,
+            modifier=Modifier.size(dimensionResource(R.dimen.not_verification_image_size))
         )
         Text(
             text= stringResource(R.string.retry_verification),
