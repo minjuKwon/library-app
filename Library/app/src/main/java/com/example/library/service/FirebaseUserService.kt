@@ -13,6 +13,7 @@ class FirebaseUserService @Inject constructor(
 ) {
 
     val userPreferences: Flow<User> = sessionManager.userPreferences
+    val logInPreferences:Flow<Boolean> = sessionManager.logInPreferences
 
     suspend fun register(password:String, user: User){
         val created= userRepository.createUser(user.email, password)
@@ -49,6 +50,7 @@ class FirebaseUserService @Inject constructor(
         val success= userRepository.signOutUser()
         if(success.isFailure) throw SignOutFailedException()
         sessionManager.removeSession()
+        sessionManager.removeLogInState()
     }
 
     suspend fun unregister(password: String){
@@ -97,6 +99,10 @@ class FirebaseUserService @Inject constructor(
     suspend fun findPassword(email: String){
         val result= userRepository.resetPassword(email)
         if(result.isFailure) throw result.exceptionOrNull()?:ResetPasswordFAiledException()
+    }
+
+    suspend fun updateLogInState(b:Boolean){
+        sessionManager.saveLogInState(b)
     }
 
 }
