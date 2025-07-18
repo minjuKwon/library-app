@@ -161,6 +161,16 @@ class FirebaseUserRepository @Inject constructor(
         return false
     }
 
+    override suspend fun resetPassword(email: String): Result<Unit> =
+        withContext(Dispatchers.IO){
+            return@withContext try{
+                firebaseAuth.sendPasswordResetEmail(email).await()
+                Result.success(Unit)
+            }catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+
     companion object {
         const val USER_COLLECTION="users"
     }

@@ -94,6 +94,11 @@ class FirebaseUserService @Inject constructor(
 
     suspend fun isUserVerified():Boolean = userRepository.isVerified()
 
+    suspend fun findPassword(email: String){
+        val result= userRepository.resetPassword(email)
+        if(result.isFailure) throw result.exceptionOrNull()?:ResetPasswordFAiledException()
+    }
+
 }
 
 class SignUpFailedException:Exception("회원가입 실패")
@@ -107,3 +112,4 @@ class UpdateUserInfoException:Exception("사용자 정보 수정 실패")
 class UpdatePasswordException:Exception("비밀번호 수정 실패")
 class SaveSessionException:Exception("세션 저장 실패")
 class VerificationFailedException:Exception("사용자 인증 실패")
+class ResetPasswordFAiledException:Exception("비밀번호 수정 실패")

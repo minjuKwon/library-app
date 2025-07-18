@@ -152,6 +152,19 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun findPassword(email: String){
+        scope.launch {
+            try {
+                firebaseUserService.findPassword(email)
+                _event.emit(UserUiState.Success)
+            }catch(e:FirebaseAuthException){
+                _event.emit(UserUiState.Failure(e.errorCode))
+            }catch (e:Exception){
+                _event.emit(UserUiState.Failure(e.message?:"실패"))
+            }
+        }
+    }
+
     fun checkUserIsVerified(){
         scope.launch {
             _isVerifyUser.value = firebaseUserService.isUserVerified()

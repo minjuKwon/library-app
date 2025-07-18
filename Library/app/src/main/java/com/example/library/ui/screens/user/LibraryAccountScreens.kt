@@ -2,6 +2,7 @@ package com.example.library.ui.screens.user
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,9 +17,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DoNotDisturbOn
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -41,6 +45,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -97,9 +103,10 @@ fun LogInScreen(
         }
     )
 
+    val focusManager= LocalFocusManager.current
     var inputId by remember{mutableStateOf("")}
     var inputPassword by remember{ mutableStateOf("") }
-    val focusManager= LocalFocusManager.current
+    var openAlertDialog by remember { mutableStateOf(false) }
 
     CardLayout(
         iconText = stringResource(R.string.log_in),
@@ -171,9 +178,22 @@ fun LogInScreen(
                     modifier=Modifier.testTag(stringResource(R.string.test_logIn))
                 )
             }
-
+            Text(
+                text= stringResource(R.string.find_password),
+                modifier= Modifier
+                    .padding(dimensionResource(R.dimen.padding_md))
+                    .clickable { openAlertDialog=true }
+            )
         }
     }
+    FindPasswordDialog(
+        isShow = openAlertDialog,
+        onDismissRequest = {openAlertDialog=false},
+        onConfirmation = {
+            userViewModel.findPassword(it)
+            openAlertDialog=false
+        }
+    )
 }
 
 private fun checkLogInInputAndShowToast(
@@ -193,6 +213,69 @@ private fun checkLogInInputAndShowToast(
         else->{
             Toast.makeText(context, R.string.loading_signIn, Toast.LENGTH_LONG).show()
             return true
+        }
+    }
+}
+
+@Composable
+private fun FindPasswordDialog(
+    isShow:Boolean,
+    onDismissRequest: () -> Unit,
+    onConfirmation: (String) -> Unit
+){
+    var inputEmail by remember{ mutableStateOf("") }
+
+    if(isShow){
+        Dialog(onDismissRequest={onDismissRequest()}){
+            Card {
+                Column(
+                    modifier=Modifier.padding(dimensionResource(R.dimen.padding_lg)),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text= stringResource(R.string.find_password_dialog_content),
+                        textAlign= TextAlign.Center,
+                        modifier= Modifier
+                            .padding(dimensionResource(R.dimen.padding_lg))
+                    )
+                    OutlinedTextField(
+                        value=inputEmail,
+                        onValueChange = {inputEmail=it},
+                        label= {Text(stringResource(R.string.input_email))},
+                        keyboardOptions= KeyboardOptions.Default.copy(
+                            imeAction= ImeAction.Done,
+                            keyboardType = KeyboardType.Email
+                        ),
+                        keyboardActions= KeyboardActions(
+                            onDone = {
+                                onConfirmation(inputEmail)
+                            }
+                        ),
+                        modifier= Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                horizontal =dimensionResource(R.dimen.padding_md),
+                                vertical = dimensionResource(R.dimen.padding_lg)
+                            )
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    TextButton(
+                        onClick = { onDismissRequest() },
+                    ) {
+                        Text(stringResource(R.string.cancel))
+                    }
+                    TextButton(
+                        onClick = { onConfirmation(inputEmail) },
+                    ) {
+                        Text(stringResource(R.string.confirm))
+                    }
+                }
+            }
         }
     }
 }

@@ -16,4 +16,5 @@ interface UserRepository {
     suspend fun updatePassword(password:String):Result<Unit>
     suspend fun sendEmail(user:FirebaseUser?=null):Result<Unit>
     suspend fun isVerified():Boolean
+    suspend fun resetPassword(email: String):Result<Unit>
 }
