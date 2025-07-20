@@ -16,89 +16,89 @@ class FirebaseUserService @Inject constructor(
     val logInPreferences:Flow<Boolean> = sessionManager.logInPreferences
 
     suspend fun register(password:String, user: User){
-        val created= userRepository.createUser(user.email, password)
-        if(created.isFailure) throw created.exceptionOrNull()?:SignUpFailedException()
+        val createdResult= userRepository.createUser(user.email, password)
+        if(createdResult.isFailure) throw createdResult.exceptionOrNull()?:SignUpFailedException()
 
-        val saved= userRepository.saveUser(user)
-        val result= created.getOrNull()
+        val isSave= userRepository.saveUser(user)
+        val createdUser= createdResult.getOrNull()
 
-        if(saved.isFailure) {
-            if(result!=null) userRepository.removeUser(result)
+        if(isSave.isFailure) {
+            if(createdUser!=null) userRepository.removeUser(createdUser)
             throw SaveUserInfoException()
         }
 
-        result?.let { sendEmail(it) }
+        createdUser?.let { sendEmail(it) }
     }
 
     suspend fun signIn(email:String, password: String){
-        val success = userRepository.signInUser(email, password)
-        if(success.isFailure) throw success.exceptionOrNull()?:SignInFailedException()
+        val signedInResult = userRepository.signInUser(email, password)
+        if(signedInResult.isFailure) throw signedInResult.exceptionOrNull()?:SignInFailedException()
 
-        val user= success.getOrNull()
-        if(user!=null){
-            if(!user.isEmailVerified){
-                sendEmail(user)
+        val signedInUser= signedInResult.getOrNull()
+        if(signedInUser!=null){
+            if(!signedInUser.isEmailVerified){
+                sendEmail(signedInUser)
                 throw VerificationFailedException()
             }
-            val data=userRepository.getUser(user.uid)
-            if(data.isFailure) throw data.exceptionOrNull()?:SaveSessionException()
-            data.getOrNull()?.let { sessionManager.saveSession(it) }
+            val signedInUserData=userRepository.getUser(signedInUser.uid)
+            if(signedInUserData.isFailure) throw signedInUserData.exceptionOrNull()?:SaveSessionException()
+            signedInUserData.getOrNull()?.let { sessionManager.saveSession(it) }
         }
     }
 
     suspend fun signOut(){
-        val success= userRepository.signOutUser()
-        if(success.isFailure) throw SignOutFailedException()
+        val isSignOut= userRepository.signOutUser()
+        if(isSignOut.isFailure) throw SignOutFailedException()
         sessionManager.removeSession()
         sessionManager.removeLogInState()
     }
 
     suspend fun unregister(password: String){
-        val reAuthenticate= userRepository.reAuthenticateUser(password)
-        if(reAuthenticate.isFailure)
-            throw reAuthenticate.exceptionOrNull()?:ReAuthenticateFailedException()
+        val reAuthenticatedResult= userRepository.reAuthenticateUser(password)
+        if(reAuthenticatedResult.isFailure)
+            throw reAuthenticatedResult.exceptionOrNull()?:ReAuthenticateFailedException()
 
-        val user= reAuthenticate.getOrNull()
-        if(user!=null){
-            val delete= userRepository.deleteUser(user)
-            if(delete.isFailure)
-                throw delete.exceptionOrNull()?:DeleteUserInfoException()
+        val reAuthenticatedUser= reAuthenticatedResult.getOrNull()
+        if(reAuthenticatedUser!=null){
+            val deletedUser= userRepository.deleteUser(reAuthenticatedUser)
+            if(deletedUser.isFailure)
+                throw deletedUser.exceptionOrNull()?:DeleteUserInfoException()
 
-            val unRegister= userRepository.removeUser()
-            if(unRegister.isFailure){
-                val backupUser = delete.getOrNull()
+            val isUnRegister= userRepository.removeUser()
+            if(isUnRegister.isFailure){
+                val backupUser = deletedUser.getOrNull()
                 if(backupUser!=null) userRepository.saveUser(backupUser)
-                throw unRegister.exceptionOrNull()?:UnRegisterFailedException()
+                throw isUnRegister.exceptionOrNull()?:UnRegisterFailedException()
             }
         }
     }
 
     suspend fun updateUserInfo(data: Map<String, Any>){
-        val result= userRepository.updateUser(data)
-        if(result.isFailure) throw result.exceptionOrNull()?:UpdateUserInfoException()
+        val isUpdate= userRepository.updateUser(data)
+        if(isUpdate.isFailure) throw isUpdate.exceptionOrNull()?:UpdateUserInfoException()
     }
 
     suspend fun verifyCurrentPassword(password: String){
-        val reAuthenticate= userRepository.reAuthenticateUser(password)
-        if(reAuthenticate.isFailure)
-            throw reAuthenticate.exceptionOrNull()?:ReAuthenticateFailedException()
+        val isReAuthenticate= userRepository.reAuthenticateUser(password)
+        if(isReAuthenticate.isFailure)
+            throw isReAuthenticate.exceptionOrNull()?:ReAuthenticateFailedException()
     }
 
     suspend fun updatePassword(password: String){
-        val result= userRepository.updatePassword(password)
-        if(result.isFailure) throw result.exceptionOrNull()?:UpdatePasswordException()
+        val isChange= userRepository.updatePassword(password)
+        if(isChange.isFailure) throw isChange.exceptionOrNull()?:UpdatePasswordException()
     }
 
     suspend fun sendEmail(user:FirebaseUser?){
-        val send = userRepository.sendEmail(user)
-        if(send.isFailure) throw send.exceptionOrNull()?:VerificationFailedException()
+        val isSend = userRepository.sendEmail(user)
+        if(isSend.isFailure) throw isSend.exceptionOrNull()?:VerificationFailedException()
     }
 
     suspend fun isUserVerified():Boolean = userRepository.isVerified()
 
     suspend fun findPassword(email: String){
-        val result= userRepository.resetPassword(email)
-        if(result.isFailure) throw result.exceptionOrNull()?:ResetPasswordFAiledException()
+        val isReset= userRepository.resetPassword(email)
+        if(isReset.isFailure) throw isReset.exceptionOrNull()?:ResetPasswordFAiledException()
     }
 
     suspend fun updateLogInState(b:Boolean){
