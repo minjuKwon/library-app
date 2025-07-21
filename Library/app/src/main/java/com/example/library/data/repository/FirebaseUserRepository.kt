@@ -38,8 +38,8 @@ class FirebaseUserRepository @Inject constructor(
 
     override suspend fun updateUser(data: Map<String, Any>):Result<Unit> =
         withContext(Dispatchers.IO){
-            val uid= firebaseAuth.currentUser?.uid?:
-                return@withContext Result.failure(IllegalStateException("No Account"))
+            val uid= firebaseAuth.currentUser?.uid
+                ?: return@withContext Result.failure(IllegalStateException("No Account"))
             return@withContext try{
                 fireStore.collection(USER_COLLECTION)
                     .document(uid)
@@ -72,8 +72,8 @@ class FirebaseUserRepository @Inject constructor(
 
     override suspend fun saveUser(user: User): Result<Unit> =
         withContext(Dispatchers.IO){
-            val uid= firebaseAuth.currentUser?.uid?:
-                return@withContext Result.failure(IllegalStateException("No Account"))
+            val uid= firebaseAuth.currentUser?.uid
+                ?: return@withContext Result.failure(IllegalStateException("No Account"))
             return@withContext try{
                 fireStore.collection(USER_COLLECTION)
                     .document(uid)
@@ -93,10 +93,8 @@ class FirebaseUserRepository @Inject constructor(
                 if (!snapshot.exists()) {
                     return@withContext Result.failure(IllegalStateException("No user data"))
                 }
-
-                val data = snapshot.toObject(User::class.java) ?:
-                return@withContext Result.failure(IllegalStateException("Failed to parse user data"))
-
+                val data = snapshot.toObject(User::class.java)
+                    ?: return@withContext Result.failure(IllegalStateException("Failed to parse user data"))
                 Result.success(data)
             }catch (e:Exception){
                 Result.failure(e)
