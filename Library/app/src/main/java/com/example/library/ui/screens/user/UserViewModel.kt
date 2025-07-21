@@ -45,14 +45,14 @@ class UserViewModel @Inject constructor(
     private val _event= MutableSharedFlow<UserUiState>()
     val event= _event.asSharedFlow()
 
-    private val _isClickEmailLink= MutableStateFlow(false)
-    val isClickEmailLink= _isClickEmailLink
+    private val _isUserVerified= mutableStateOf(true)
+    val isUserVerified= _isUserVerified
 
     private val _isPasswordVerified= mutableStateOf(false)
     val isPasswordVerified= _isPasswordVerified
 
-    private val _isUserVerified= mutableStateOf(true)
-    val isUserVerified= _isUserVerified
+    private val _isClickEmailLink= MutableStateFlow(false)
+    val isClickEmailLink= _isClickEmailLink
 
     fun register(password:String, user: User){
         scope.launch {

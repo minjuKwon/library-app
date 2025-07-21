@@ -368,11 +368,11 @@ fun RegisterScreen(
         }
     )
 
+    var userInfo by remember{ mutableStateOf(User())}
     var inputEmail by remember{mutableStateOf("")}
     var inputName by remember{mutableStateOf("")}
     var inputPassword by remember{mutableStateOf("")}
     var inputVerifiedPassword by remember{mutableStateOf("")}
-    var userInfo by remember{ mutableStateOf(User())}
 
     val focusManager= LocalFocusManager.current
     val radioText= listOf("남","여")

@@ -36,10 +36,10 @@ object AuthRoutes{
     const val REGISTER="${SettingRoutes.ROOT}/$ROOT/register"
 }
 
-object GraphRoutes{
-    const val HOME="home"
-}
-
 object UserRoutes{
     const val USER="user"
+}
+
+object GraphRoutes{
+    const val HOME="home"
 }
