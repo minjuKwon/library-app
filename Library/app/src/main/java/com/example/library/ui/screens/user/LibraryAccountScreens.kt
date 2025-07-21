@@ -118,7 +118,7 @@ fun LogInScreen(
             modifier= Modifier
                 .padding(dimensionResource(R.dimen.padding_xxl))
         ){
-            if(userViewModel.isVerifyUser.value&&isClickEmailLink){
+            if(userViewModel.isUserVerified.value&&isClickEmailLink){
                 Text(
                     text= stringResource(R.string.already_reauthorization),
                     modifier=Modifier.padding(dimensionResource(R.dimen.padding_sm))
@@ -603,9 +603,9 @@ fun UserInformationEditScreen(
     val focusManager= LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester= remember{FocusRequester()}
-    val isVerifyPassword by userViewModel.isVerifyPassword
+    val isVerifyPassword by userViewModel.isPasswordVerified
 
-    var newPassword by remember{ mutableStateOf("") }
+    var inputNewPassword by remember{ mutableStateOf("") }
     var isClickName by remember { mutableStateOf(false) }
     var isClickCurrentPassword by remember { mutableStateOf(false) }
     var isClickNewPassword by remember { mutableStateOf(false) }
@@ -669,8 +669,8 @@ fun UserInformationEditScreen(
             }
         )
         TextField(
-            value=newPassword,
-            onValueChange = {newPassword=it},
+            value=inputNewPassword,
+            onValueChange = {inputNewPassword=it},
             label= {Text(stringResource(R.string.new_password))},
             keyboardOptions= KeyboardOptions.Default.copy(
                 imeAction= ImeAction.Next,
@@ -683,7 +683,7 @@ fun UserInformationEditScreen(
         )
         ConfirmNewPasswordTextField(
             context=context,
-            newPassword = newPassword,
+            newPassword = inputNewPassword,
             onConfirm = {
                 if(isVerifyPassword){
                     if(!isClickNewPassword){

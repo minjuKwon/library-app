@@ -63,10 +63,10 @@ fun NavGraphBuilder.settingDestination(
         }
 
         composable(route= LibraryDestination.LogIn.route) {
-            val isVerifyUser by userViewModel.isVerifyUser
+            val isUserVerified by userViewModel.isUserVerified
             val isClickEmailLink by userViewModel.isClickEmailLink.collectAsState()
 
-            if(isVerifyUser){
+            if(isUserVerified){
                 LogInScreen(
                     userViewModel= userViewModel,
                     isClickEmailLink=isClickEmailLink,

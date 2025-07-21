@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -49,17 +48,17 @@ class UserViewModel @Inject constructor(
     private val _isClickEmailLink= MutableStateFlow(false)
     val isClickEmailLink= _isClickEmailLink
 
-    private val _isVerifyPassword= mutableStateOf(false)
-    val isVerifyPassword= _isVerifyPassword
+    private val _isPasswordVerified= mutableStateOf(false)
+    val isPasswordVerified= _isPasswordVerified
 
-    private val _isVerifyUser= mutableStateOf(true)
-    val isVerifyUser= _isVerifyUser
+    private val _isUserVerified= mutableStateOf(true)
+    val isUserVerified= _isUserVerified
 
     fun register(password:String, user: User){
         scope.launch {
             try{
                 firebaseUserService.register(password, user)
-                _isVerifyUser.value=false
+                _isUserVerified.value=false
                 _event.emit(UserUiState.Success)
             }catch(e:FirebaseAuthException){
                 _event.emit(UserUiState.Failure(e.errorCode))
@@ -123,7 +122,7 @@ class UserViewModel @Inject constructor(
         scope.launch {
             try {
                 firebaseUserService.verifyCurrentPassword(currentPassword)
-                _isVerifyPassword.value=true
+                _isPasswordVerified.value=true
             }catch(e:FirebaseAuthException){
                 _event.emit(UserUiState.Failure(e.errorCode))
             }catch (e:Exception){
@@ -135,7 +134,7 @@ class UserViewModel @Inject constructor(
     fun updatePassword(newPassword:String){
         scope.launch {
             try {
-                if(_isVerifyPassword.value) firebaseUserService.updatePassword(newPassword)
+                if(_isPasswordVerified.value) firebaseUserService.updatePassword(newPassword)
                 _event.emit(UserUiState.Success)
             }catch(e:FirebaseAuthException){
                 _event.emit(UserUiState.Failure(e.errorCode))
@@ -173,7 +172,7 @@ class UserViewModel @Inject constructor(
 
     fun checkUserIsVerified(){
         scope.launch {
-            _isVerifyUser.value = firebaseUserService.isUserVerified()
+            _isUserVerified.value = firebaseUserService.isUserVerified()
         }
     }
 
@@ -184,7 +183,7 @@ class UserViewModel @Inject constructor(
     }
 
     fun updatePasswordCheckState(b:Boolean){
-        _isVerifyPassword.value=b
+        _isPasswordVerified.value=b
     }
 
     fun updateEmailLinkState(b:Boolean){
