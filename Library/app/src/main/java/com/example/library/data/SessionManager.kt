@@ -13,7 +13,7 @@ import javax.inject.Singleton
 
 @Singleton
 class SessionManager @Inject constructor(
-    private val dataStore:DataStore<UserPreferences>,
+    private val userDataStore:DataStore<UserPreferences>,
     private val logInStateStore:DataStore<Preferences>
 ){
 
@@ -21,15 +21,15 @@ class SessionManager @Inject constructor(
         val IS_LOG_IN= booleanPreferencesKey("isLogIn")
     }
 
-    val userPreferences:Flow<User> = dataStore.data.map { it.toUser() }
+    val userPreferences:Flow<User> = userDataStore.data.map { it.toUser() }
     val logInPreferences:Flow<Boolean> = logInStateStore.data.map { it[IS_LOG_IN] ?: false }
 
-    suspend fun saveSession(user:User){
-        dataStore.updateData { user.toProto() }
+    suspend fun saveUserData(user:User){
+        userDataStore.updateData { user.toProto() }
     }
 
-    suspend fun removeSession(){
-        dataStore.updateData { UserPreferences.getDefaultInstance() }
+    suspend fun removeUserData(){
+        userDataStore.updateData { UserPreferences.getDefaultInstance() }
     }
 
     suspend fun saveLogInState(isLogIn:Boolean){

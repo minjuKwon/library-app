@@ -73,7 +73,7 @@ fun NavGraphBuilder.settingDestination(
                     onBackPressed = {navController.popBackStack()},
                     onNavigationToSetting={
                         navController.navigateToSetting()
-                        userViewModel.checkUserIsVerified()
+                        userViewModel.checkUserVerified()
                     }
                 )
             }else{

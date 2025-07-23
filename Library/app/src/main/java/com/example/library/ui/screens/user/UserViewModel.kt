@@ -105,10 +105,10 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun updateUserInfo(data: Map<String, Any>){
+    fun changeUserInfo(data: Map<String, Any>){
         scope.launch {
             try {
-                firebaseUserService.updateUserInfo(data)
+                firebaseUserService.changeUserInfo(data)
                 _event.emit(UserUiState.Success)
             }catch(e:FirebaseAuthException){
                 _event.emit(UserUiState.Failure(e.errorCode))
@@ -131,10 +131,10 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun updatePassword(newPassword:String){
+    fun changePassword(newPassword:String){
         scope.launch {
             try {
-                if(_isPasswordVerified.value) firebaseUserService.updatePassword(newPassword)
+                if(_isPasswordVerified.value) firebaseUserService.changePassword(newPassword)
                 _event.emit(UserUiState.Success)
             }catch(e:FirebaseAuthException){
                 _event.emit(UserUiState.Failure(e.errorCode))
@@ -147,7 +147,7 @@ class UserViewModel @Inject constructor(
     fun sendVerificationEmail(){
         scope.launch {
             try {
-                firebaseUserService.sendEmail(null)
+                firebaseUserService.sendVerificationEmail(null)
                 _event.emit(UserUiState.Success)
             }catch(e:FirebaseAuthException){
                 _event.emit(UserUiState.Failure(e.errorCode))
@@ -170,9 +170,9 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun checkUserIsVerified(){
+    fun checkUserVerified(){
         scope.launch {
-            _isUserVerified.value = firebaseUserService.isUserVerified()
+            _isUserVerified.value = firebaseUserService.isEmailVerified()
         }
     }
 
@@ -182,11 +182,11 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun updatePasswordCheckState(b:Boolean){
+    fun updatePasswordVerifiedState(b:Boolean){
         _isPasswordVerified.value=b
     }
 
-    fun updateEmailLinkState(b:Boolean){
+    fun updateEmailVerifiedState(b:Boolean){
         _isClickEmailLink.value=b
     }
 

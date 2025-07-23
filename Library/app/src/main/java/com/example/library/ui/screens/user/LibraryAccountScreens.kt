@@ -90,7 +90,7 @@ fun LogInScreen(
             onNavigationToSetting()
         },
         onFailure = { state:UserUiState.Failure ->
-            if(state.message=="사용자 인증 실패") userViewModel.checkUserIsVerified()
+            if(state.message=="사용자 인증 실패") userViewModel.checkUserVerified()
             else{
                 val message= when(state.message){
                     "ERROR_INVALID_EMAIL" -> R.string.invalid_email
@@ -290,7 +290,7 @@ fun NotVerificationScreen(
     DisposableEffect(lifecycleOwner){
         val observer = LifecycleEventObserver { _, event ->
             when(event){
-                Lifecycle.Event.ON_RESUME ->{ userViewModel.checkUserIsVerified() }
+                Lifecycle.Event.ON_RESUME ->{ userViewModel.checkUserVerified() }
                 else ->{}
             }
         }
@@ -303,7 +303,7 @@ fun NotVerificationScreen(
     HandleUserUiState(
         event= userViewModel.event,
         onSuccess = {
-            userViewModel.updateEmailLinkState(true)
+            userViewModel.updateEmailVerifiedState(true)
             Toast.makeText(context, R.string.send_email, Toast.LENGTH_LONG).show()
         },
         onFailure = {
@@ -614,7 +614,7 @@ fun UserInformationEditScreen(
         isClickName=false
         isClickCurrentPassword=false
         isClickNewPassword=false
-        userViewModel.updatePasswordCheckState(false)
+        userViewModel.updatePasswordVerifiedState(false)
     }
 
     HandleUserUiState(
@@ -643,7 +643,7 @@ fun UserInformationEditScreen(
             context= context,
             onEdit = {
                 if(!isClickName){
-                    userViewModel.updateUserInfo(mapOf("name" to it))
+                    userViewModel.changeUserInfo(mapOf("name" to it))
                 }
             }
         )
@@ -688,7 +688,7 @@ fun UserInformationEditScreen(
                 if(isVerifyPassword){
                     if(!isClickNewPassword){
                         keyboardController?.hide()
-                        userViewModel.updatePassword(it)
+                        userViewModel.changePassword(it)
                     }
                 }else{
                     Toast.makeText(context, R.string.check_password, Toast.LENGTH_LONG).show()

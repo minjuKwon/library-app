@@ -23,11 +23,11 @@ class FirebaseUserService @Inject constructor(
         val createdUser= createdResult.getOrNull()
 
         if(isSave.isFailure) {
-            if(createdUser!=null) userRepository.removeUser(createdUser)
+            if(createdUser!=null) userRepository.deleteUserAccount(createdUser)
             throw SaveUserInfoException()
         }
 
-        createdUser?.let { sendEmail(it) }
+        createdUser?.let { sendVerificationEmail(it) }
     }
 
     suspend fun signIn(email:String, password: String){
@@ -37,19 +37,19 @@ class FirebaseUserService @Inject constructor(
         val signedInUser= signedInResult.getOrNull()
         if(signedInUser!=null){
             if(!signedInUser.isEmailVerified){
-                sendEmail(signedInUser)
+                sendVerificationEmail(signedInUser)
                 throw VerificationFailedException()
             }
             val signedInUserData=userRepository.getUser(signedInUser.uid)
             if(signedInUserData.isFailure) throw signedInUserData.exceptionOrNull()?:SaveSessionException()
-            signedInUserData.getOrNull()?.let { sessionManager.saveSession(it) }
+            signedInUserData.getOrNull()?.let { sessionManager.saveUserData(it) }
         }
     }
 
     suspend fun signOut(){
         val isSignOut= userRepository.signOutUser()
         if(isSignOut.isFailure) throw SignOutFailedException()
-        sessionManager.removeSession()
+        sessionManager.removeUserData()
         sessionManager.removeLogInState()
     }
 
@@ -60,11 +60,11 @@ class FirebaseUserService @Inject constructor(
 
         val reAuthenticatedUser= reAuthenticatedResult.getOrNull()
         if(reAuthenticatedUser!=null){
-            val deletedUser= userRepository.deleteUser(reAuthenticatedUser)
+            val deletedUser= userRepository.deleteUserData(reAuthenticatedUser)
             if(deletedUser.isFailure)
                 throw deletedUser.exceptionOrNull()?:DeleteUserInfoException()
 
-            val isUnRegister= userRepository.removeUser()
+            val isUnRegister= userRepository.deleteUserAccount()
             if(isUnRegister.isFailure){
                 val backupUser = deletedUser.getOrNull()
                 if(backupUser!=null) userRepository.saveUser(backupUser)
@@ -73,7 +73,7 @@ class FirebaseUserService @Inject constructor(
         }
     }
 
-    suspend fun updateUserInfo(data: Map<String, Any>){
+    suspend fun changeUserInfo(data: Map<String, Any>){
         val isUpdate= userRepository.updateUser(data)
         if(isUpdate.isFailure) throw isUpdate.exceptionOrNull()?:UpdateUserInfoException()
     }
@@ -84,17 +84,17 @@ class FirebaseUserService @Inject constructor(
             throw isReAuthenticate.exceptionOrNull()?:ReAuthenticateFailedException()
     }
 
-    suspend fun updatePassword(password: String){
+    suspend fun changePassword(password: String){
         val isChange= userRepository.updatePassword(password)
         if(isChange.isFailure) throw isChange.exceptionOrNull()?:UpdatePasswordException()
     }
 
-    suspend fun sendEmail(user:FirebaseUser?){
-        val isSend = userRepository.sendEmail(user)
+    suspend fun sendVerificationEmail(user:FirebaseUser?){
+        val isSend = userRepository.sendVerificationEmail(user)
         if(isSend.isFailure) throw isSend.exceptionOrNull()?:VerificationFailedException()
     }
 
-    suspend fun isUserVerified():Boolean = userRepository.isVerified()
+    suspend fun isEmailVerified():Boolean = userRepository.isEmailVerified()
 
     suspend fun findPassword(email: String){
         val isReset= userRepository.resetPassword(email)

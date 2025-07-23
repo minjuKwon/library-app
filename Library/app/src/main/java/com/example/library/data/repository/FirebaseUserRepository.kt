@@ -26,7 +26,7 @@ class FirebaseUserRepository @Inject constructor(
             }
     }
 
-    override suspend fun removeUser(user:FirebaseUser?): Result<Unit> = withContext(Dispatchers.IO){
+    override suspend fun deleteUserAccount(user:FirebaseUser?): Result<Unit> = withContext(Dispatchers.IO){
         return@withContext try{
             val data= user?:firebaseAuth.currentUser
             data?.delete()?.await()
@@ -101,7 +101,7 @@ class FirebaseUserRepository @Inject constructor(
             }
         }
 
-    override suspend fun deleteUser(user:FirebaseUser): Result<User?> =
+    override suspend fun deleteUserData(user:FirebaseUser): Result<User?> =
         withContext(Dispatchers.IO){
             return@withContext try{
                 val data= getUser(user.uid).getOrNull()
@@ -140,7 +140,7 @@ class FirebaseUserRepository @Inject constructor(
             }
         }
 
-    override suspend fun sendEmail(user:FirebaseUser?):Result<Unit> =
+    override suspend fun sendVerificationEmail(user:FirebaseUser?):Result<Unit> =
         withContext(Dispatchers.IO){
             return@withContext try{
                 if(user==null) firebaseAuth.currentUser?.sendEmailVerification()
@@ -151,7 +151,7 @@ class FirebaseUserRepository @Inject constructor(
             }
         }
 
-    override suspend fun isVerified():Boolean{
+    override suspend fun isEmailVerified ():Boolean{
         firebaseAuth.currentUser?.let {
             it.reload().await()
             return it.isEmailVerified

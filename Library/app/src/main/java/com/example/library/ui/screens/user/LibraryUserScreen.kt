@@ -51,7 +51,7 @@ fun LibraryUserScreen(
 
     val context = LocalContext.current
     var openAlertDialog by remember { mutableStateOf(false) }
-    userViewModel.updateEmailLinkState(false)
+    userViewModel.updateEmailVerifiedState(false)
 
     HandleUserUiState(
         event= userViewModel.event,

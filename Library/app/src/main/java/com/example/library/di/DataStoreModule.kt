@@ -22,7 +22,7 @@ object DataStoreModule {
 
     @Provides
     @Singleton
-    fun provideUserPreferences(
+    fun provideUserDataStore(
         @ApplicationContext context:Context
     ): DataStore<UserPreferences> =
         DataStoreFactory.create(
