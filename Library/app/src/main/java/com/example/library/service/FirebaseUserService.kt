@@ -23,7 +23,7 @@ class FirebaseUserService @Inject constructor(
         val createdUser= createdResult.getOrNull()
 
         if(isSave.isFailure) {
-            if(createdUser!=null) userRepository.deleteUserAccount(createdUser)
+            createdUser?.let { userRepository.deleteUserAccount(it) }
             throw SaveUserInfoException()
         }
 
@@ -33,14 +33,12 @@ class FirebaseUserService @Inject constructor(
     suspend fun signIn(email:String, password: String){
         val signedInResult = userRepository.signInUser(email, password)
         if(signedInResult.isFailure) throw signedInResult.exceptionOrNull()?:SignInFailedException()
-
-        val signedInUser= signedInResult.getOrNull()
-        if(signedInUser!=null){
-            if(!signedInUser.isEmailVerified){
-                sendVerificationEmail(signedInUser)
+        signedInResult.getOrNull()?.let{ user ->
+            if(!user.isEmailVerified){
+                sendVerificationEmail(user)
                 throw VerificationFailedException()
             }
-            val signedInUserData=userRepository.getUser(signedInUser.uid)
+            val signedInUserData=userRepository.getUser(user.uid)
             if(signedInUserData.isFailure) throw signedInUserData.exceptionOrNull()?:SaveSessionException()
             signedInUserData.getOrNull()?.let { sessionManager.saveUserData(it) }
         }
@@ -58,16 +56,14 @@ class FirebaseUserService @Inject constructor(
         if(reAuthenticatedResult.isFailure)
             throw reAuthenticatedResult.exceptionOrNull()?:ReAuthenticateFailedException()
 
-        val reAuthenticatedUser= reAuthenticatedResult.getOrNull()
-        if(reAuthenticatedUser!=null){
-            val deletedUser= userRepository.deleteUserData(reAuthenticatedUser)
+        reAuthenticatedResult.getOrNull()?.let{ user ->
+            val deletedUser= userRepository.deleteUserData(user)
             if(deletedUser.isFailure)
                 throw deletedUser.exceptionOrNull()?:DeleteUserInfoException()
 
             val isUnRegister= userRepository.deleteUserAccount()
             if(isUnRegister.isFailure){
-                val backupUser = deletedUser.getOrNull()
-                if(backupUser!=null) userRepository.saveUser(backupUser)
+                deletedUser.getOrNull()?.let { userRepository.saveUser(it) }
                 throw isUnRegister.exceptionOrNull()?:UnRegisterFailedException()
             }
         }
