@@ -36,6 +36,22 @@ class FirebaseUserRepository @Inject constructor(
         }
     }
 
+    override suspend fun getUser(uid: String): Result<User> =
+        withContext(Dispatchers.IO){
+            return@withContext try{
+                val docRef = fireStore.collection(USER_COLLECTION).document(uid)
+                val snapshot = docRef.get().await()
+                if (!snapshot.exists()) {
+                    return@withContext Result.failure(IllegalStateException("No user data"))
+                }
+                val data = snapshot.toObject(User::class.java)
+                    ?: return@withContext Result.failure(IllegalStateException("Failed to parse user data"))
+                Result.success(data)
+            }catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+
     override suspend fun updateUser(data: Map<String, Any>):Result<Unit> =
         withContext(Dispatchers.IO){
             val uid= firebaseAuth.currentUser?.uid
@@ -44,6 +60,35 @@ class FirebaseUserRepository @Inject constructor(
                 fireStore.collection(USER_COLLECTION)
                     .document(uid)
                     .update(data)
+                    .await()
+                Result.success(Unit)
+            }catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+
+    override suspend fun deleteUserData(user:FirebaseUser): Result<User?> =
+        withContext(Dispatchers.IO){
+            return@withContext try{
+                val data= getUser(user.uid).getOrNull()
+                fireStore.collection(USER_COLLECTION)
+                    .document(user.uid)
+                    .delete()
+                    .await()
+                Result.success(data)
+            }catch (e:Exception){
+                Result.failure(e)
+            }
+        }
+
+    override suspend fun saveUser(user: User): Result<Unit> =
+        withContext(Dispatchers.IO){
+            val uid= firebaseAuth.currentUser?.uid
+                ?: return@withContext Result.failure(IllegalStateException("No Account"))
+            return@withContext try{
+                fireStore.collection(USER_COLLECTION)
+                    .document(uid)
+                    .set(user)
                     .await()
                 Result.success(Unit)
             }catch (e:Exception){
@@ -70,51 +115,6 @@ class FirebaseUserRepository @Inject constructor(
         }
     }
 
-    override suspend fun saveUser(user: User): Result<Unit> =
-        withContext(Dispatchers.IO){
-            val uid= firebaseAuth.currentUser?.uid
-                ?: return@withContext Result.failure(IllegalStateException("No Account"))
-            return@withContext try{
-                fireStore.collection(USER_COLLECTION)
-                    .document(uid)
-                    .set(user)
-                    .await()
-                Result.success(Unit)
-            }catch (e:Exception){
-                Result.failure(e)
-            }
-        }
-
-    override suspend fun getUser(uid: String): Result<User> =
-        withContext(Dispatchers.IO){
-            return@withContext try{
-                val docRef = fireStore.collection(USER_COLLECTION).document(uid)
-                val snapshot = docRef.get().await()
-                if (!snapshot.exists()) {
-                    return@withContext Result.failure(IllegalStateException("No user data"))
-                }
-                val data = snapshot.toObject(User::class.java)
-                    ?: return@withContext Result.failure(IllegalStateException("Failed to parse user data"))
-                Result.success(data)
-            }catch (e:Exception){
-                Result.failure(e)
-            }
-        }
-
-    override suspend fun deleteUserData(user:FirebaseUser): Result<User?> =
-        withContext(Dispatchers.IO){
-            return@withContext try{
-                val data= getUser(user.uid).getOrNull()
-                fireStore.collection(USER_COLLECTION)
-                    .document(user.uid)
-                    .delete()
-                    .await()
-                Result.success(data)
-            }catch (e:Exception){
-                Result.failure(e)
-            }
-        }
-
     override suspend fun reAuthenticateUser(password: String): Result<FirebaseUser> =
         withContext(Dispatchers.IO){
             val user= firebaseAuth.currentUser
@@ -127,18 +127,6 @@ class FirebaseUserRepository @Inject constructor(
                 Result.failure(e)
             }
     }
-
-    override suspend fun updatePassword(password: String): Result<Unit> =
-        withContext(Dispatchers.IO){
-            val user= firebaseAuth.currentUser
-                ?:return@withContext Result.failure(IllegalStateException("No Account"))
-            return@withContext try{
-                user.updatePassword(password).await()
-                Result.success(Unit)
-            }catch (e:Exception){
-                Result.failure(e)
-            }
-        }
 
     override suspend fun sendVerificationEmail(user:FirebaseUser?):Result<Unit> =
         withContext(Dispatchers.IO){
@@ -158,6 +146,18 @@ class FirebaseUserRepository @Inject constructor(
         }
         return false
     }
+
+    override suspend fun updatePassword(password: String): Result<Unit> =
+        withContext(Dispatchers.IO){
+            val user= firebaseAuth.currentUser
+                ?:return@withContext Result.failure(IllegalStateException("No Account"))
+            return@withContext try{
+                user.updatePassword(password).await()
+                Result.success(Unit)
+            }catch (e:Exception){
+                Result.failure(e)
+            }
+        }
 
     override suspend fun resetPassword(email: String): Result<Unit> =
         withContext(Dispatchers.IO){

@@ -474,8 +474,8 @@ fun RegisterScreen(
                                 )
                                 if(result){
                                     userViewModel.register(
-                                        inputPassword,
-                                        userInfo
+                                        userInfo,
+                                        inputPassword
                                     )
                                 }
                             }
@@ -497,8 +497,8 @@ fun RegisterScreen(
                             )
                             if(result){
                                 userViewModel.register(
-                                    inputPassword,
-                                    userInfo
+                                    userInfo,
+                                    inputPassword
                                 )
                             }
                         }

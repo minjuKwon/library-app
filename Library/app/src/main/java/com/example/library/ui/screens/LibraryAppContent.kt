@@ -41,12 +41,12 @@ import com.example.library.ui.utils.NavigationType
 @Composable
 fun LibraryAppContent(
     navController: NavHostController,
+    userViewModel: UserViewModel,
     libraryUiState: LibraryUiState,
     navigationConfig: NavigationConfig,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
     detailsScreenParams: DetailsScreenParams,
-    userViewModel: UserViewModel,
     modifier: Modifier = Modifier
 ){
 

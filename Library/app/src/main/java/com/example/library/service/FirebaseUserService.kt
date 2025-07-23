@@ -15,7 +15,7 @@ class FirebaseUserService @Inject constructor(
     val userPreferences: Flow<User> = sessionManager.userPreferences
     val logInPreferences:Flow<Boolean> = sessionManager.logInPreferences
 
-    suspend fun register(password:String, user: User){
+    suspend fun register(user: User, password:String){
         val createdResult= userRepository.createUser(user.email, password)
         if(createdResult.isFailure) throw createdResult.exceptionOrNull()?:SignUpFailedException()
 
@@ -28,27 +28,6 @@ class FirebaseUserService @Inject constructor(
         }
 
         createdUser?.let { sendVerificationEmail(it) }
-    }
-
-    suspend fun signIn(email:String, password: String){
-        val signedInResult = userRepository.signInUser(email, password)
-        if(signedInResult.isFailure) throw signedInResult.exceptionOrNull()?:SignInFailedException()
-        signedInResult.getOrNull()?.let{ user ->
-            if(!user.isEmailVerified){
-                sendVerificationEmail(user)
-                throw VerificationFailedException()
-            }
-            val signedInUserData=userRepository.getUser(user.uid)
-            if(signedInUserData.isFailure) throw signedInUserData.exceptionOrNull()?:SaveSessionException()
-            signedInUserData.getOrNull()?.let { sessionManager.saveUserData(it) }
-        }
-    }
-
-    suspend fun signOut(){
-        val isSignOut= userRepository.signOutUser()
-        if(isSignOut.isFailure) throw SignOutFailedException()
-        sessionManager.removeUserData()
-        sessionManager.removeLogInState()
     }
 
     suspend fun unregister(password: String){
@@ -74,6 +53,34 @@ class FirebaseUserService @Inject constructor(
         if(isUpdate.isFailure) throw isUpdate.exceptionOrNull()?:UpdateUserInfoException()
     }
 
+    suspend fun signIn(email:String, password: String){
+        val signedInResult = userRepository.signInUser(email, password)
+        if(signedInResult.isFailure) throw signedInResult.exceptionOrNull()?:SignInFailedException()
+        signedInResult.getOrNull()?.let{ user ->
+            if(!user.isEmailVerified){
+                sendVerificationEmail(user)
+                throw VerificationFailedException()
+            }
+            val signedInUserData=userRepository.getUser(user.uid)
+            if(signedInUserData.isFailure) throw signedInUserData.exceptionOrNull()?:SaveSessionException()
+            signedInUserData.getOrNull()?.let { sessionManager.saveUserData(it) }
+        }
+    }
+
+    suspend fun signOut(){
+        val isSignOut= userRepository.signOutUser()
+        if(isSignOut.isFailure) throw SignOutFailedException()
+        sessionManager.removeUserData()
+        sessionManager.removeLogInState()
+    }
+
+    suspend fun sendVerificationEmail(user:FirebaseUser?){
+        val isSend = userRepository.sendVerificationEmail(user)
+        if(isSend.isFailure) throw isSend.exceptionOrNull()?:VerificationFailedException()
+    }
+
+    suspend fun isEmailVerified():Boolean = userRepository.isEmailVerified()
+
     suspend fun verifyCurrentPassword(password: String){
         val isReAuthenticate= userRepository.reAuthenticateUser(password)
         if(isReAuthenticate.isFailure)
@@ -84,13 +91,6 @@ class FirebaseUserService @Inject constructor(
         val isChange= userRepository.updatePassword(password)
         if(isChange.isFailure) throw isChange.exceptionOrNull()?:UpdatePasswordException()
     }
-
-    suspend fun sendVerificationEmail(user:FirebaseUser?){
-        val isSend = userRepository.sendVerificationEmail(user)
-        if(isSend.isFailure) throw isSend.exceptionOrNull()?:VerificationFailedException()
-    }
-
-    suspend fun isEmailVerified():Boolean = userRepository.isEmailVerified()
 
     suspend fun findPassword(email: String){
         val isReset= userRepository.resetPassword(email)

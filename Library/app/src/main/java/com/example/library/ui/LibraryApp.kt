@@ -72,6 +72,7 @@ fun LibraryApp(
     CompositionLocalProvider(LocalLifecycleOwner provides lifecycleOwner) {
         LibraryAppContent(
             navController=navController,
+            userViewModel=userViewModel,
             libraryUiState=libraryViewModel.libraryUiState,
             navigationConfig = NavigationConfig(
                 contentType=contentType,
@@ -111,7 +112,6 @@ fun LibraryApp(
                 updateDataReadyForUi = { libraryDetailsViewModel.updateDataReadyForUi(it) },
                 getBookById = {libraryDetailsViewModel.getBookById(it)},
             ),
-            userViewModel=userViewModel,
             modifier=modifier
         )
     }

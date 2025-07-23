@@ -54,15 +54,41 @@ class UserViewModel @Inject constructor(
     private val _isClickEmailLink= MutableStateFlow(false)
     val isClickEmailLink= _isClickEmailLink
 
-    fun register(password:String, user: User){
+    fun register(user: User, password:String){
         scope.launch {
             try{
-                firebaseUserService.register(password, user)
+                firebaseUserService.register(user, password)
                 _isUserVerified.value=false
                 _event.emit(UserUiState.Success)
             }catch(e:FirebaseAuthException){
                 _event.emit(UserUiState.Failure(e.errorCode))
             }catch(e:Exception){
+                _event.emit(UserUiState.Failure(e.message?:"실패"))
+            }
+        }
+    }
+
+    fun unregister(password: String){
+        scope.launch {
+            try {
+                firebaseUserService.unregister(password)
+                _event.emit(UserUiState.Success)
+            }catch (e:FirebaseAuthException){
+                _event.emit(UserUiState.Failure(e.errorCode))
+            }catch (e:Exception){
+                _event.emit(UserUiState.Failure(e.message?:"실패"))
+            }
+        }
+    }
+
+    fun changeUserInfo(data: Map<String, Any>){
+        scope.launch {
+            try {
+                firebaseUserService.changeUserInfo(data)
+                _event.emit(UserUiState.Success)
+            }catch(e:FirebaseAuthException){
+                _event.emit(UserUiState.Failure(e.errorCode))
+            }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
         }
@@ -92,23 +118,10 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun unregister(password: String){
+    fun sendVerificationEmail(){
         scope.launch {
             try {
-                firebaseUserService.unregister(password)
-                _event.emit(UserUiState.Success)
-            }catch (e:FirebaseAuthException){
-                _event.emit(UserUiState.Failure(e.errorCode))
-            }catch (e:Exception){
-                _event.emit(UserUiState.Failure(e.message?:"실패"))
-            }
-        }
-    }
-
-    fun changeUserInfo(data: Map<String, Any>){
-        scope.launch {
-            try {
-                firebaseUserService.changeUserInfo(data)
+                firebaseUserService.sendVerificationEmail(null)
                 _event.emit(UserUiState.Success)
             }catch(e:FirebaseAuthException){
                 _event.emit(UserUiState.Failure(e.errorCode))
@@ -144,19 +157,6 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun sendVerificationEmail(){
-        scope.launch {
-            try {
-                firebaseUserService.sendVerificationEmail(null)
-                _event.emit(UserUiState.Success)
-            }catch(e:FirebaseAuthException){
-                _event.emit(UserUiState.Failure(e.errorCode))
-            }catch (e:Exception){
-                _event.emit(UserUiState.Failure(e.message?:"실패"))
-            }
-        }
-    }
-
     fun findPassword(email: String){
         scope.launch {
             try {
@@ -170,15 +170,15 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun checkUserVerified(){
-        scope.launch {
-            _isUserVerified.value = firebaseUserService.isEmailVerified()
-        }
-    }
-
     fun updateLogInState(b:Boolean){
         scope.launch {
             firebaseUserService.updateLogInState(b)
+        }
+    }
+
+    fun checkUserVerified(){
+        scope.launch {
+            _isUserVerified.value = firebaseUserService.isEmailVerified()
         }
     }
 
