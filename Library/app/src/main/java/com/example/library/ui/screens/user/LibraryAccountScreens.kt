@@ -72,9 +72,15 @@ fun LogInScreen(
     onBackPressed:()->Unit,
     onNavigationToSetting:()->Unit
 ){
-    val focusRequester= remember{FocusRequester()}
     val context= LocalContext.current
+    val focusManager= LocalFocusManager.current
+
+    val focusRequester= remember{FocusRequester()}
+
     var isClick by remember { mutableStateOf(false) }
+    var openAlertDialog by remember { mutableStateOf(false) }
+    var inputId by remember{mutableStateOf("")}
+    var inputPassword by remember{ mutableStateOf("") }
 
     //포커스를 UI 이후 안전하게 요청할 수 있도록 설정
     LaunchedEffect(Unit) {
@@ -102,11 +108,6 @@ fun LogInScreen(
             }
         }
     )
-
-    val focusManager= LocalFocusManager.current
-    var inputId by remember{mutableStateOf("")}
-    var inputPassword by remember{ mutableStateOf("") }
-    var openAlertDialog by remember { mutableStateOf(false) }
 
     CardLayout(
         iconText = stringResource(R.string.log_in),
@@ -341,14 +342,24 @@ fun RegisterScreen(
     onBackPressed:()->Unit,
     onNavigationToLogIn:()->Unit
 ){
-    val focusRequester= remember{FocusRequester()}
     val context= LocalContext.current
+    val focusManager= LocalFocusManager.current
+
+    val radioText= listOf("남","여")
+    val focusRequester= remember{FocusRequester()}
+
+    var userInfo by remember{ mutableStateOf(User())}
     var isClick by remember { mutableStateOf(false) }
+    var inputEmail by remember{mutableStateOf("")}
+    var inputName by remember{mutableStateOf("")}
+    var inputPassword by remember{mutableStateOf("")}
+    var inputVerifiedPassword by remember{mutableStateOf("")}
 
     LaunchedEffect(Unit){
         focusRequester.requestFocus()
         isClick=false
     }
+
     HandleUserUiState(
         event= userViewModel.event,
         onSuccess = {
@@ -367,15 +378,6 @@ fun RegisterScreen(
             if(state.message=="사용자 정보 저장 실패") onBackPressed()
         }
     )
-
-    var userInfo by remember{ mutableStateOf(User())}
-    var inputEmail by remember{mutableStateOf("")}
-    var inputName by remember{mutableStateOf("")}
-    var inputPassword by remember{mutableStateOf("")}
-    var inputVerifiedPassword by remember{mutableStateOf("")}
-
-    val focusManager= LocalFocusManager.current
-    val radioText= listOf("남","여")
 
     LazyColumn{
         item{
@@ -602,13 +604,14 @@ fun UserInformationEditScreen(
     val context= LocalContext.current
     val focusManager= LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val focusRequester= remember{FocusRequester()}
-    val isVerifyPassword by userViewModel.isPasswordVerified
 
-    var inputNewPassword by remember{ mutableStateOf("") }
+    val focusRequester= remember{FocusRequester()}
+    val isPasswordVerified by userViewModel.isPasswordVerified
+
     var isClickName by remember { mutableStateOf(false) }
     var isClickCurrentPassword by remember { mutableStateOf(false) }
     var isClickNewPassword by remember { mutableStateOf(false) }
+    var inputNewPassword by remember{ mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         isClickName=false
@@ -656,7 +659,7 @@ fun UserInformationEditScreen(
         CurrentPasswordTextField(
             context=context,
             onVerify = {
-                if(isVerifyPassword){
+                if(isPasswordVerified){
                     Toast.makeText(context, R.string.already_reauthorization,Toast.LENGTH_LONG).show()
                 }else{
                     if(!isClickCurrentPassword){
@@ -685,7 +688,7 @@ fun UserInformationEditScreen(
             context=context,
             newPassword = inputNewPassword,
             onConfirm = {
-                if(isVerifyPassword){
+                if(isPasswordVerified){
                     if(!isClickNewPassword){
                         keyboardController?.hide()
                         userViewModel.changePassword(it)
