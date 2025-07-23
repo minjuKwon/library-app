@@ -24,7 +24,7 @@ class FirebaseUserService @Inject constructor(
 
         if(isSave.isFailure) {
             createdUser?.let { userRepository.deleteUserAccount(it) }
-            throw SaveUserInfoException()
+            throw SaveUserInfoFailedException()
         }
 
         createdUser?.let { sendVerificationEmail(it) }
@@ -38,7 +38,7 @@ class FirebaseUserService @Inject constructor(
         reAuthenticatedResult.getOrNull()?.let{ user ->
             val deletedUser= userRepository.deleteUserData(user)
             if(deletedUser.isFailure)
-                throw deletedUser.exceptionOrNull()?:DeleteUserInfoException()
+                throw deletedUser.exceptionOrNull()?:DeleteUserInfoFailedException()
 
             val isUnRegister= userRepository.deleteUserAccount()
             if(isUnRegister.isFailure){
@@ -50,7 +50,7 @@ class FirebaseUserService @Inject constructor(
 
     suspend fun changeUserInfo(data: Map<String, Any>){
         val isUpdate= userRepository.updateUser(data)
-        if(isUpdate.isFailure) throw isUpdate.exceptionOrNull()?:UpdateUserInfoException()
+        if(isUpdate.isFailure) throw isUpdate.exceptionOrNull()?:UpdateUserInfoFailedException()
     }
 
     suspend fun signIn(email:String, password: String){
@@ -62,7 +62,8 @@ class FirebaseUserService @Inject constructor(
                 throw VerificationFailedException()
             }
             val signedInUserData=userRepository.getUser(user.uid)
-            if(signedInUserData.isFailure) throw signedInUserData.exceptionOrNull()?:SaveSessionException()
+            if(signedInUserData.isFailure)
+                throw signedInUserData.exceptionOrNull()?:SaveSessionFailedException()
             signedInUserData.getOrNull()?.let { sessionManager.saveUserData(it) }
         }
     }
@@ -89,7 +90,7 @@ class FirebaseUserService @Inject constructor(
 
     suspend fun changePassword(password: String){
         val isChange= userRepository.updatePassword(password)
-        if(isChange.isFailure) throw isChange.exceptionOrNull()?:UpdatePasswordException()
+        if(isChange.isFailure) throw isChange.exceptionOrNull()?:UpdatePasswordFailedException()
     }
 
     suspend fun findPassword(email: String){
@@ -102,16 +103,3 @@ class FirebaseUserService @Inject constructor(
     }
 
 }
-
-class SignUpFailedException:Exception("회원가입 실패")
-class SaveUserInfoException:Exception("사용자 정보 저장 실패")
-class SignInFailedException:Exception("로그인 실패")
-class SignOutFailedException:Exception("로그아웃 실패")
-class ReAuthenticateFailedException:Exception("사용자 인증 실패")
-class UnRegisterFailedException:Exception("회원가입 실패")
-class DeleteUserInfoException:Exception("사용자 정보 삭제 실패")
-class UpdateUserInfoException:Exception("사용자 정보 수정 실패")
-class UpdatePasswordException:Exception("비밀번호 수정 실패")
-class SaveSessionException:Exception("세션 저장 실패")
-class VerificationFailedException:Exception("사용자 인증 실패")
-class ResetPasswordFAiledException:Exception("비밀번호 수정 실패")
