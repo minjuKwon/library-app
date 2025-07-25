@@ -1,10 +1,11 @@
 package com.example.library.data.repository
 
+import com.example.library.FirebaseExternalUser
+import com.example.library.data.ExternalUser
 import com.example.library.data.User
 import com.example.library.domain.UserRepository
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -16,20 +17,20 @@ class FirebaseUserRepository @Inject constructor(
     private val fireStore:FirebaseFirestore
 ):UserRepository {
 
-    override suspend fun createUser(email: String, password: String): Result<FirebaseUser?> =
+    override suspend fun createUser(email: String, password: String): Result<ExternalUser?> =
         withContext(Dispatchers.IO){
             return@withContext try{
                 val result=firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-                Result.success(result.user)
+                Result.success(result.user?.let { FirebaseExternalUser(it) })
             }catch(e:Exception){
                 Result.failure(e)
             }
     }
 
-    override suspend fun deleteUserAccount(user:FirebaseUser?): Result<Unit> = withContext(Dispatchers.IO){
+    override suspend fun deleteUserAccount(user:ExternalUser?): Result<Unit> = withContext(Dispatchers.IO){
         return@withContext try{
-            val data= user?:firebaseAuth.currentUser
-            data?.delete()?.await()
+            if(user==null){ firebaseAuth.currentUser?.delete()?.await() }
+            else{ user.delete() }
             Result.success(Unit)
         }catch (e:Exception){
             Result.failure(e)
@@ -96,11 +97,11 @@ class FirebaseUserRepository @Inject constructor(
             }
         }
 
-    override suspend fun signInUser(email: String, password: String): Result<FirebaseUser?> =
+    override suspend fun signInUser(email: String, password: String): Result<ExternalUser?> =
         withContext(Dispatchers.IO){
             return@withContext try{
                 val result= firebaseAuth.signInWithEmailAndPassword(email, password).await()
-                Result.success(result.user)
+                Result.success(result.user?.let { FirebaseExternalUser(it) })
             }catch (e:Exception){
                 Result.failure(e)
             }
@@ -115,24 +116,24 @@ class FirebaseUserRepository @Inject constructor(
         }
     }
 
-    override suspend fun reAuthenticateUser(password: String): Result<FirebaseUser> =
+    override suspend fun reAuthenticateUser(password: String): Result<ExternalUser> =
         withContext(Dispatchers.IO){
             val user= firebaseAuth.currentUser
                 ?: return@withContext Result.failure(IllegalStateException("No Account"))
             val credential= EmailAuthProvider.getCredential(user.email?:"", password)
             return@withContext try{
                 user.reauthenticate(credential).await()
-                Result.success(user)
+                Result.success(FirebaseExternalUser(user))
             }catch (e:Exception){
                 Result.failure(e)
             }
     }
 
-    override suspend fun sendVerificationEmail(user:FirebaseUser?):Result<Unit> =
+    override suspend fun sendVerificationEmail(user:ExternalUser?):Result<Unit> =
         withContext(Dispatchers.IO){
             return@withContext try{
                 if(user==null) firebaseAuth.currentUser?.sendEmailVerification()
-                else user.sendEmailVerification().await()
+                else user.sendEmailVerification()
                 Result.success(Unit)
             }catch (e:Exception){
                 Result.failure(e)

@@ -1,9 +1,9 @@
 package com.example.library.service
 
+import com.example.library.data.ExternalUser
 import com.example.library.data.SessionManager
 import com.example.library.data.User
 import com.example.library.domain.UserRepository
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -75,7 +75,7 @@ class FirebaseUserService @Inject constructor(
         sessionManager.removeLogInState()
     }
 
-    suspend fun sendVerificationEmail(user:FirebaseUser?){
+    suspend fun sendVerificationEmail(user:ExternalUser?){
         val isSend = userRepository.sendVerificationEmail(user)
         if(isSend.isFailure) throw isSend.exceptionOrNull()?:VerificationFailedException()
     }
