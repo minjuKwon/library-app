@@ -36,7 +36,7 @@ class FirebaseUserService @Inject constructor(
             throw reAuthenticatedResult.exceptionOrNull()?:ReAuthenticateFailedException()
 
         reAuthenticatedResult.getOrNull()?.let{ user ->
-            val deletedUser= userRepository.deleteUserData(user)
+            val deletedUser= userRepository.deleteUserData(user.uid)
             if(deletedUser.isFailure)
                 throw deletedUser.exceptionOrNull()?:DeleteUserInfoFailedException()
 

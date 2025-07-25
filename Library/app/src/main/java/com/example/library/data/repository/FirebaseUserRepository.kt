@@ -67,12 +67,12 @@ class FirebaseUserRepository @Inject constructor(
             }
         }
 
-    override suspend fun deleteUserData(user:FirebaseUser): Result<User?> =
+    override suspend fun deleteUserData(uid:String): Result<User?> =
         withContext(Dispatchers.IO){
             return@withContext try{
-                val data= getUser(user.uid).getOrNull()
+                val data= getUser(uid).getOrNull()
                 fireStore.collection(USER_COLLECTION)
-                    .document(user.uid)
+                    .document(uid)
                     .delete()
                     .await()
                 Result.success(data)

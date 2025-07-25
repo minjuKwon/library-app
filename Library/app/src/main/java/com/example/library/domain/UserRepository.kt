@@ -8,7 +8,7 @@ interface UserRepository {
     suspend fun deleteUserAccount(user:FirebaseUser?=null):Result<Unit>
     suspend fun getUser(uid:String):Result<User>
     suspend fun updateUser(data: Map<String, Any>):Result<Unit>
-    suspend fun deleteUserData(user:FirebaseUser):Result<User?>
+    suspend fun deleteUserData(uid:String):Result<User?>
     suspend fun saveUser(user:User):Result<Unit>
     suspend fun signInUser(email:String, password: String): Result<FirebaseUser?>
     suspend fun signOutUser():Result<Unit>
