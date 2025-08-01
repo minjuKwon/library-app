@@ -9,11 +9,11 @@ import javax.inject.Inject
 
 class FirebaseUserService @Inject constructor(
     private val userRepository:UserRepository,
-    private val sessionManager: SessionManager
+    private val defaultSessionManager: SessionManager
 ) {
 
-    val userPreferences: Flow<User> = sessionManager.userPreferences
-    val logInPreferences:Flow<Boolean> = sessionManager.logInPreferences
+    val userPreferences: Flow<User> = defaultSessionManager.userPreferences
+    val logInPreferences:Flow<Boolean> = defaultSessionManager.logInPreferences
 
     suspend fun register(user: User, password:String){
         val createdResult= userRepository.createUser(user.email, password)
@@ -64,15 +64,15 @@ class FirebaseUserService @Inject constructor(
             val signedInUserData=userRepository.getUser(user.uid)
             if(signedInUserData.isFailure)
                 throw signedInUserData.exceptionOrNull()?:SaveSessionFailedException()
-            signedInUserData.getOrNull()?.let { sessionManager.saveUserData(it) }
+            signedInUserData.getOrNull()?.let { defaultSessionManager.saveUserData(it) }
         }
     }
 
     suspend fun signOut(){
         val isSignOut= userRepository.signOutUser()
         if(isSignOut.isFailure) throw SignOutFailedException()
-        sessionManager.removeUserData()
-        sessionManager.removeLogInState()
+        defaultSessionManager.removeUserData()
+        defaultSessionManager.removeLogInState()
     }
 
     suspend fun sendVerificationEmail(user:ExternalUser?){
@@ -99,7 +99,7 @@ class FirebaseUserService @Inject constructor(
     }
 
     suspend fun updateLogInState(b:Boolean){
-        sessionManager.saveLogInState(b)
+        defaultSessionManager.saveLogInState(b)
     }
 
 }

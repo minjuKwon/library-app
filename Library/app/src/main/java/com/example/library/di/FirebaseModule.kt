@@ -37,13 +37,14 @@ object FirebaseModule {
         return FirebaseUserRepository(firebaseAuth, fireStore)
     }
 
+
     @Provides
     @Singleton
     fun provideFirebaseUserService(
         userRepository: UserRepository,
-        sessionManager: SessionManager
+        defaultSessionManager: SessionManager
     ): FirebaseUserService {
-        return FirebaseUserService(userRepository, sessionManager)
+        return FirebaseUserService(userRepository, defaultSessionManager)
     }
 
 }

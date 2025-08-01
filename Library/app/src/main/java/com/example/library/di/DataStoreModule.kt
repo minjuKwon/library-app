@@ -7,6 +7,8 @@ import androidx.datastore.dataStoreFile
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import com.example.library.UserPreferences
+import com.example.library.data.DefaultSessionManager
+import com.example.library.data.SessionManager
 import com.example.library.data.UserPreferencesSerializer
 import dagger.Module
 import dagger.Provides
@@ -38,5 +40,12 @@ object DataStoreModule {
         PreferenceDataStoreFactory.create(
             produceFile = { File(context.filesDir,"logInState.preferences_pb") }
         )
+
+    @Provides
+    @Singleton
+    fun provideSessionManager(
+        userDataStore:DataStore<UserPreferences>,
+        logInStateStore:DataStore<Preferences>
+    ):SessionManager = DefaultSessionManager(userDataStore, logInStateStore)
 
 }
