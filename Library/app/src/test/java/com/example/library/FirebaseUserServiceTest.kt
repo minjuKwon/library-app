@@ -124,4 +124,27 @@ class FirebaseUserServiceTest {
         }
     }
 
+    @Test
+    fun firebaseService_changeUserInfo_verifySuccess()= runTest {
+        coEvery { mockRepo.updateUser(any()) } returns
+                Result.success(Unit)
+
+        service.changeUserInfo(mapOf())
+        coVerifySequence {
+            mockRepo.updateUser(any())
+        }
+    }
+
+    @Test
+    fun firebaseService_changeUserInfo_verifyFailure()= runTest {
+        coEvery { mockRepo.updateUser(any()) } returns Result.failure(Exception())
+
+        assertFailsWith<Exception>{
+            service.changeUserInfo(mapOf())
+        }
+        coVerify{
+            mockRepo.updateUser(any())
+        }
+    }
+
 }
