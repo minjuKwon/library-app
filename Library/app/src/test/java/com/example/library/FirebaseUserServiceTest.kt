@@ -63,4 +63,65 @@ class FirebaseUserServiceTest {
         }
     }
 
+    @Test
+    fun firebaseService_unregister_verifySuccess()= runTest {
+        coEvery { mockRepo.reAuthenticateUser(any()) } returns
+                Result.success(FakeExternalUser())
+        coEvery { mockRepo.deleteUserData(any()) } returns Result.success(User())
+        coEvery { mockRepo.deleteUserAccount(any()) } returns Result.success(Unit)
+
+        service.unregister("")
+        coVerifySequence {
+            mockRepo.reAuthenticateUser(any())
+            mockRepo.deleteUserData(any())
+            mockRepo.deleteUserAccount(any())
+        }
+    }
+
+    @Test
+    fun firebaseService_unregister_verifyFailure_reAuthenticateUser()= runTest {
+        coEvery { mockRepo.reAuthenticateUser(any()) } returns Result.failure(Exception())
+
+        assertFailsWith<Exception>{
+            service.unregister("")
+        }
+        coVerify{
+            mockRepo.reAuthenticateUser(any())
+        }
+    }
+
+    @Test
+    fun firebaseService_unregister_verifyFailure_deleteUserData()= runTest {
+        coEvery { mockRepo.reAuthenticateUser(any()) } returns
+                Result.success(FakeExternalUser())
+        coEvery { mockRepo.deleteUserData(any()) } returns Result.failure(Exception())
+
+        assertFailsWith<Exception>{
+            service.unregister("")
+        }
+        coVerify{
+            mockRepo.reAuthenticateUser(any())
+            mockRepo.deleteUserData(any())
+        }
+    }
+
+    @Test
+    fun firebaseService_unregister_verifyFailure_deleteUserAccount()= runTest {
+        coEvery { mockRepo.reAuthenticateUser(any()) } returns
+                Result.success(FakeExternalUser())
+        coEvery { mockRepo.deleteUserData(any()) } returns Result.success(User())
+        coEvery { mockRepo.deleteUserAccount(any()) } returns Result.failure(Exception())
+        coEvery { mockRepo.saveUser(any()) } returns Result.success(Unit)
+
+        assertFailsWith<Exception>{
+            service.unregister("")
+        }
+        coVerify{
+            mockRepo.reAuthenticateUser(any())
+            mockRepo.deleteUserData(any())
+            mockRepo.deleteUserAccount(any())
+            mockRepo.saveUser(any())
+        }
+    }
+
 }
