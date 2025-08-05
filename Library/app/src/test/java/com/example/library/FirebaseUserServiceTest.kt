@@ -6,10 +6,17 @@ import com.example.library.fake.FakeExternalUser
 import com.example.library.fake.FakeSessionManager
 import com.example.library.service.FirebaseUserService
 import com.example.library.service.SaveUserInfoFailedException
+import com.example.library.service.VerificationFailedException
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.coVerifySequence
+import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertFailsWith
@@ -144,6 +151,73 @@ class FirebaseUserServiceTest {
         }
         coVerify{
             mockRepo.updateUser(any())
+        }
+    }
+
+    @Test
+    fun firebaseService_signIn_verifySuccess_isEmailVerified()= runTest {
+        val fakeSessionManager = FakeSessionManager()
+        val spySessionManager = spyk(fakeSessionManager)
+        every { spySessionManager.userPreferences } returns flowOf(User())
+
+        val fakeService= FirebaseUserService(mockRepo, spySessionManager)
+        val fakeUser = FakeExternalUser(isEmailVerified = true)
+        verify { spySessionManager.userPreferences }
+
+        coEvery { mockRepo.signInUser(any(),any()) } returns
+                Result.success(fakeUser)
+        coEvery { mockRepo.getUser(any()) } returns Result.success(User())
+        coEvery { spySessionManager.saveUserData(any()) } just Runs
+
+        fakeService.signIn("","")
+        coVerify {
+            mockRepo.signInUser(any(),any())
+            mockRepo.getUser(any())
+            spySessionManager.saveUserData(any())
+        }
+    }
+
+    @Test
+    fun firebaseService_signIn_verifyFailure_signInUser()= runTest {
+        coEvery { mockRepo.signInUser(any(),any()) } returns Result.failure(Exception())
+
+        assertFailsWith<Exception>{
+            service.signIn("","")
+        }
+        coVerify {
+            mockRepo.signInUser(any(),any())
+        }
+    }
+
+    @Test
+    fun firebaseService_signIn_verifyFailure_isNotEmailVerified()= runTest {
+        coEvery { mockRepo.signInUser(any(),any()) } returns
+                Result.success(FakeExternalUser())
+        coEvery { mockRepo.sendVerificationEmail(any()) } returns
+                Result.failure(VerificationFailedException())
+
+        assertFailsWith<VerificationFailedException>{
+            service.signIn("","")
+        }
+        coVerify {
+            mockRepo.signInUser(any(),any())
+            mockRepo.sendVerificationEmail(any())
+        }
+    }
+
+    @Test
+    fun firebaseService_signIn_verifyFailure_getUser()= runTest {
+        val fakeUser = FakeExternalUser(isEmailVerified = true)
+        coEvery { mockRepo.signInUser(any(),any()) } returns
+                Result.success(fakeUser)
+        coEvery { mockRepo.getUser(any()) } returns Result.failure(Exception())
+
+        assertFailsWith<Exception>{
+            service.signIn("","")
+        }
+        coVerify {
+            mockRepo.signInUser(any(),any())
+            mockRepo.getUser(any())
         }
     }
 
