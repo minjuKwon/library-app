@@ -6,6 +6,7 @@ import com.example.library.fake.FakeExternalUser
 import com.example.library.fake.FakeSessionManager
 import com.example.library.service.FirebaseUserService
 import com.example.library.service.SaveUserInfoFailedException
+import com.example.library.service.SignOutFailedException
 import com.example.library.service.VerificationFailedException
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -218,6 +219,42 @@ class FirebaseUserServiceTest {
         coVerify {
             mockRepo.signInUser(any(),any())
             mockRepo.getUser(any())
+        }
+    }
+
+    @Test
+    fun firebaseService_signOut_verifySuccess()= runTest {
+        val fakeSessionManager = FakeSessionManager()
+        val spySessionManager = spyk(fakeSessionManager)
+        val fakeService = FirebaseUserService(mockRepo, spySessionManager)
+
+        every{ spySessionManager.userPreferences} returns flowOf(User())
+        every { spySessionManager.logInPreferences } returns flowOf(true)
+
+        coEvery{ mockRepo.signOutUser() } returns Result.success(Unit)
+        coEvery { spySessionManager.removeUserData() } just Runs
+        coEvery { spySessionManager.removeLogInState() } just Runs
+
+        fakeService.signOut()
+        coVerifySequence {
+            spySessionManager.userPreferences
+            spySessionManager.logInPreferences
+            mockRepo.signOutUser()
+            spySessionManager.removeUserData()
+            spySessionManager.removeLogInState()
+        }
+    }
+
+    @Test
+    fun firebaseService_signOut_verifyFailure()= runTest{
+        coEvery{ mockRepo.signOutUser() } returns Result.failure(SignOutFailedException())
+
+        assertFailsWith<SignOutFailedException> {
+            service.signOut()
+        }
+
+        coVerify {
+            mockRepo.signOutUser()
         }
     }
 
