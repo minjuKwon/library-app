@@ -278,4 +278,13 @@ class FirebaseUserServiceTest {
         coVerify { mockRepo.sendVerificationEmail(any()) }
     }
 
+    @Test
+    fun firebaseService_isEmailVerified_verifySuccess()= runTest {
+        coEvery{ mockRepo.isEmailVerified()} returns true
+
+        service.isEmailVerified()
+
+        coVerify { mockRepo.isEmailVerified() }
+    }
+
 }
