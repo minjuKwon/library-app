@@ -258,4 +258,24 @@ class FirebaseUserServiceTest {
         }
     }
 
+    @Test
+    fun firebaseService_sendVerificationEmail_verifySuccess()= runTest {
+        coEvery{ mockRepo.sendVerificationEmail(any())} returns Result.success(Unit)
+
+        service.sendVerificationEmail(FakeExternalUser())
+
+        coVerify { mockRepo.sendVerificationEmail(any()) }
+    }
+
+    @Test
+    fun firebaseService_sendVerificationEmail_verifyFailure()= runTest {
+        coEvery{ mockRepo.sendVerificationEmail(any())} returns Result.failure(Exception())
+
+        assertFailsWith<Exception> {
+            service.sendVerificationEmail(FakeExternalUser())
+        }
+
+        coVerify { mockRepo.sendVerificationEmail(any()) }
+    }
+
 }
