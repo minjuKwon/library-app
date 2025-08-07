@@ -307,4 +307,24 @@ class FirebaseUserServiceTest {
         coVerify { mockRepo.reAuthenticateUser(any()) }
     }
 
+    @Test
+    fun firebaseService_changePassword_verifySuccess()= runTest {
+        coEvery{ mockRepo.updatePassword(any())} returns Result.success(Unit)
+
+        service.changePassword("")
+
+        coVerify { mockRepo.updatePassword(any()) }
+    }
+
+    @Test
+    fun firebaseService_changePassword_verifyFailure()= runTest {
+        coEvery{ mockRepo.updatePassword(any())} returns Result.failure(Exception())
+
+        assertFailsWith<Exception> {
+            service.changePassword("")
+        }
+
+        coVerify { mockRepo.updatePassword(any()) }
+    }
+
 }
