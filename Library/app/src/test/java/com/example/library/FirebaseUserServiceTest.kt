@@ -287,4 +287,24 @@ class FirebaseUserServiceTest {
         coVerify { mockRepo.isEmailVerified() }
     }
 
+    @Test
+    fun firebaseService_verifyCurrentPassword_verifySuccess()= runTest {
+        coEvery{ mockRepo.reAuthenticateUser(any())} returns Result.success(FakeExternalUser())
+
+        service.verifyCurrentPassword("")
+
+        coVerify { mockRepo.reAuthenticateUser(any()) }
+    }
+
+    @Test
+    fun firebaseService_verifyCurrentPassword_verifyFailure()= runTest {
+        coEvery{ mockRepo.reAuthenticateUser(any())} returns Result.failure(Exception())
+
+        assertFailsWith<Exception> {
+            service.verifyCurrentPassword("")
+        }
+
+        coVerify { mockRepo.reAuthenticateUser(any()) }
+    }
+
 }
