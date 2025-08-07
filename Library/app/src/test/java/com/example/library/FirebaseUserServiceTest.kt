@@ -347,4 +347,22 @@ class FirebaseUserServiceTest {
         coVerify { mockRepo.resetPassword(any()) }
     }
 
+    @Test
+    fun firebaseService_updateLogInState_verifySuccess()= runTest {
+        val fakeSessionManager = FakeSessionManager()
+        val spySessionManager = spyk(fakeSessionManager)
+        val service = FirebaseUserService(mockRepo, spySessionManager)
+
+        every{ spySessionManager.userPreferences} returns flowOf(User())
+        every { spySessionManager.logInPreferences } returns flowOf(true)
+        coEvery { spySessionManager.saveLogInState(any()) } just Runs
+
+        service.updateLogInState(true)
+        coVerifySequence {
+            spySessionManager.userPreferences
+            spySessionManager.logInPreferences
+            spySessionManager.saveLogInState(any())
+        }
+    }
+
 }
