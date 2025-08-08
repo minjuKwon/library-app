@@ -93,9 +93,7 @@ class FirebaseUserServiceTest {
         assertFailsWith<Exception>{
             service.unregister("")
         }
-        coVerify{
-            mockRepo.reAuthenticateUser(any())
-        }
+        coVerify{ mockRepo.reAuthenticateUser(any()) }
     }
 
     @Test
@@ -107,7 +105,7 @@ class FirebaseUserServiceTest {
         assertFailsWith<Exception>{
             service.unregister("")
         }
-        coVerify{
+        coVerifySequence{
             mockRepo.reAuthenticateUser(any())
             mockRepo.deleteUserData(any())
         }
@@ -124,7 +122,7 @@ class FirebaseUserServiceTest {
         assertFailsWith<Exception>{
             service.unregister("")
         }
-        coVerify{
+        coVerifySequence{
             mockRepo.reAuthenticateUser(any())
             mockRepo.deleteUserData(any())
             mockRepo.deleteUserAccount(any())
@@ -138,9 +136,7 @@ class FirebaseUserServiceTest {
                 Result.success(Unit)
 
         service.changeUserInfo(mapOf())
-        coVerifySequence {
-            mockRepo.updateUser(any())
-        }
+        coVerify{ mockRepo.updateUser(any()) }
     }
 
     @Test
@@ -150,9 +146,7 @@ class FirebaseUserServiceTest {
         assertFailsWith<Exception>{
             service.changeUserInfo(mapOf())
         }
-        coVerify{
-            mockRepo.updateUser(any())
-        }
+        coVerify{ mockRepo.updateUser(any()) }
     }
 
     @Test
@@ -185,9 +179,7 @@ class FirebaseUserServiceTest {
         assertFailsWith<Exception>{
             service.signIn("","")
         }
-        coVerify {
-            mockRepo.signInUser(any(),any())
-        }
+        coVerify { mockRepo.signInUser(any(),any()) }
     }
 
     @Test
@@ -200,7 +192,7 @@ class FirebaseUserServiceTest {
         assertFailsWith<VerificationFailedException>{
             service.signIn("","")
         }
-        coVerify {
+        coVerifySequence {
             mockRepo.signInUser(any(),any())
             mockRepo.sendVerificationEmail(any())
         }
@@ -216,7 +208,7 @@ class FirebaseUserServiceTest {
         assertFailsWith<Exception>{
             service.signIn("","")
         }
-        coVerify {
+        coVerifySequence {
             mockRepo.signInUser(any(),any())
             mockRepo.getUser(any())
         }
@@ -252,10 +244,7 @@ class FirebaseUserServiceTest {
         assertFailsWith<SignOutFailedException> {
             service.signOut()
         }
-
-        coVerify {
-            mockRepo.signOutUser()
-        }
+        coVerify { mockRepo.signOutUser() }
     }
 
     @Test
@@ -263,7 +252,6 @@ class FirebaseUserServiceTest {
         coEvery{ mockRepo.sendVerificationEmail(any())} returns Result.success(Unit)
 
         service.sendVerificationEmail(FakeExternalUser())
-
         coVerify { mockRepo.sendVerificationEmail(any()) }
     }
 
@@ -274,7 +262,6 @@ class FirebaseUserServiceTest {
         assertFailsWith<Exception> {
             service.sendVerificationEmail(FakeExternalUser())
         }
-
         coVerify { mockRepo.sendVerificationEmail(any()) }
     }
 
@@ -283,7 +270,6 @@ class FirebaseUserServiceTest {
         coEvery{ mockRepo.isEmailVerified()} returns true
 
         service.isEmailVerified()
-
         coVerify { mockRepo.isEmailVerified() }
     }
 
@@ -292,7 +278,6 @@ class FirebaseUserServiceTest {
         coEvery{ mockRepo.reAuthenticateUser(any())} returns Result.success(FakeExternalUser())
 
         service.verifyCurrentPassword("")
-
         coVerify { mockRepo.reAuthenticateUser(any()) }
     }
 
@@ -303,7 +288,6 @@ class FirebaseUserServiceTest {
         assertFailsWith<Exception> {
             service.verifyCurrentPassword("")
         }
-
         coVerify { mockRepo.reAuthenticateUser(any()) }
     }
 
@@ -312,7 +296,6 @@ class FirebaseUserServiceTest {
         coEvery{ mockRepo.updatePassword(any())} returns Result.success(Unit)
 
         service.changePassword("")
-
         coVerify { mockRepo.updatePassword(any()) }
     }
 
@@ -323,7 +306,6 @@ class FirebaseUserServiceTest {
         assertFailsWith<Exception> {
             service.changePassword("")
         }
-
         coVerify { mockRepo.updatePassword(any()) }
     }
 
@@ -332,7 +314,6 @@ class FirebaseUserServiceTest {
         coEvery{ mockRepo.resetPassword(any())} returns Result.success(Unit)
 
         service.findPassword("")
-
         coVerify { mockRepo.resetPassword(any()) }
     }
 
@@ -343,7 +324,6 @@ class FirebaseUserServiceTest {
         assertFailsWith<Exception> {
             service.findPassword("")
         }
-
         coVerify { mockRepo.resetPassword(any()) }
     }
 
