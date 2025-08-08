@@ -16,7 +16,6 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.spyk
-import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -153,11 +152,11 @@ class FirebaseUserServiceTest {
     fun firebaseService_signIn_verifySuccess_isEmailVerified()= runTest {
         val fakeSessionManager = FakeSessionManager()
         val spySessionManager = spyk(fakeSessionManager)
-        every { spySessionManager.userPreferences } returns flowOf(User())
-
         val fakeService= FirebaseUserService(mockRepo, spySessionManager)
         val fakeUser = FakeExternalUser(isEmailVerified = true)
-        verify { spySessionManager.userPreferences }
+
+        every{ spySessionManager.userPreferences} returns flowOf(User())
+        every { spySessionManager.logInPreferences } returns flowOf(true)
 
         coEvery { mockRepo.signInUser(any(),any()) } returns
                 Result.success(fakeUser)
@@ -165,7 +164,9 @@ class FirebaseUserServiceTest {
         coEvery { spySessionManager.saveUserData(any()) } just Runs
 
         fakeService.signIn("","")
-        coVerify {
+        coVerifySequence {
+            spySessionManager.userPreferences
+            spySessionManager.logInPreferences
             mockRepo.signInUser(any(),any())
             mockRepo.getUser(any())
             spySessionManager.saveUserData(any())
