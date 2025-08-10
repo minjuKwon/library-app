@@ -4,18 +4,19 @@ import com.example.library.data.ExternalUser
 import com.example.library.data.SessionManager
 import com.example.library.data.User
 import com.example.library.domain.UserRepository
+import com.example.library.domain.UserService
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class FirebaseUserService @Inject constructor(
     private val userRepository:UserRepository,
     private val defaultSessionManager: SessionManager
-) {
+): UserService {
 
     val userPreferences: Flow<User> = defaultSessionManager.userPreferences
     val logInPreferences:Flow<Boolean> = defaultSessionManager.logInPreferences
 
-    suspend fun register(user: User, password:String){
+    override suspend fun register(user: User, password:String){
         val createdResult= userRepository.createUser(user.email, password)
         if(createdResult.isFailure) throw createdResult.exceptionOrNull()?:SignUpFailedException()
 
@@ -30,7 +31,7 @@ class FirebaseUserService @Inject constructor(
         createdUser?.let { sendVerificationEmail(it) }
     }
 
-    suspend fun unregister(password: String){
+    override suspend fun unregister(password: String){
         val reAuthenticatedResult= userRepository.reAuthenticateUser(password)
         if(reAuthenticatedResult.isFailure)
             throw reAuthenticatedResult.exceptionOrNull()?:ReAuthenticateFailedException()
@@ -48,12 +49,12 @@ class FirebaseUserService @Inject constructor(
         }
     }
 
-    suspend fun changeUserInfo(data: Map<String, Any>){
+    override suspend fun changeUserInfo(data: Map<String, Any>){
         val isUpdate= userRepository.updateUser(data)
         if(isUpdate.isFailure) throw isUpdate.exceptionOrNull()?:UpdateUserInfoFailedException()
     }
 
-    suspend fun signIn(email:String, password: String){
+    override suspend fun signIn(email:String, password: String){
         val signedInResult = userRepository.signInUser(email, password)
         if(signedInResult.isFailure) throw signedInResult.exceptionOrNull()?:SignInFailedException()
         signedInResult.getOrNull()?.let{ user ->
@@ -68,37 +69,37 @@ class FirebaseUserService @Inject constructor(
         }
     }
 
-    suspend fun signOut(){
+    override suspend fun signOut(){
         val isSignOut= userRepository.signOutUser()
         if(isSignOut.isFailure) throw SignOutFailedException()
         defaultSessionManager.removeUserData()
         defaultSessionManager.removeLogInState()
     }
 
-    suspend fun sendVerificationEmail(user:ExternalUser?){
+    override suspend fun sendVerificationEmail(user:ExternalUser?){
         val isSend = userRepository.sendVerificationEmail(user)
         if(isSend.isFailure) throw isSend.exceptionOrNull()?:VerificationFailedException()
     }
 
-    suspend fun isEmailVerified():Boolean = userRepository.isEmailVerified()
+    override suspend fun isEmailVerified():Boolean = userRepository.isEmailVerified()
 
-    suspend fun verifyCurrentPassword(password: String){
+    override suspend fun verifyCurrentPassword(password: String){
         val isReAuthenticate= userRepository.reAuthenticateUser(password)
         if(isReAuthenticate.isFailure)
             throw isReAuthenticate.exceptionOrNull()?:ReAuthenticateFailedException()
     }
 
-    suspend fun changePassword(password: String){
+    override suspend fun changePassword(password: String){
         val isChange= userRepository.updatePassword(password)
         if(isChange.isFailure) throw isChange.exceptionOrNull()?:UpdatePasswordFailedException()
     }
 
-    suspend fun findPassword(email: String){
+    override suspend fun findPassword(email: String){
         val isReset= userRepository.resetPassword(email)
         if(isReset.isFailure) throw isReset.exceptionOrNull()?:ResetPasswordFAiledException()
     }
 
-    suspend fun updateLogInState(b:Boolean){
+    override suspend fun updateLogInState(b:Boolean){
         defaultSessionManager.saveLogInState(b)
     }
 
