@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.library.data.User
 import com.example.library.di.ApplicationScope
-import com.example.library.service.FirebaseUserService
+import com.example.library.domain.UserService
 import com.google.firebase.auth.FirebaseAuthException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    private val firebaseUserService: FirebaseUserService,
+    private val firebaseUserService: UserService,
     @ApplicationScope externalScope:CoroutineScope?=null
 ) : ViewModel(){
 

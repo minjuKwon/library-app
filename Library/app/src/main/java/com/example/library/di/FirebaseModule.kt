@@ -3,6 +3,7 @@ package com.example.library.di
 import com.example.library.data.SessionManager
 import com.example.library.data.repository.FirebaseUserRepository
 import com.example.library.domain.UserRepository
+import com.example.library.domain.UserService
 import com.example.library.service.FirebaseUserService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -43,7 +44,7 @@ object FirebaseModule {
     fun provideFirebaseUserService(
         userRepository: UserRepository,
         defaultSessionManager: SessionManager
-    ): FirebaseUserService {
+    ): UserService {
         return FirebaseUserService(userRepository, defaultSessionManager)
     }
 
