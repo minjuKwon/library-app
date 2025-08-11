@@ -13,8 +13,8 @@ class FirebaseUserService @Inject constructor(
     private val defaultSessionManager: SessionManager
 ): UserService {
 
-    val userPreferences: Flow<User> = defaultSessionManager.userPreferences
-    val logInPreferences:Flow<Boolean> = defaultSessionManager.logInPreferences
+    override val userPreferences: Flow<User> = defaultSessionManager.userPreferences
+    override val logInPreferences:Flow<Boolean> = defaultSessionManager.logInPreferences
 
     override suspend fun register(user: User, password:String){
         val createdResult= userRepository.createUser(user.email, password)

@@ -4,8 +4,14 @@ import com.example.library.data.ExternalUser
 import com.example.library.data.User
 import com.example.library.domain.UserService
 import com.google.firebase.auth.FirebaseAuthException
+import kotlinx.coroutines.flow.Flow
 
 class FakeUserService:UserService {
+
+    private val fakeSessionManager = FakeSessionManager()
+
+    override val userPreferences: Flow<User> = fakeSessionManager.userPreferences
+    override val logInPreferences: Flow<Boolean> = fakeSessionManager.logInPreferences
 
     var isThrowException= false
     var isThrowFirebaseException= false
@@ -86,6 +92,7 @@ class FakeUserService:UserService {
     }
 
     override suspend fun updateLogInState(b: Boolean) {
+        fakeSessionManager.saveLogInState(b)
     }
 
 }

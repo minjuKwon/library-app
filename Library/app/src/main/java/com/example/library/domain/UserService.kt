@@ -2,8 +2,11 @@ package com.example.library.domain
 
 import com.example.library.data.ExternalUser
 import com.example.library.data.User
+import kotlinx.coroutines.flow.Flow
 
 interface UserService {
+    val userPreferences: Flow<User>
+    val logInPreferences:Flow<Boolean>
     suspend fun register(user: User, password:String)
     suspend fun unregister(password: String)
     suspend fun changeUserInfo(data: Map<String, Any>)
