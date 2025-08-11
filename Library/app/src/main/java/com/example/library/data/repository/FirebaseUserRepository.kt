@@ -6,6 +6,7 @@ import com.example.library.data.User
 import com.example.library.domain.UserRepository
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -22,7 +23,9 @@ class FirebaseUserRepository @Inject constructor(
             return@withContext try{
                 val result=firebaseAuth.createUserWithEmailAndPassword(email, password).await()
                 Result.success(result.user?.let { FirebaseExternalUser(it) })
-            }catch(e:Exception){
+            }catch (e:FirebaseAuthException){
+                Result.failure(FirebaseException(e.errorCode))
+            } catch(e:Exception){
                 Result.failure(e)
             }
     }
@@ -32,6 +35,8 @@ class FirebaseUserRepository @Inject constructor(
             if(user==null){ firebaseAuth.currentUser?.delete()?.await() }
             else{ user.delete() }
             Result.success(Unit)
+        }catch (e:FirebaseAuthException){
+            Result.failure(FirebaseException(e.errorCode))
         }catch (e:Exception){
             Result.failure(e)
         }
@@ -48,6 +53,8 @@ class FirebaseUserRepository @Inject constructor(
                 val data = snapshot.toObject(User::class.java)
                     ?: return@withContext Result.failure(IllegalStateException("Failed to parse user data"))
                 Result.success(data)
+            }catch (e:FirebaseAuthException){
+                Result.failure(FirebaseException(e.errorCode))
             }catch (e:Exception){
                 Result.failure(e)
             }
@@ -63,6 +70,8 @@ class FirebaseUserRepository @Inject constructor(
                     .update(data)
                     .await()
                 Result.success(Unit)
+            }catch (e:FirebaseAuthException){
+                Result.failure(FirebaseException(e.errorCode))
             }catch (e:Exception){
                 Result.failure(e)
             }
@@ -77,6 +86,8 @@ class FirebaseUserRepository @Inject constructor(
                     .delete()
                     .await()
                 Result.success(data)
+            }catch (e:FirebaseAuthException){
+                Result.failure(FirebaseException(e.errorCode))
             }catch (e:Exception){
                 Result.failure(e)
             }
@@ -92,6 +103,8 @@ class FirebaseUserRepository @Inject constructor(
                     .set(user)
                     .await()
                 Result.success(Unit)
+            }catch (e:FirebaseAuthException){
+                Result.failure(FirebaseException(e.errorCode))
             }catch (e:Exception){
                 Result.failure(e)
             }
@@ -102,6 +115,8 @@ class FirebaseUserRepository @Inject constructor(
             return@withContext try{
                 val result= firebaseAuth.signInWithEmailAndPassword(email, password).await()
                 Result.success(result.user?.let { FirebaseExternalUser(it) })
+            }catch (e:FirebaseAuthException){
+                Result.failure(FirebaseException(e.errorCode))
             }catch (e:Exception){
                 Result.failure(e)
             }
@@ -111,6 +126,8 @@ class FirebaseUserRepository @Inject constructor(
         return try{
             firebaseAuth.signOut()
             Result.success(Unit)
+        }catch (e:FirebaseAuthException){
+            Result.failure(FirebaseException(e.errorCode))
         }catch(e:Exception){
             Result.failure(e)
         }
@@ -124,6 +141,8 @@ class FirebaseUserRepository @Inject constructor(
             return@withContext try{
                 user.reauthenticate(credential).await()
                 Result.success(FirebaseExternalUser(user))
+            }catch (e:FirebaseAuthException){
+                Result.failure(FirebaseException(e.errorCode))
             }catch (e:Exception){
                 Result.failure(e)
             }
@@ -135,6 +154,8 @@ class FirebaseUserRepository @Inject constructor(
                 if(user==null) firebaseAuth.currentUser?.sendEmailVerification()
                 else user.sendEmailVerification()
                 Result.success(Unit)
+            }catch (e:FirebaseAuthException){
+                Result.failure(FirebaseException(e.errorCode))
             }catch (e:Exception){
                 Result.failure(e)
             }
@@ -155,6 +176,8 @@ class FirebaseUserRepository @Inject constructor(
             return@withContext try{
                 user.updatePassword(password).await()
                 Result.success(Unit)
+            }catch (e:FirebaseAuthException){
+                Result.failure(FirebaseException(e.errorCode))
             }catch (e:Exception){
                 Result.failure(e)
             }
@@ -165,6 +188,8 @@ class FirebaseUserRepository @Inject constructor(
             return@withContext try{
                 firebaseAuth.sendPasswordResetEmail(email).await()
                 Result.success(Unit)
+            }catch (e:FirebaseAuthException){
+                Result.failure(FirebaseException(e.errorCode))
             }catch (e:Exception){
                 Result.failure(e)
             }
@@ -175,3 +200,5 @@ class FirebaseUserRepository @Inject constructor(
     }
 
 }
+
+class FirebaseException(override val message:String):Exception()

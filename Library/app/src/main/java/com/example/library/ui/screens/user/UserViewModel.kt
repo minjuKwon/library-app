@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.library.data.User
 import com.example.library.di.ApplicationScope
 import com.example.library.domain.UserService
-import com.google.firebase.auth.FirebaseAuthException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -60,8 +59,6 @@ class UserViewModel @Inject constructor(
                 firebaseUserService.register(user, password)
                 _isUserVerified.value=false
                 _event.emit(UserUiState.Success)
-            }catch(e:FirebaseAuthException){
-                _event.emit(UserUiState.Failure(e.errorCode))
             }catch(e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
@@ -73,8 +70,6 @@ class UserViewModel @Inject constructor(
             try {
                 firebaseUserService.unregister(password)
                 _event.emit(UserUiState.Success)
-            }catch (e:FirebaseAuthException){
-                _event.emit(UserUiState.Failure(e.errorCode))
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
@@ -86,8 +81,6 @@ class UserViewModel @Inject constructor(
             try {
                 firebaseUserService.changeUserInfo(data)
                 _event.emit(UserUiState.Success)
-            }catch(e:FirebaseAuthException){
-                _event.emit(UserUiState.Failure(e.errorCode))
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
@@ -99,8 +92,6 @@ class UserViewModel @Inject constructor(
             try{
                 firebaseUserService.signIn(email, password)
                 _event.emit(UserUiState.Success)
-            }catch(e:FirebaseAuthException){
-                _event.emit(UserUiState.Failure(e.errorCode))
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
@@ -123,8 +114,6 @@ class UserViewModel @Inject constructor(
             try {
                 firebaseUserService.sendVerificationEmail(null)
                 _event.emit(UserUiState.Success)
-            }catch(e:FirebaseAuthException){
-                _event.emit(UserUiState.Failure(e.errorCode))
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
@@ -136,8 +125,6 @@ class UserViewModel @Inject constructor(
             try {
                 firebaseUserService.verifyCurrentPassword(currentPassword)
                 _isPasswordVerified.value=true
-            }catch(e:FirebaseAuthException){
-                _event.emit(UserUiState.Failure(e.errorCode))
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
@@ -149,8 +136,6 @@ class UserViewModel @Inject constructor(
             try {
                 if(_isPasswordVerified.value) firebaseUserService.changePassword(newPassword)
                 _event.emit(UserUiState.Success)
-            }catch(e:FirebaseAuthException){
-                _event.emit(UserUiState.Failure(e.errorCode))
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
@@ -162,8 +147,6 @@ class UserViewModel @Inject constructor(
             try {
                 firebaseUserService.findPassword(email)
                 _event.emit(UserUiState.Success)
-            }catch(e:FirebaseAuthException){
-                _event.emit(UserUiState.Failure(e.errorCode))
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
