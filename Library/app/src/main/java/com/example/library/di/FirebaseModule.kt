@@ -1,5 +1,6 @@
 package com.example.library.di
 
+import com.example.library.BuildConfig
 import com.example.library.data.SessionManager
 import com.example.library.data.repository.FirebaseUserRepository
 import com.example.library.domain.UserRepository
@@ -20,13 +21,17 @@ object FirebaseModule {
     @Provides
     @Singleton
     fun provideFirebaseAuth():FirebaseAuth{
-        return FirebaseAuth.getInstance()
+        val auth= FirebaseAuth.getInstance()
+        if (BuildConfig.DEBUG) auth.useEmulator("127.0.0.1", 9099)
+        return auth
     }
 
     @Provides
     @Singleton
     fun provideFirebaseStore():FirebaseFirestore{
-        return FirebaseFirestore.getInstance()
+        val db = FirebaseFirestore.getInstance()
+        if (BuildConfig.DEBUG) db.useEmulator("127.0.0.1", 8080)
+        return db
     }
 
     @Provides
