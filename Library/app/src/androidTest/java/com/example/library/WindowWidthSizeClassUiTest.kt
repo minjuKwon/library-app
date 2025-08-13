@@ -3,13 +3,14 @@ package com.example.library
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.testing.TestLifecycleOwner
 import com.example.library.fake.FakeNetworkBookRepository
+import com.example.library.fake.FakeUserService
 import com.example.library.rules.onNodeWithTagForStringId
 import com.example.library.ui.screens.search.LibraryViewModel
 import com.example.library.ui.LibraryApp
 import com.example.library.ui.screens.detail.LibraryDetailsViewModel
+import com.example.library.ui.screens.user.UserViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -48,14 +49,17 @@ class WindowWidthSizeClassUiTest {
             ioDispatcher = dispatcher,
             externalScope = scope
         )
-        val dummyViewModel= LibraryDetailsViewModel(fakeRepository, dispatcher, scope)
+        val dummyDetailsViewModel= LibraryDetailsViewModel(fakeRepository, dispatcher, scope)
+        val dummyUserViewModel= UserViewModel(FakeUserService(), scope)
         val testLifecycleOwner = TestLifecycleOwner()
+
         composeTestRule.setContent {
             LibraryApp(
                 windowSize = windowWidthSizeClass,
                 lifecycleOwner = testLifecycleOwner,
                 libraryViewModel = viewModel,
-                libraryDetailsViewModel = dummyViewModel
+                libraryDetailsViewModel = dummyDetailsViewModel,
+                userViewModel = dummyUserViewModel
             )
         }
         composeTestRule.onNodeWithTagForStringId(

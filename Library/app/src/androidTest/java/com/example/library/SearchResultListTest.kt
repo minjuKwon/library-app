@@ -9,10 +9,12 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.lifecycle.testing.TestLifecycleOwner
 import com.example.library.fake.FakeNetworkBookRepository
+import com.example.library.fake.FakeUserService
 import com.example.library.rules.onNodeWithTagForStringId
 import com.example.library.ui.screens.search.LibraryViewModel
 import com.example.library.ui.LibraryApp
 import com.example.library.ui.screens.detail.LibraryDetailsViewModel
+import com.example.library.ui.screens.user.UserViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -105,14 +107,16 @@ class SearchResultListTest {
         }
 
         val testLifecycleOwner = TestLifecycleOwner()
-        val dummyViewModel= LibraryDetailsViewModel(fakeRepository, testDispatcher, testScope)
+        val dummyDetailsViewModel= LibraryDetailsViewModel(fakeRepository, testDispatcher, testScope)
+        val dummyUserViewModel= UserViewModel(FakeUserService(), testScope)
 
         composeTestRule.setContent {
             LibraryApp(
                 WindowWidthSizeClass.Compact,
                 testLifecycleOwner,
                 libraryViewModel,
-                dummyViewModel
+                dummyDetailsViewModel,
+                dummyUserViewModel
             )
         }
 

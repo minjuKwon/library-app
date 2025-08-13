@@ -6,11 +6,13 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.lifecycle.testing.TestLifecycleOwner
 import com.example.library.data.fake.FakeNetworkBookRepository
+import com.example.library.fake.FakeUserService
 import com.example.library.rules.onNodeWithContentDescriptionForStringId
 import com.example.library.rules.onNodeWithTagForStringId
 import com.example.library.ui.LibraryApp
 import com.example.library.ui.screens.detail.LibraryDetailsViewModel
 import com.example.library.ui.screens.search.LibraryViewModel
+import com.example.library.ui.screens.user.UserViewModel
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -128,7 +130,8 @@ class NavigationTest {
         libraryViewModel:LibraryViewModel
         = LibraryViewModel(fakeRepository, testDispatcher, testScope)
     ){
-        val dummyViewModel= LibraryDetailsViewModel(fakeRepository, testDispatcher, testScope)
+        val dummyDetailsViewModel= LibraryDetailsViewModel(fakeRepository, testDispatcher, testScope)
+        val dummyUserViewModel= UserViewModel(FakeUserService(), testScope)
         val testLifecycleOwner= TestLifecycleOwner()
 
         composeTestRule.setContent {
@@ -136,7 +139,8 @@ class NavigationTest {
                 WindowWidthSizeClass.Compact,
                 testLifecycleOwner,
                 libraryViewModel,
-                dummyViewModel
+                dummyDetailsViewModel,
+                dummyUserViewModel
             )
         }
 
