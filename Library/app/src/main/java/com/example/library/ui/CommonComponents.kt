@@ -42,7 +42,9 @@ import coil.request.ImageRequest
 import com.example.library.R
 import com.example.library.data.api.Book
 import com.example.library.ui.screens.user.UserUiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.withContext
 
 @Composable
 fun LibraryListItem(
@@ -251,10 +253,14 @@ fun HandleUserUiState(
         event.collect{
             when(it){
                 is UserUiState.Success->{
-                    onSuccess()
+                    withContext(Dispatchers.Main) {
+                        onSuccess()
+                    }
                 }
                 is UserUiState.Failure -> {
-                    onFailure(it)
+                    withContext(Dispatchers.Main) {
+                        onFailure(it)
+                    }
                 }
             }
         }
