@@ -16,7 +16,7 @@ import javax.inject.Singleton
     components = [SingletonComponent::class],
     replaces = [FirebaseModule::class]
 )
-object FakeModule {
+object FakeFirebaseModule {
 
     @Provides
     @Singleton
