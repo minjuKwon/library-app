@@ -720,7 +720,6 @@ private fun EditUserNameSection(
                 keyboardType = KeyboardType.Text
             ),
             keyboardActions= KeyboardActions(
-                onNext = {
                     if(inputName.isBlank()){
                         Toast.makeText(context, R.string.blank_name, Toast.LENGTH_LONG).show()
                     }else{
