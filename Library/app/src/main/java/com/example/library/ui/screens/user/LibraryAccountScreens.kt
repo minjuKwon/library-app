@@ -2,6 +2,7 @@ package com.example.library.ui.screens.user
 
 import android.content.Context
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,7 +50,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.library.R
 import com.example.library.data.Gender
 import com.example.library.data.User
@@ -286,8 +286,7 @@ fun NotVerificationScreen(
     userViewModel:UserViewModel
 ){
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-
+    val lifecycleOwner = (LocalContext.current as ComponentActivity).lifecycle
     DisposableEffect(lifecycleOwner){
         val observer = LifecycleEventObserver { _, event ->
             when(event){
@@ -295,9 +294,9 @@ fun NotVerificationScreen(
                 else ->{}
             }
         }
-        lifecycleOwner.lifecycle.addObserver(observer)
+        lifecycleOwner.addObserver(observer)
         onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
+            lifecycleOwner.removeObserver(observer)
         }
     }
 
