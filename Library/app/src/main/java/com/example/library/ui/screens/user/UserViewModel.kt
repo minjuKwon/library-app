@@ -146,7 +146,6 @@ class UserViewModel @Inject constructor(
         scope.launch {
             try {
                 firebaseUserService.findPassword(email)
-                _event.emit(UserUiState.Success)
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
