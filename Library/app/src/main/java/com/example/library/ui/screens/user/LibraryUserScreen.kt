@@ -76,7 +76,10 @@ fun LibraryUserScreen(
             )
     ){
         Row{
-            Text(userInfo.name)
+            Text(
+                userInfo.name,
+                modifier=Modifier.testTag(stringResource(R.string.test_account_name))
+            )
             Text(
                 stringResource(R.string.edit_information),
                 Modifier
@@ -171,6 +174,7 @@ private fun UnRegisterDialog(
                         text= stringResource(R.string.id,id),
                         modifier= Modifier
                             .padding(top=dimensionResource(R.dimen.padding_lg))
+                            .testTag(stringResource(R.string.test_unregister_email))
                     )
                     OutlinedTextField(
                         value=inputPassword,
@@ -191,6 +195,7 @@ private fun UnRegisterDialog(
                                 horizontal =dimensionResource(R.dimen.padding_md),
                                 vertical = dimensionResource(R.dimen.padding_lg)
                             )
+                            .testTag(stringResource(R.string.test_unregister_password))
                     )
                 }
                 Row(
@@ -206,7 +211,11 @@ private fun UnRegisterDialog(
                     TextButton(
                         onClick = { onConfirmation(inputPassword) },
                     ) {
-                        Text(stringResource(R.string.confirm))
+                        Text(
+                            stringResource(R.string.confirm),
+                            modifier=Modifier.testTag(stringResource(R.string.test_unregister_confirm))
+                        )
+
                     }
                 }
             }
@@ -247,7 +256,10 @@ fun NonMemberScreen(
                 )
             }
             Button(onClick = onNavigationToRegister) {
-                Text(stringResource(R.string.register))
+                Text(
+                    text=stringResource(R.string.register),
+                    modifier=Modifier.testTag(stringResource(R.string.test_register))
+                )
             }
         }
     }

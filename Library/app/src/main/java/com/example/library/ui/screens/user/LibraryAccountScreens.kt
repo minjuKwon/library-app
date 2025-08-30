@@ -122,7 +122,9 @@ fun LogInScreen(
             if(userViewModel.isUserVerified.value&&isClickEmailLink){
                 Text(
                     text= stringResource(R.string.already_reauthorization),
-                    modifier=Modifier.padding(dimensionResource(R.dimen.padding_sm))
+                    modifier=Modifier
+                        .padding(dimensionResource(R.dimen.padding_sm))
+                        .testTag(stringResource(R.string.test_logIn_reauthorization))
                 )
             }
             TextField(
@@ -138,7 +140,9 @@ fun LogInScreen(
                         focusManager.moveFocus(FocusDirection.Next)
                     }
                 ),
-                modifier=Modifier.focusRequester(focusRequester)
+                modifier=Modifier
+                    .focusRequester(focusRequester)
+                    .testTag(stringResource(R.string.test_logIn_email))
             )
             TextField(
                 value=inputPassword,
@@ -165,6 +169,7 @@ fun LogInScreen(
                         top =dimensionResource(R.dimen.padding_xxl),
                         bottom = dimensionResource(R.dimen.padding_xl)
                     )
+                    .testTag(stringResource(R.string.test_logIn_password))
             )
             Button(onClick = {
                 if(!isClick){
@@ -184,6 +189,7 @@ fun LogInScreen(
                 modifier= Modifier
                     .padding(dimensionResource(R.dimen.padding_md))
                     .clickable { openAlertDialog=true }
+                    .testTag(stringResource(R.string.test_logIn_find_password))
             )
         }
     }
@@ -258,6 +264,7 @@ private fun FindPasswordDialog(
                                 horizontal =dimensionResource(R.dimen.padding_md),
                                 vertical = dimensionResource(R.dimen.padding_lg)
                             )
+                            .testTag(stringResource(R.string.test_logIn_find_password_email))
                     )
                 }
                 Row(
@@ -273,7 +280,11 @@ private fun FindPasswordDialog(
                     TextButton(
                         onClick = { onConfirmation(inputEmail) },
                     ) {
-                        Text(stringResource(R.string.confirm))
+                        Text(
+                            stringResource(R.string.confirm),
+                            modifier=Modifier
+                                .testTag(stringResource(R.string.test_logIn_find_password_confirm))
+                        )
                     }
                 }
             }
@@ -323,13 +334,16 @@ fun NotVerificationScreen(
         )
         Text(
             text= stringResource(R.string.retry_verification),
-            modifier=Modifier.padding(dimensionResource(R.dimen.padding_md))
+            modifier=Modifier
+                .padding(dimensionResource(R.dimen.padding_md))
+                .testTag(stringResource(R.string.test_not_verification))
         )
         Button(
             onClick = { userViewModel.sendVerificationEmail() }
         ) {
             Text(
-                text= stringResource(R.string.resend)
+                text= stringResource(R.string.resend),
+                modifier=Modifier.testTag(stringResource(R.string.test_resend))
             )
         }
     }
@@ -400,6 +414,7 @@ fun RegisterScreen(
                     modifier= paddingModifier()
                         .fillMaxWidth(0.7f)
                         .focusRequester(focusRequester)
+                        .testTag(stringResource(R.string.test_register_name))
                 )
                 Divider()
 
@@ -437,6 +452,7 @@ fun RegisterScreen(
                         },
                     ),
                     modifier= paddingModifier()
+                        .testTag(stringResource(R.string.test_register_email))
                 )
                 TextField(
                     value=inputPassword,
@@ -451,7 +467,9 @@ fun RegisterScreen(
                             focusManager.moveFocus(FocusDirection.Next)
                         },
                     ),
-                    modifier= Modifier.padding(start= dimensionResource(R.dimen.padding_xl))
+                    modifier= Modifier
+                        .padding(start= dimensionResource(R.dimen.padding_xl))
+                        .testTag(stringResource(R.string.test_register_password))
                 )
                 TextField(
                     value=inputVerifiedPassword,
@@ -481,6 +499,7 @@ fun RegisterScreen(
                         },
                     ),
                     modifier= paddingModifier()
+                        .testTag(stringResource(R.string.test_register_verification_password))
                 )
                 Divider()
 
@@ -540,6 +559,7 @@ private fun RegisterSexAndAgeSection(
             modifier= Modifier
                 .fillMaxWidth(0.6f)
                 .padding(start= dimensionResource(R.dimen.padding_xl))
+                .testTag(stringResource(R.string.test_register_age))
         )
     }
 }
@@ -589,7 +609,11 @@ private fun RegisterButton(
             .padding(vertical = dimensionResource(R.dimen.padding_sm))
     ){
         Button(onClick = onNavigationToLogIn) {
-            Text(stringResource(R.string.register))
+            Text(
+                stringResource(R.string.register),
+                modifier=Modifier
+                    .testTag(stringResource(R.string.test_register_button))
+            )
         }
     }
 }
@@ -681,7 +705,9 @@ fun UserInformationEditScreen(
             keyboardActions= KeyboardActions(
                 onNext = {focusManager.moveFocus(FocusDirection.Next)},
             ),
-            modifier= paddingModifier().focusRequester(focusRequester)
+            modifier= paddingModifier()
+                .focusRequester(focusRequester)
+                .testTag(stringResource(R.string.test_account_edit_new_password))
         )
         ConfirmNewPasswordTextField(
             context=context,
@@ -720,6 +746,7 @@ private fun EditUserNameSection(
                 keyboardType = KeyboardType.Text
             ),
             keyboardActions= KeyboardActions(
+                onDone = {
                     if(inputName.isBlank()){
                         Toast.makeText(context, R.string.blank_name, Toast.LENGTH_LONG).show()
                     }else{
@@ -734,6 +761,7 @@ private fun EditUserNameSection(
                     top = dimensionResource(R.dimen.padding_md),
                     bottom = dimensionResource(R.dimen.padding_md)
                 )
+                .testTag(stringResource(R.string.test_account_edit_name))
         )
         Button(onClick = {
             if(inputName.isBlank()){
@@ -790,7 +818,9 @@ private fun CurrentPasswordTextField(
                     }
                 },
             ),
-            modifier=Modifier.fillMaxWidth(0.6f)
+            modifier=Modifier
+                .fillMaxWidth(0.6f)
+                .testTag(stringResource(R.string.test_account_edit_current_password))
         )
         Button(
             onClick = {
@@ -803,7 +833,11 @@ private fun CurrentPasswordTextField(
             modifier=Modifier
                 .padding(start= dimensionResource(R.dimen.padding_xl))
         ) {
-            Text(stringResource(R.string.confirm))
+            Text(
+                stringResource(R.string.confirm),
+                modifier=Modifier
+                    .testTag(stringResource(R.string.test_account_edit_current_password_button))
+            )
         }
     }
 }
@@ -845,7 +879,9 @@ private fun ConfirmNewPasswordTextField(
                     }
                 },
             ),
-            modifier=Modifier.fillMaxWidth(0.6f)
+            modifier=Modifier
+                .fillMaxWidth(0.6f)
+                .testTag(stringResource(R.string.test_account_edit_confirm_new_password))
         )
         Button(
             onClick = {
@@ -860,7 +896,11 @@ private fun ConfirmNewPasswordTextField(
             modifier=Modifier
                 .padding(start= dimensionResource(R.dimen.padding_xl))
         ) {
-            Text(stringResource(R.string.confirm))
+            Text(
+                stringResource(R.string.confirm),
+                modifier=Modifier
+                    .testTag(stringResource(R.string.test_account_edit_confirm_button))
+            )
         }
     }
 }
