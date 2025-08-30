@@ -15,6 +15,10 @@ class FakeUserRepository: UserRepository {
     private var currentUser= CurrentUser(User())
     private var verificationCnt=0
 
+    companion object{
+        const val NEW_PASSWORD="000000"
+    }
+
     override suspend fun createUser(email: String, password: String): Result<ExternalUser?> {
         return try {
             if(!pattern.matcher(email).matches())
@@ -26,6 +30,7 @@ class FakeUserRepository: UserRepository {
 
             val user=AuthUser(email+password,email, password)
             authList.add(user)
+
             Result.success(FakeExternalUser(uid=user.uid,authList=authList))
         }catch(e:Exception){
             Result.failure(e)
@@ -35,7 +40,10 @@ class FakeUserRepository: UserRepository {
     override suspend fun deleteUserAccount(user: ExternalUser?): Result<Unit> {
         return try{
             user?.delete()
+
             verificationCnt=0
+            currentUser= CurrentUser(User())
+
             Result.success(Unit)
         }catch (e:Exception){
             Result.failure(e)
@@ -46,6 +54,7 @@ class FakeUserRepository: UserRepository {
         return try{
             val userData = authList.find { it.uid == uid }
             val user= storeList.find{it.email== userData?.email}
+
             if(user==null){
                 Result.failure((IllegalStateException("No user data")))
             }else{
@@ -65,6 +74,8 @@ class FakeUserRepository: UserRepository {
             if(index==-1) return Result.failure(IllegalStateException("No Account"))
 
             storeList[index]= storeList[index].copy(name = data["name"].toString())
+            currentUser= currentUser.copy(user = currentUser.user.copy(name=data["name"].toString()))
+
             Result.success(Unit)
         }catch (e:Exception){
             Result.failure(e)
@@ -75,7 +86,10 @@ class FakeUserRepository: UserRepository {
         return try{
             val userData = authList.find { it.uid == uid }
             val user= storeList.find{it.email== userData?.email}
+
             storeList.remove(user)
+            currentUser=CurrentUser(User())
+
             Result.success(user)
         }catch (e:Exception){
             Result.failure(e)
@@ -85,6 +99,8 @@ class FakeUserRepository: UserRepository {
     override suspend fun saveUser(user: User): Result<Unit> {
         return try{
             storeList.add(user)
+            currentUser= currentUser.copy(user=user)
+
             Result.success(Unit)
         }catch (e:Exception){
             Result.failure(e)
@@ -103,10 +119,10 @@ class FakeUserRepository: UserRepository {
 
             val userData= storeList.find { it.email==email }
             if (userData != null) {
-                currentUser= CurrentUser(userData)
+                currentUser= currentUser.copy(user= userData)
             }
 
-            Result.success(FakeExternalUser(uid= user.uid,authList=authList))
+            Result.success(FakeExternalUser(user.uid, currentUser.isEmailVerified, authList))
         }catch (e:Exception){
             Result.failure(e)
         }
@@ -114,7 +130,8 @@ class FakeUserRepository: UserRepository {
 
     override suspend fun signOutUser(): Result<Unit> {
         return try {
-            currentUser= CurrentUser(User())
+            currentUser= currentUser.copy(user=User())
+
             Result.success(Unit)
         }catch (e:Exception){
             Result.failure(e)
@@ -165,6 +182,7 @@ class FakeUserRepository: UserRepository {
             if(index==-1) return Result.failure(IllegalStateException("No Account"))
 
             authList[index]= authList[index].copy(password=password)
+
             Result.success(Unit)
         }catch (e:Exception){
             Result.failure(e)
@@ -176,7 +194,8 @@ class FakeUserRepository: UserRepository {
             val index= authList.indexOfFirst { it.email== email }
             if(index==-1) return Result.failure(IllegalStateException("No Account"))
 
-            authList[index]= authList[index].copy(password="000000")
+            authList[index]= authList[index].copy(password=NEW_PASSWORD)
+
             Result.success(Unit)
         }catch (e:Exception){
             Result.failure(e)
