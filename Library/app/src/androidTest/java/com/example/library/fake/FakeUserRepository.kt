@@ -13,6 +13,7 @@ class FakeUserRepository: UserRepository {
     private val pattern= Patterns.EMAIL_ADDRESS
 
     private var currentUser= CurrentUser(User())
+    private var verificationCnt=0
 
     override suspend fun createUser(email: String, password: String): Result<ExternalUser?> {
         return try {
@@ -34,6 +35,7 @@ class FakeUserRepository: UserRepository {
     override suspend fun deleteUserAccount(user: ExternalUser?): Result<Unit> {
         return try{
             user?.delete()
+            verificationCnt=0
             Result.success(Unit)
         }catch (e:Exception){
             Result.failure(e)
@@ -138,11 +140,9 @@ class FakeUserRepository: UserRepository {
 
     override suspend fun sendVerificationEmail(user: ExternalUser?): Result<Unit> {
         return try{
-            if(user==null){
-                currentUser.isEmailVerified=true
-            }else{
-                user.sendEmailVerification()
-            }
+            verificationCnt++
+            if(verificationCnt>1) currentUser.isEmailVerified=true
+
             Result.success(Unit)
         }catch (e:Exception){
             Result.failure(e)
