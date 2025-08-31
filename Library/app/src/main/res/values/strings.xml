@@ -148,6 +148,8 @@
     <string name="test_account_name">name</string>
     <string name="test_account_edit">edit</string>
     <string name="test_account_edit_name">edit name</string>
+    <string name="test_account_edit_gender">edit gender</string>
+    <string name="test_account_edit_age">edit age</string>
     <string name="test_account_edit_current_password">edit current password</string>
     <string name="test_account_edit_current_password_button">edit current password button</string>
     <string name="test_account_edit_new_password">edit new password</string>

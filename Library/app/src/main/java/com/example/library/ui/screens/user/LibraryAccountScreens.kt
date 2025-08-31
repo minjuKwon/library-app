@@ -791,9 +791,15 @@ private fun EditSexAndAgeText(
         modifier=paddingModifier()
     ){
         val gender = if(userGender==Gender.MALE) "남" else "여"
-        Text(gender)
+        Text(
+            gender,
+            modifier=Modifier.testTag(stringResource(R.string.test_account_edit_gender))
+        )
         Spacer(modifier= Modifier.weight(1f))
-        Text("$userAge")
+        Text(
+            "$userAge",
+            modifier=Modifier.testTag(stringResource(R.string.test_account_edit_age))
+        )
         Spacer(modifier= Modifier.weight(1f))
     }
 }

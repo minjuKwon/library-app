@@ -21,6 +21,7 @@ object UserTestHelper {
     const val PASSWORD="123456"
     const val WRONG_PASSWORD="111111"
     const val NAME="Android"
+    const val AGE="10"
 
     fun <A: ComponentActivity> initial(
         composeTestRule: ComposeRule<A>,
@@ -57,7 +58,7 @@ object UserTestHelper {
         //나이 입력
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_register_age)
-            .performTextInput("10")
+            .performTextInput(AGE)
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_register_age)
             .performImeAction()

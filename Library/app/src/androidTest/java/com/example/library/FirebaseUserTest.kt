@@ -1,11 +1,15 @@
 package com.example.library
 
+import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
+import com.example.library.common.UserTestHelper.AGE
 import com.example.library.common.UserTestHelper.EMAIL
+import com.example.library.common.UserTestHelper.NAME
 import com.example.library.common.UserTestHelper.initial
 import com.example.library.common.UserTestHelper.inputLogInInfo
 import com.example.library.common.UserTestHelper.logIn
@@ -179,6 +183,37 @@ class FirebaseUserTest {
         logIn(composeTestRule,testDispatcher,true, newName, newPassword)
 
         unregister(composeTestRule,testDispatcher,newPassword)
+    }
+
+    //회원가입 -> 로그인 -> 회원 정보 일치 여부 확인 -> 회원 탈퇴
+    @Test
+    fun memberScreen_checkUserInformation_showCorrectValue(){
+        register(composeTestRule,testDispatcher)
+
+        logIn(composeTestRule,testDispatcher,false)
+
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_account_edit, useUnmergedTree = true)
+            .assertExists()
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_account_edit, useUnmergedTree = true)
+            .performClick()
+
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_account_edit_name)
+            .assertTextContains(NAME)
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_account_edit_gender)
+            .assertTextEquals("남")
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_account_edit_age)
+            .assertTextEquals(AGE)
+
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_back, useUnmergedTree=true)
+            .performClick()
+
+        unregister(composeTestRule,testDispatcher)
     }
 
 }
