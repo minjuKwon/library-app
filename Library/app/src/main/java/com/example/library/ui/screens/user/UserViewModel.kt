@@ -58,7 +58,7 @@ class UserViewModel @Inject constructor(
             try{
                 firebaseUserService.register(user, password)
                 _isUserVerified.value=false
-                _event.emit(UserUiState.Success)
+                _event.emit(UserUiState.Success())
             }catch(e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
@@ -69,7 +69,7 @@ class UserViewModel @Inject constructor(
         scope.launch {
             try {
                 firebaseUserService.unregister(password)
-                _event.emit(UserUiState.Success)
+                _event.emit(UserUiState.Success())
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
@@ -80,7 +80,7 @@ class UserViewModel @Inject constructor(
         scope.launch {
             try {
                 firebaseUserService.changeUserInfo(data)
-                _event.emit(UserUiState.Success)
+                _event.emit(UserUiState.Success())
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
@@ -91,7 +91,7 @@ class UserViewModel @Inject constructor(
         scope.launch {
             try{
                 firebaseUserService.signIn(email, password)
-                _event.emit(UserUiState.Success)
+                _event.emit(UserUiState.Success())
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
@@ -102,7 +102,7 @@ class UserViewModel @Inject constructor(
         scope.launch {
             try{
                 firebaseUserService.signOut()
-                _event.emit(UserUiState.Success)
+                _event.emit(UserUiState.Success())
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
@@ -113,7 +113,7 @@ class UserViewModel @Inject constructor(
         scope.launch {
             try {
                 firebaseUserService.sendVerificationEmail(null)
-                _event.emit(UserUiState.Success)
+                _event.emit(UserUiState.Success())
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
@@ -135,7 +135,7 @@ class UserViewModel @Inject constructor(
         scope.launch {
             try {
                 if(_isPasswordVerified.value) firebaseUserService.changePassword(newPassword)
-                _event.emit(UserUiState.Success)
+                _event.emit(UserUiState.Success())
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
