@@ -28,6 +28,7 @@
     <string name="ranking_options">순위 옵션 더보기</string>
 
     <string name="edit_information">정보 수정</string>
+    <string name="edit_user_info">회원 정보 수정</string>
     <string name="log_out">로그아웃</string>
     <string name="loan_history">대출 내역</string>
     <string name="loan_status">대출 현황</string>

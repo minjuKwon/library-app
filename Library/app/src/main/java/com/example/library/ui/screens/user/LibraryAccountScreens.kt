@@ -662,7 +662,7 @@ fun UserInformationEditScreen(
     )
 
     CardLayout(
-        iconText = "아이디",
+        iconText = stringResource(R.string.edit_user_info),
         onBackPressed= onBackPressed
     ){
         EditUserNameSection(
