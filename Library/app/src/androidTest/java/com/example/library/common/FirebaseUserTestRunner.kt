@@ -1,4 +1,4 @@
-package com.example.library
+package com.example.library.common
 
 import android.app.Application
 import android.content.Context
