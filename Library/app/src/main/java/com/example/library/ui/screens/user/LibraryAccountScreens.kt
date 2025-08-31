@@ -621,6 +621,7 @@ private fun RegisterButton(
 @Composable
 fun UserInformationEditScreen(
     userViewModel:UserViewModel,
+    userInfo: User,
     onBackPressed:()->Unit,
     onNavigationToSetting:()->Unit
 ){
@@ -667,6 +668,7 @@ fun UserInformationEditScreen(
     ){
         EditUserNameSection(
             context= context,
+            userName = userInfo.name,
             onEdit = {
                 if(!isClickName){
                     userViewModel.changeUserInfo(mapOf("name" to it))
@@ -675,7 +677,10 @@ fun UserInformationEditScreen(
         )
         Divider()
 
-        EditSexAndAgeText()
+        EditSexAndAgeText(
+            userGender= userInfo.gender,
+            userAge= userInfo.age
+        )
         Divider()
 
         Text(stringResource(R.string.change_password),modifier=paddingModifier())
@@ -729,9 +734,10 @@ fun UserInformationEditScreen(
 @Composable
 private fun EditUserNameSection(
     context: Context,
+    userName:String,
     onEdit:(String)->Unit
 ){
-    var inputName by remember{mutableStateOf("김이름")}
+    var inputName by remember{mutableStateOf(userName)}
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -776,14 +782,18 @@ private fun EditUserNameSection(
 }
 
 @Composable
-private fun EditSexAndAgeText(){
+private fun EditSexAndAgeText(
+    userGender: Gender,
+    userAge: Int
+){
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier=paddingModifier()
     ){
-        Text("남")
+        val gender = if(userGender==Gender.MALE) "남" else "여"
+        Text(gender)
         Spacer(modifier= Modifier.weight(1f))
-        Text("25")
+        Text("$userAge")
         Spacer(modifier= Modifier.weight(1f))
     }
 }
