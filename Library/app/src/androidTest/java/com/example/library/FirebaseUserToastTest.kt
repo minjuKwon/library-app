@@ -294,8 +294,9 @@ class FirebaseUserToastTest {
 
         unregister(composeTestRule,testDispatcher)
     }
+
     @Test
-    fun editScreen_inputWrongEmail_showCorrectToast(){
+    fun editScreen_inputWrongPassword_showCorrectToast(){
         register(composeTestRule,testDispatcher)
         composeTestRule.waitForToast(R.string.loading_register)
         composeTestRule.waitForToast(R.string.success_register)
@@ -336,10 +337,9 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_account_edit_current_password_button, useUnmergedTree = true)
             .performClick()
-        composeTestRule.waitForToast(R.string.already_reauthorization)
         composeTestRule.waitForToast(R.string.invalid_password)
 
-        //변경할 비밀번호에 일치하지 않는 번호 입력 검사
+        //현재 비밀번호 입력 후 인증 확인 검사
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_account_edit_current_password)
             .performTextClearance()
@@ -349,6 +349,9 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_account_edit_current_password_button, useUnmergedTree = true)
             .performClick()
+        composeTestRule.waitForToast(R.string.already_reauthorization)
+        
+        //변경할 비밀번호에 일치하지 않는 번호 입력 검사
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_account_edit_new_password)
             .performTextClearance()
@@ -356,16 +359,45 @@ class FirebaseUserToastTest {
             .onNodeWithTagForStringId(R.string.test_account_edit_new_password)
             .performTextInput("123")
         composeTestRule
+            .onNodeWithTagForStringId(R.string.test_account_edit_current_password_button, useUnmergedTree = true)
+            .performClick()
+        composeTestRule.waitForToast(R.string.already_reauthorization)
+        composeTestRule
             .onNodeWithTagForStringId(R.string.test_account_edit_confirm_button, useUnmergedTree = true)
             .performClick()
-        composeTestRule.waitForToast(R.string.incorrect_new_password)
+        composeTestRule.waitForToast(R.string.incorrect_new_password,8000)
 
-
+        //변경할 비밀번호에 6자 미만 번호 입력 검사
         composeTestRule
-            .onNodeWithTagForStringId(R.string.test_back, useUnmergedTree=true)
+            .onNodeWithTagForStringId(R.string.test_account_edit_confirm_new_password)
+            .performTextClearance()
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_account_edit_confirm_new_password)
+            .performTextInput("123")
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_account_edit_confirm_button, useUnmergedTree = true)
             .performClick()
+        composeTestRule.waitForToast(R.string.weak_password)
+
+        //변경할 비밀번호에 올바른 번호 입력 검사
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_account_edit_new_password)
+            .performTextClearance()
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_account_edit_new_password)
+            .performTextInput(NEW_PASSWORD)
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_account_edit_confirm_new_password)
+            .performTextClearance()
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_account_edit_confirm_new_password)
+            .performTextInput(NEW_PASSWORD)
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_account_edit_confirm_button, useUnmergedTree = true)
+            .performClick()
+        composeTestRule.waitForToast(R.string.success_edit)
         
-        unregister(composeTestRule,testDispatcher)
+        unregister(composeTestRule,testDispatcher,NEW_PASSWORD)
     }
 
 }
