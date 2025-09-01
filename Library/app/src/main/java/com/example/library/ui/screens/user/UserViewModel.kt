@@ -125,6 +125,7 @@ class UserViewModel @Inject constructor(
             try {
                 firebaseUserService.verifyCurrentPassword(currentPassword)
                 _isPasswordVerified.value=true
+                _event.emit(UserUiState.Success("verifyCurrentPassword"))
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }

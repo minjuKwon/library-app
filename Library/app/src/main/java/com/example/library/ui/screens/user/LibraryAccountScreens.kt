@@ -646,11 +646,16 @@ fun UserInformationEditScreen(
 
     HandleUserUiState(
         event= userViewModel.event,
-        onSuccess = {
-            isClickName=true
-            isClickNewPassword=true
-            Toast.makeText(context, R.string.success_edit, Toast.LENGTH_LONG).show()
-            onNavigationToSetting()
+        onSuccess = { state:UserUiState.Success ->
+            if(state.message=="verifyCurrentPassword"){
+                isClickCurrentPassword=true
+                Toast.makeText(context, R.string.already_reauthorization,Toast.LENGTH_LONG).show()
+            }else{
+                isClickName=true
+                isClickNewPassword=true
+                Toast.makeText(context, R.string.success_edit, Toast.LENGTH_LONG).show()
+                onNavigationToSetting()
+            }
         },
         onFailure = { state:UserUiState.Failure ->
             val message= when(state.message){
@@ -693,8 +698,6 @@ fun UserInformationEditScreen(
                     if(!isClickCurrentPassword){
                         keyboardController?.hide()
                         userViewModel.verifyCurrentPassword(it)
-                        isClickCurrentPassword=true
-                        Toast.makeText(context, R.string.already_reauthorization,Toast.LENGTH_LONG).show()
                     }
                 }
             }

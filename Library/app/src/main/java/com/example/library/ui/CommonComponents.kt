@@ -246,7 +246,7 @@ fun Divider(){
 @Composable
 fun HandleUserUiState(
     event: SharedFlow<UserUiState>,
-    onSuccess:()->Unit,
+    onSuccess:(UserUiState.Success)->Unit,
     onFailure:(UserUiState.Failure)->Unit
 ){
     LaunchedEffect(Unit){
@@ -254,7 +254,7 @@ fun HandleUserUiState(
             when(it){
                 is UserUiState.Success->{
                     withContext(Dispatchers.Main) {
-                        onSuccess()
+                        onSuccess(it)
                     }
                 }
                 is UserUiState.Failure -> {
