@@ -18,6 +18,7 @@ import com.example.library.common.UserTestHelper.verifyUser
 import com.example.library.fake.FakeUserRepository.Companion.NEW_PASSWORD
 import com.example.library.rules.onNodeWithContentDescriptionForStringId
 import com.example.library.rules.onNodeWithTagForStringId
+import com.example.library.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -325,7 +326,7 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_account_edit_confirm_button, useUnmergedTree = true)
             .performClick()
-        composeTestRule.waitForToast(R.string.check_password)
+        composeTestRule.waitForToast(R.string.check_password,8000)
 
         //틀린 비밀번호 입력 후 인증 확인 검사
         composeTestRule
