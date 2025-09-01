@@ -53,10 +53,10 @@ import androidx.lifecycle.LifecycleEventObserver
 import com.example.library.R
 import com.example.library.data.Gender
 import com.example.library.data.User
-import com.example.library.ui.BackIconButton
-import com.example.library.ui.Divider
-import com.example.library.ui.HandleUserUiState
-import com.example.library.ui.TextRadioButton
+import com.example.library.ui.common.BackIconButton
+import com.example.library.ui.common.Divider
+import com.example.library.ui.common.HandleUserUiState
+import com.example.library.ui.common.TextRadioButton
 
 @Composable
 private fun paddingModifier()= Modifier

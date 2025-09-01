@@ -1,4 +1,4 @@
-package com.example.library.data
+package com.example.library.domain
 
 interface ExternalUser{
     val uid:String

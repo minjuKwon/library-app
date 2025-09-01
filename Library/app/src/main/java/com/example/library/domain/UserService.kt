@@ -1,6 +1,5 @@
 package com.example.library.domain
 
-import com.example.library.data.ExternalUser
 import com.example.library.data.User
 import kotlinx.coroutines.flow.Flow
 

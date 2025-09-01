@@ -1,6 +1,6 @@
 package com.example.library.fake
 
-import com.example.library.data.ExternalUser
+import com.example.library.domain.ExternalUser
 
 class FakeExternalUser(
     override val uid: String = "",

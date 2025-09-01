@@ -21,6 +21,7 @@ import com.example.library.common.UserTestHelper.verifyUser
 import com.example.library.fake.FakeUserRepository.Companion.NEW_PASSWORD
 import com.example.library.rules.onNodeWithContentDescriptionForStringId
 import com.example.library.rules.onNodeWithTagForStringId
+import com.example.library.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.StandardTestDispatcher

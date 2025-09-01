@@ -1,10 +1,10 @@
-package com.example.library
+package com.example.library.data
 
-import com.example.library.data.ExternalUser
+import com.example.library.domain.ExternalUser
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.tasks.await
 
-class FirebaseExternalUser(private val user: FirebaseUser):ExternalUser {
+class FirebaseExternalUser(private val user: FirebaseUser): ExternalUser {
     override val uid = user.uid
     override val isEmailVerified = user.isEmailVerified
 

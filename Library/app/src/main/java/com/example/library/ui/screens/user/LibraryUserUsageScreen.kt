@@ -17,8 +17,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.example.library.R
-import com.example.library.ui.BackIconButton
-import com.example.library.ui.Divider
+import com.example.library.ui.common.BackIconButton
+import com.example.library.ui.common.Divider
 
 @Composable
 fun LoanHistoryScreen(

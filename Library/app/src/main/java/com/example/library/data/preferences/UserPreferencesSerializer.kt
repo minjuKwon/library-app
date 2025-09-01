@@ -1,4 +1,4 @@
-package com.example.library.data
+package com.example.library.data.preferences
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer

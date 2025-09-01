@@ -1,4 +1,4 @@
-package com.example.library
+package com.example.library.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Modifier
-import com.example.library.ui.LibraryApp
 import com.example.library.ui.screens.detail.LibraryDetailsViewModel
 import com.example.library.ui.screens.search.LibraryViewModel
 import com.example.library.ui.screens.user.UserViewModel

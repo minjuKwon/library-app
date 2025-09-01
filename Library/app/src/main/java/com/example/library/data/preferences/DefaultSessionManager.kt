@@ -1,10 +1,13 @@
-package com.example.library.data
+package com.example.library.data.preferences
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import com.example.library.UserPreferences
+import com.example.library.data.Gender
+import com.example.library.data.User
+import com.example.library.domain.SessionManager
 import com.example.library.Gender as ProtoGender
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -15,7 +18,7 @@ import javax.inject.Singleton
 class DefaultSessionManager @Inject constructor(
     private val userDataStore:DataStore<UserPreferences>,
     private val logInStateStore:DataStore<Preferences>
-):SessionManager{
+): SessionManager {
 
     private companion object{
         val IS_LOG_IN= booleanPreferencesKey("isLogIn")
@@ -24,7 +27,7 @@ class DefaultSessionManager @Inject constructor(
     override val userPreferences:Flow<User> = userDataStore.data.map { it.toUser() }
     override val logInPreferences:Flow<Boolean> = logInStateStore.data.map { it[IS_LOG_IN] ?: false }
 
-    override suspend fun saveUserData(user:User){
+    override suspend fun saveUserData(user: User){
         userDataStore.updateData { user.toProto() }
     }
 

@@ -1,4 +1,4 @@
-package com.example.library.ui.utils
+package com.example.library.ui.common
 
 import androidx.compose.foundation.lazy.LazyListState
 import com.example.library.data.api.Book

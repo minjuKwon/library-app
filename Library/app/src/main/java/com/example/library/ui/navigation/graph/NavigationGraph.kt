@@ -7,10 +7,10 @@ import androidx.navigation.compose.NavHost
 import com.example.library.ui.navigation.destination.GraphRoutes
 import com.example.library.ui.screens.search.LibraryUiState
 import com.example.library.ui.screens.user.UserViewModel
-import com.example.library.ui.utils.DetailsScreenParams
-import com.example.library.ui.utils.ListContentParams
-import com.example.library.ui.utils.NavigationConfig
-import com.example.library.ui.utils.TextFieldParams
+import com.example.library.ui.common.DetailsScreenParams
+import com.example.library.ui.common.ListContentParams
+import com.example.library.ui.common.NavigationConfig
+import com.example.library.ui.common.TextFieldParams
 
 @Composable
 fun NavigationGraph(

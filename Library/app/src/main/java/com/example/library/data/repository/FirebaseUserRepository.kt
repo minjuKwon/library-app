@@ -1,7 +1,7 @@
 package com.example.library.data.repository
 
-import com.example.library.FirebaseExternalUser
-import com.example.library.data.ExternalUser
+import com.example.library.data.FirebaseExternalUser
+import com.example.library.domain.ExternalUser
 import com.example.library.data.User
 import com.example.library.domain.UserRepository
 import com.google.firebase.auth.EmailAuthProvider
@@ -30,7 +30,7 @@ class FirebaseUserRepository @Inject constructor(
             }
     }
 
-    override suspend fun deleteUserAccount(user:ExternalUser?): Result<Unit> = withContext(Dispatchers.IO){
+    override suspend fun deleteUserAccount(user: ExternalUser?): Result<Unit> = withContext(Dispatchers.IO){
         return@withContext try{
             if(user==null){ firebaseAuth.currentUser?.delete()?.await() }
             else{ user.delete() }
@@ -148,7 +148,7 @@ class FirebaseUserRepository @Inject constructor(
             }
     }
 
-    override suspend fun sendVerificationEmail(user:ExternalUser?):Result<Unit> =
+    override suspend fun sendVerificationEmail(user: ExternalUser?):Result<Unit> =
         withContext(Dispatchers.IO){
             return@withContext try{
                 if(user==null) firebaseAuth.currentUser?.sendEmailVerification()

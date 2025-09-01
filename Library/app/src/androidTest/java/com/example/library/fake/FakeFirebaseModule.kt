@@ -2,7 +2,7 @@ package com.example.library.fake
 
 import dagger.Module
 import dagger.Provides
-import com.example.library.data.SessionManager
+import com.example.library.domain.SessionManager
 import com.example.library.di.FirebaseModule
 import com.example.library.domain.UserRepository
 import com.example.library.domain.UserService

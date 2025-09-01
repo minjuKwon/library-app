@@ -1,7 +1,7 @@
 package com.example.library.fake
 
 import android.util.Patterns
-import com.example.library.data.ExternalUser
+import com.example.library.domain.ExternalUser
 import com.example.library.data.User
 import com.example.library.data.repository.FirebaseException
 import com.example.library.domain.UserRepository

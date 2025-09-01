@@ -1,11 +1,11 @@
 package com.example.library.fake
 
-import com.example.library.data.SessionManager
+import com.example.library.domain.SessionManager
 import com.example.library.data.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
-class FakeSessionManager:SessionManager {
+class FakeSessionManager: SessionManager {
     override val userPreferences: Flow<User> = emptyFlow()
     override val logInPreferences: Flow<Boolean> = emptyFlow()
 

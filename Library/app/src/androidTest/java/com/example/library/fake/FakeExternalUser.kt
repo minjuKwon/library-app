@@ -1,12 +1,12 @@
 package com.example.library.fake
 
-import com.example.library.data.ExternalUser
+import com.example.library.domain.ExternalUser
 
 class FakeExternalUser(
     override val uid: String,
     override val isEmailVerified: Boolean= false,
     private var authList:MutableList<AuthUser> = mutableListOf()
-) :ExternalUser {
+) : ExternalUser {
 
     var isUserEmailVerified= isEmailVerified
 

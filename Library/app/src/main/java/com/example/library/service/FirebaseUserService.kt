@@ -1,7 +1,7 @@
 package com.example.library.service
 
-import com.example.library.data.ExternalUser
-import com.example.library.data.SessionManager
+import com.example.library.domain.ExternalUser
+import com.example.library.domain.SessionManager
 import com.example.library.data.User
 import com.example.library.domain.UserRepository
 import com.example.library.domain.UserService
@@ -76,7 +76,7 @@ class FirebaseUserService @Inject constructor(
         defaultSessionManager.removeLogInState()
     }
 
-    override suspend fun sendVerificationEmail(user:ExternalUser?){
+    override suspend fun sendVerificationEmail(user: ExternalUser?){
         val isSend = userRepository.sendVerificationEmail(user)
         if(isSend.isFailure) throw isSend.exceptionOrNull()?:VerificationFailedException()
     }

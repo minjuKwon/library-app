@@ -41,9 +41,9 @@ import coil.request.ImageRequest
 import com.example.library.R
 import com.example.library.data.api.Book
 import com.example.library.data.api.BookInfo
-import com.example.library.ui.BackIconButton
-import com.example.library.ui.TextRadioButton
-import com.example.library.ui.utils.DetailsScreenParams
+import com.example.library.ui.common.BackIconButton
+import com.example.library.ui.common.TextRadioButton
+import com.example.library.ui.common.DetailsScreenParams
 
 @Composable
 fun LibraryDetailsScreen(

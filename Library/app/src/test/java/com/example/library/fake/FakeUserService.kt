@@ -1,6 +1,6 @@
 package com.example.library.fake
 
-import com.example.library.data.ExternalUser
+import com.example.library.domain.ExternalUser
 import com.example.library.data.User
 import com.example.library.domain.UserService
 import kotlinx.coroutines.flow.Flow

@@ -1,6 +1,6 @@
 package com.example.library.di
 
-import com.example.library.data.SessionManager
+import com.example.library.domain.SessionManager
 import com.example.library.data.repository.FirebaseUserRepository
 import com.example.library.domain.UserRepository
 import com.example.library.domain.UserService

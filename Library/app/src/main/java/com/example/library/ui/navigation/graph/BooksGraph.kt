@@ -22,11 +22,11 @@ import com.example.library.ui.screens.search.LibraryListOnlyContent
 import com.example.library.ui.screens.search.LibraryUiState
 import com.example.library.ui.screens.search.LoadingScreen
 import com.example.library.ui.screens.search.getBookList
-import com.example.library.ui.utils.ContentType
-import com.example.library.ui.utils.DetailsScreenParams
-import com.example.library.ui.utils.ListContentParams
-import com.example.library.ui.utils.NavigationConfig
-import com.example.library.ui.utils.TextFieldParams
+import com.example.library.ui.common.ContentType
+import com.example.library.ui.common.DetailsScreenParams
+import com.example.library.ui.common.ListContentParams
+import com.example.library.ui.common.NavigationConfig
+import com.example.library.ui.common.TextFieldParams
 
 fun NavGraphBuilder.booksDestination(
     libraryUiState: LibraryUiState,

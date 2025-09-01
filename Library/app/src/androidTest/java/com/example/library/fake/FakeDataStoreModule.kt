@@ -7,9 +7,9 @@ import androidx.datastore.dataStoreFile
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import com.example.library.UserPreferences
-import com.example.library.data.DefaultSessionManager
-import com.example.library.data.SessionManager
-import com.example.library.data.UserPreferencesSerializer
+import com.example.library.data.preferences.DefaultSessionManager
+import com.example.library.domain.SessionManager
+import com.example.library.data.preferences.UserPreferencesSerializer
 import com.example.library.di.DataStoreModule
 import dagger.Module
 import dagger.Provides
@@ -53,6 +53,6 @@ object FakeDataStoreModule {
     fun provideSessionManager(
         userDataStore:DataStore<UserPreferences>,
         logInStateStore:DataStore<Preferences>
-    ):SessionManager = DefaultSessionManager(userDataStore, logInStateStore)
+    ): SessionManager = DefaultSessionManager(userDataStore, logInStateStore)
 
 }

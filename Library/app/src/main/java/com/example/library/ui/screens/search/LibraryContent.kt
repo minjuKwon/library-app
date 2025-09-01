@@ -25,11 +25,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,10 +43,10 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.library.R
 import com.example.library.data.api.Book
-import com.example.library.ui.LibraryListItem
-import com.example.library.ui.utils.DetailsScreenParams
-import com.example.library.ui.utils.ListContentParams
-import com.example.library.ui.utils.TextFieldParams
+import com.example.library.ui.common.LibraryListItem
+import com.example.library.ui.common.DetailsScreenParams
+import com.example.library.ui.common.ListContentParams
+import com.example.library.ui.common.TextFieldParams
 import com.example.library.ui.screens.detail.LibraryDetailsScreen
 
 @Composable

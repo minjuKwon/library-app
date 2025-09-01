@@ -26,9 +26,9 @@ import com.example.library.R
 import com.example.library.data.api.Book
 import com.example.library.data.api.BookInfo
 import com.example.library.data.api.Image
-import com.example.library.ui.LibraryListItem
-import com.example.library.ui.TextRadioButton
-import com.example.library.ui.utils.ListContentParams
+import com.example.library.ui.common.LibraryListItem
+import com.example.library.ui.common.TextRadioButton
+import com.example.library.ui.common.ListContentParams
 
 @Composable
 fun LibraryRankingScreen(
