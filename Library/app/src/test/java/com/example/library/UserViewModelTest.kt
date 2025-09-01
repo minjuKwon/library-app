@@ -49,7 +49,7 @@ class UserViewModelTest {
         viewModel.register(User(),"")
         testScheduler.advanceUntilIdle()
         Assert.assertFalse(viewModel.isUserVerified.value)
-        Assert.assertEquals(UserUiState.Success, emittedStates.last())
+        Assert.assertEquals(UserUiState.Success(), emittedStates.last())
 
         job.cancel()
     }
@@ -85,7 +85,7 @@ class UserViewModelTest {
         viewModel.unregister("")
         testScheduler.advanceUntilIdle()
 
-        Assert.assertEquals(UserUiState.Success, emittedStates.last())
+        Assert.assertEquals(UserUiState.Success(), emittedStates.last())
 
         job.cancel()
     }
@@ -121,7 +121,7 @@ class UserViewModelTest {
         viewModel.changeUserInfo(mapOf())
         testScheduler.advanceUntilIdle()
 
-        Assert.assertEquals(UserUiState.Success, emittedStates.last())
+        Assert.assertEquals(UserUiState.Success(), emittedStates.last())
 
         job.cancel()
     }
@@ -157,7 +157,7 @@ class UserViewModelTest {
         viewModel.signIn("","")
         testScheduler.advanceUntilIdle()
 
-        Assert.assertEquals(UserUiState.Success, emittedStates.last())
+        Assert.assertEquals(UserUiState.Success(), emittedStates.last())
 
         job.cancel()
     }
@@ -193,7 +193,7 @@ class UserViewModelTest {
         viewModel.signOut()
         testScheduler.advanceUntilIdle()
 
-        Assert.assertEquals(UserUiState.Success, emittedStates.last())
+        Assert.assertEquals(UserUiState.Success(), emittedStates.last())
 
         job.cancel()
     }
@@ -229,7 +229,7 @@ class UserViewModelTest {
         viewModel.sendVerificationEmail()
         testScheduler.advanceUntilIdle()
 
-        Assert.assertEquals(UserUiState.Success, emittedStates.last())
+        Assert.assertEquals(UserUiState.Success(), emittedStates.last())
 
         job.cancel()
     }
@@ -295,7 +295,7 @@ class UserViewModelTest {
         testScheduler.advanceUntilIdle()
 
         Assert.assertTrue(viewModel.isPasswordVerified.value)
-        Assert.assertEquals(UserUiState.Success, emittedStates.last())
+        Assert.assertEquals(UserUiState.Success(), emittedStates.last())
 
         job.cancel()
     }
@@ -331,7 +331,7 @@ class UserViewModelTest {
         viewModel.findPassword("")
         testScheduler.advanceUntilIdle()
 
-        Assert.assertEquals(UserUiState.Success, emittedStates.last())
+        Assert.assertTrue(emittedStates.isEmpty())
 
         job.cancel()
     }
