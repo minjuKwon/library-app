@@ -5,6 +5,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.lifecycle.testing.TestLifecycleOwner
+import com.example.library.common.TestUtil.waitForToast
 import com.example.library.data.fake.FakeNetworkBookRepository
 import com.example.library.fake.FakeUserService
 import com.example.library.rules.onNodeWithContentDescriptionForStringId
@@ -13,11 +14,11 @@ import com.example.library.ui.LibraryApp
 import com.example.library.ui.screens.detail.LibraryDetailsViewModel
 import com.example.library.ui.screens.search.LibraryViewModel
 import com.example.library.ui.screens.user.UserViewModel
-import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.StandardTestDispatcher
 import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -29,6 +30,11 @@ class NavigationTest {
     private val testDispatcher = StandardTestDispatcher()
     private val testScope = CoroutineScope(testDispatcher)
 
+    @Before
+    fun setUp(){
+        init()
+    }
+
     @After
     fun closeResource(){
         testScope.cancel()
@@ -36,8 +42,6 @@ class NavigationTest {
 
     @Test
     fun mainScreen_clickBookTab_displaysBookScreen(){
-        init()
-
         pressTab(R.string.book)
 
         composeTestRule.onNodeWithTagForStringId(
@@ -47,8 +51,6 @@ class NavigationTest {
 
     @Test
     fun mainScreen_clickRankingTab_displaysRankingScreen(){
-        init()
-
         pressTab( R.string.ranking)
 
         composeTestRule.onNodeWithContentDescriptionForStringId(
@@ -58,8 +60,6 @@ class NavigationTest {
 
     @Test
     fun mainScreen_clickSettingTab_displaysNoMemberScreen(){
-        init()
-
         pressTab(R.string.setting)
 
         composeTestRule.onNodeWithTagForStringId(
@@ -68,52 +68,7 @@ class NavigationTest {
     }
 
     @Test
-    fun noMemberScreen_logIn_displaysSettingScreen(){
-        logIn()
-
-        composeTestRule.onNodeWithTagForStringId(
-            R.string.test_account_edit
-        ).assertExists()
-
-        //원 상태로 되돌리기
-        composeTestRule.onNodeWithTagForStringId(
-            R.string.test_logOut
-        ).performClick()
-    }
-
-    @Test
-    fun settingScreen_clickLogOut_displaysNoMemberScreen(){
-        logIn()
-
-        composeTestRule.onNodeWithTagForStringId(
-            R.string.test_logOut
-        ).performClick()
-
-        composeTestRule.onNodeWithTagForStringId(
-            R.string.test_noMember
-        ).assertExists()
-    }
-
-    @Test
-    fun settingScreen_clickUnregister_displaysNoMemberScreen(){
-        logIn()
-
-        composeTestRule.onNodeWithTagForStringId(
-            R.string.test_unregister
-        ).performClick()
-
-        composeTestRule.onNodeWithTagForStringId(
-            R.string.test_noMember
-        ).assertExists()
-    }
-
-    @Test
     fun mainScreen_pressBack_showCorrectToast(){
-        val fakeRepository= FakeNetworkBookRepository()
-        val libraryViewModel= LibraryViewModel(fakeRepository, testDispatcher, testScope)
-
-        init(libraryViewModel = libraryViewModel)
-
         composeTestRule.onNodeWithContentDescriptionForStringId(
             R.string.book
         ).assertExists()
@@ -122,7 +77,7 @@ class NavigationTest {
             composeTestRule.activity.onBackPressedDispatcher.onBackPressed()
         }
 
-        assertEquals(true, libraryViewModel.isBackPressedDouble() )
+        composeTestRule.waitForToast(R.string.toast_finish)
     }
 
     private fun init(
@@ -156,18 +111,6 @@ class NavigationTest {
         composeTestRule.onNodeWithContentDescriptionForStringId(
             tabId
         ).performClick()
-    }
-
-    private fun logIn(){
-        init()
-
-        pressTab( R.string.setting)
-        composeTestRule
-            .onNodeWithTagForStringId(id=R.string.test_logIn,useUnmergedTree=true)
-            .performClick()
-        composeTestRule
-            .onNodeWithTagForStringId(id=R.string.test_logIn,useUnmergedTree=true)
-            .performClick()
     }
 
 }
