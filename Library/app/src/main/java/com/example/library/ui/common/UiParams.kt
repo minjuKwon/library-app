@@ -1,7 +1,7 @@
 package com.example.library.ui.common
 
 import androidx.compose.foundation.lazy.LazyListState
-import com.example.library.data.api.Book
+import com.example.library.data.Book
 import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.navigation.destination.NavigationItemContent
 import com.example.library.ui.screens.detail.LibraryDetailsUiState

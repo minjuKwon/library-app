@@ -1,6 +1,7 @@
 package com.example.library
 
 import com.example.library.data.repository.NetworkBookRepository
+import com.example.library.data.toItem
 import com.example.library.fake.FakeVolumesApiService
 import com.example.library.fake.FakeDataSource
 import kotlinx.coroutines.test.runTest
@@ -16,7 +17,7 @@ class NetworkBookRepositoryTest {
                 volumesApiService = FakeVolumesApiService()
             )
             assertEquals(
-                FakeDataSource.item,
+                FakeDataSource.item.toItem(),
                 repository.searchVolume("android",0,0)
             )
         }

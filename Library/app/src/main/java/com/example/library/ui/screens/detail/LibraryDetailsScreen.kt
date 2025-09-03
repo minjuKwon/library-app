@@ -39,8 +39,8 @@ import androidx.compose.ui.text.input.ImeAction
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
-import com.example.library.data.api.Book
-import com.example.library.data.api.BookInfo
+import com.example.library.data.Book
+import com.example.library.data.BookInfo
 import com.example.library.ui.common.BackIconButton
 import com.example.library.ui.common.TextRadioButton
 import com.example.library.ui.common.DetailsScreenParams
@@ -67,7 +67,7 @@ fun LibraryDetailsScreen(
             item{
                 when(detailsScreenParams.uiState){
                     is LibraryDetailsUiState.Success->{
-                        val data:Book = if(isNotFullScreen) detailsScreenParams.getBookById(id)
+                        val data: Book = if(isNotFullScreen) detailsScreenParams.getBookById(id)
                         else detailsScreenParams.currentBook
                         DetailsScreenContent(data.bookInfo)
                         detailsScreenParams.updateDataReadyForUi(false)

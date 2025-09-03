@@ -1,18 +1,19 @@
 package com.example.library.fake
 
+import com.example.library.data.Item
 import com.example.library.domain.BookRepository
-import com.example.library.data.api.Item
+import com.example.library.data.toItem
 import okio.IOException
 
 class FakeNetworkBookRepository : BookRepository {
     override suspend fun searchVolume(query: String, limit: Int, offset: Int): Item {
-        return FakeDataSource.item
+        return FakeDataSource.item.toItem()
     }
 }
 
 class FakeBookmarkedBookRepository: BookRepository {
     override suspend fun searchVolume(query: String, limit: Int, offset: Int): Item {
-        return FakeDataSource.itemBookmarked
+        return FakeDataSource.itemBookmarked.toItem()
     }
 }
 

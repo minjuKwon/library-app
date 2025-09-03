@@ -1,9 +1,9 @@
 package com.example.library.ui.screens.search
 
 import androidx.paging.PagingData
-import com.example.library.data.api.Book
-import com.example.library.data.api.BookInfo
-import com.example.library.data.api.Image
+import com.example.library.data.Book
+import com.example.library.data.BookImage
+import com.example.library.data.BookInfo
 import kotlinx.coroutines.flow.Flow
 
 sealed class LibraryUiState{
@@ -18,7 +18,7 @@ sealed class LibraryUiState{
 
 val defaultBookInfo
 = BookInfo("", emptyList(),"","","",
-    Image("","","","")
+    BookImage("","","","")
 )
 
 data class PageData(

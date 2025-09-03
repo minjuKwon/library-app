@@ -1,7 +1,7 @@
 package com.example.library.ui.screens.search
 
 import androidx.paging.PagingData
-import com.example.library.data.api.Book
+import com.example.library.data.Book
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 

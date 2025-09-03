@@ -23,9 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.example.library.R
-import com.example.library.data.api.Book
-import com.example.library.data.api.BookInfo
-import com.example.library.data.api.Image
+import com.example.library.data.Book
+import com.example.library.data.BookImage
+import com.example.library.data.BookInfo
 import com.example.library.ui.common.LibraryListItem
 import com.example.library.ui.common.TextRadioButton
 import com.example.library.ui.common.ListContentParams
@@ -34,9 +34,9 @@ import com.example.library.ui.common.ListContentParams
 fun LibraryRankingScreen(
     listContentParams:ListContentParams
 ){
-    val temp=Book("1",
+    val temp= Book("1",
         BookInfo("android_1",listOf("1_1","1_2"),"publisher1",
-            "0101","description1", Image(),false)
+            "0101","description1", BookImage(),false)
     )
     Column(
         modifier= Modifier
