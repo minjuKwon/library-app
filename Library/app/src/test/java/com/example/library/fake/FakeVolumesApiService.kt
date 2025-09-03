@@ -1,10 +1,10 @@
 package com.example.library.fake
 
+import com.example.library.data.api.ItemDto
 import com.example.library.data.api.VolumesApiService
-import com.example.library.data.api.Item
 
 class FakeVolumesApiService : VolumesApiService {
-    override suspend fun searchVolume(query: String, limit: Int, offset: Int): Item {
+    override suspend fun searchVolume(query: String, limit: Int, offset: Int): ItemDto {
         return FakeDataSource.item
     }
 }

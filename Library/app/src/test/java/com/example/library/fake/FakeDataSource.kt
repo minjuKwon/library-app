@@ -1,40 +1,40 @@
 package com.example.library.fake
 
-import com.example.library.data.api.Book
-import com.example.library.data.api.BookInfo
-import com.example.library.data.api.Image
-import com.example.library.data.api.Item
+import com.example.library.data.api.ItemDto
+import com.example.library.data.api.VolumeDto
+import com.example.library.data.api.VolumeImageDto
+import com.example.library.data.api.VolumeInfoDto
 
 object FakeDataSource {
-    val item= Item(
+    val item= ItemDto(
         listOf(
-        Book("1",
-            BookInfo("android_1",listOf("1_1","1_2"),"publisher1",
-                "1111","description1", Image(),false)
+        VolumeDto("1",
+            VolumeInfoDto("android_1",listOf("1_1","1_2"),"publisher1",
+                "1111","description1", VolumeImageDto(),false)
         ),
-        Book("2",
-            BookInfo("android_2",listOf("2_1","2_2"),"publisher2",
-                "0202","description2", Image(),false)
+        VolumeDto("2",
+            VolumeInfoDto("android_2",listOf("2_1","2_2"),"publisher2",
+                "0202","description2", VolumeImageDto(),false)
         ),
-        Book("3",
-            BookInfo("android_3",listOf("3_1","3_2"),"publisher3",
-                "0303","description3", Image(),false)
+        VolumeDto("3",
+            VolumeInfoDto("android_3",listOf("3_1","3_2"),"publisher3",
+                "0303","description3", VolumeImageDto(),false)
         ),
     ),0)
 
-    val itemBookmarked= Item(
+    val itemBookmarked= ItemDto(
         listOf(
-        Book("1",
-            BookInfo("android_1",listOf("1_1","1_2"),"publisher1",
-                "1111","description1", Image(),true)
+        VolumeDto("1",
+            VolumeInfoDto("android_1",listOf("1_1","1_2"),"publisher1",
+                "1111","description1", VolumeImageDto(),true)
         ),
-        Book("2",
-            BookInfo("android_2",listOf("2_1","2_2"),"publisher2",
-                "0202","description2", Image(),true)
+        VolumeDto("2",
+            VolumeInfoDto("android_2",listOf("2_1","2_2"),"publisher2",
+                "0202","description2", VolumeImageDto(),true)
         ),
-        Book("3",
-            BookInfo("android_3",listOf("3_1","3_2"),"publisher3",
-                "0303","description3", Image(),true)
+        VolumeDto("3",
+            VolumeInfoDto("android_3",listOf("3_1","3_2"),"publisher3",
+                "0303","description3", VolumeImageDto(),true)
         ),
     ),0)
 }
