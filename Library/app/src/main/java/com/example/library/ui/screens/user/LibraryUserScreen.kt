@@ -34,7 +34,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import com.example.library.R
-import com.example.library.data.User
+import com.example.library.data.entity.User
 import com.example.library.ui.common.Divider
 import com.example.library.ui.common.HandleUserUiState
 

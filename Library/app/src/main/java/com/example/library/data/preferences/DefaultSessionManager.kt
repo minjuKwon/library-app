@@ -5,8 +5,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import com.example.library.UserPreferences
-import com.example.library.data.Gender
-import com.example.library.data.User
+import com.example.library.data.entity.Gender
+import com.example.library.data.entity.User
 import com.example.library.domain.SessionManager
 import com.example.library.Gender as ProtoGender
 import kotlinx.coroutines.flow.Flow

@@ -2,7 +2,7 @@ package com.example.library.service
 
 import com.example.library.domain.ExternalUser
 import com.example.library.domain.SessionManager
-import com.example.library.data.User
+import com.example.library.data.entity.User
 import com.example.library.domain.UserRepository
 import com.example.library.domain.UserService
 import kotlinx.coroutines.flow.Flow

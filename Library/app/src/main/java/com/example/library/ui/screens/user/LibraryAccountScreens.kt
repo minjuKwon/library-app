@@ -51,8 +51,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.example.library.R
-import com.example.library.data.Gender
-import com.example.library.data.User
+import com.example.library.data.entity.Gender
+import com.example.library.data.entity.User
 import com.example.library.ui.common.BackIconButton
 import com.example.library.ui.common.Divider
 import com.example.library.ui.common.HandleUserUiState
@@ -430,9 +430,9 @@ fun RegisterScreen(
                     },
                     onSexChange = {
                         if(it == radioText[0]){
-                            userInfo= userInfo.copy(gender=Gender.MALE)
+                            userInfo= userInfo.copy(gender= Gender.MALE)
                         }else if(it == radioText[1]){
-                            userInfo= userInfo.copy(gender=Gender.FEMALE)
+                            userInfo= userInfo.copy(gender= Gender.FEMALE)
                         }
                     }
                 )
@@ -793,7 +793,7 @@ private fun EditSexAndAgeText(
         horizontalArrangement = Arrangement.Center,
         modifier=paddingModifier()
     ){
-        val gender = if(userGender==Gender.MALE) "남" else "여"
+        val gender = if(userGender== Gender.MALE) "남" else "여"
         Text(
             gender,
             modifier=Modifier.testTag(stringResource(R.string.test_account_edit_gender))

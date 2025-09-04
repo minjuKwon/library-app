@@ -3,7 +3,7 @@ package com.example.library
 import androidx.paging.AsyncPagingDataDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
-import com.example.library.data.Book
+import com.example.library.data.entity.Book
 import com.example.library.fake.FakeBookmarkedBookRepository
 import com.example.library.fake.FakeExceptionBookRepository
 import com.example.library.fake.FakeNetworkBookRepository

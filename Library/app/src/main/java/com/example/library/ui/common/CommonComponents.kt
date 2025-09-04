@@ -40,7 +40,7 @@ import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
-import com.example.library.data.Book
+import com.example.library.data.entity.Book
 import com.example.library.ui.screens.user.UserUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow

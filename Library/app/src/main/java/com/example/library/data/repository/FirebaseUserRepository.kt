@@ -1,8 +1,8 @@
 package com.example.library.data.repository
 
-import com.example.library.data.FirebaseExternalUser
+import com.example.library.data.entity.FirebaseExternalUser
 import com.example.library.domain.ExternalUser
-import com.example.library.data.User
+import com.example.library.data.entity.User
 import com.example.library.domain.UserRepository
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth

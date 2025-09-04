@@ -1,9 +1,9 @@
 package com.example.library.ui.screens.search
 
 import androidx.paging.PagingData
-import com.example.library.data.Book
-import com.example.library.data.BookImage
-import com.example.library.data.BookInfo
+import com.example.library.data.entity.Book
+import com.example.library.data.entity.BookImage
+import com.example.library.data.entity.BookInfo
 import kotlinx.coroutines.flow.Flow
 
 sealed class LibraryUiState{

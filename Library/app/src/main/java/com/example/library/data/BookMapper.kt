@@ -4,13 +4,17 @@ import com.example.library.data.api.ItemDto
 import com.example.library.data.api.VolumeDto
 import com.example.library.data.api.VolumeImageDto
 import com.example.library.data.api.VolumeInfoDto
+import com.example.library.data.entity.Book
+import com.example.library.data.entity.BookImage
+import com.example.library.data.entity.BookInfo
+import com.example.library.data.entity.Item
 
-fun ItemDto.toItem():Item= Item(
+fun ItemDto.toItem(): Item = Item(
     book = this.book.map { it.toBook() },
     totalCount = this.totalCount
 )
 
-fun VolumeDto.toBook():Book = Book(
+fun VolumeDto.toBook(): Book = Book(
     id = this.id,
     bookInfo = this.bookInfo.toBookInfo()
 )

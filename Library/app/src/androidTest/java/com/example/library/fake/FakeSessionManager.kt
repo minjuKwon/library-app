@@ -1,7 +1,7 @@
 package com.example.library.fake
 
 import com.example.library.domain.SessionManager
-import com.example.library.data.User
+import com.example.library.data.entity.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 

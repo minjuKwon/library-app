@@ -10,7 +10,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.example.library.data.Book
+import com.example.library.data.entity.Book
 import com.example.library.di.ApplicationScope
 import com.example.library.di.IoDispatcher
 import com.example.library.data.CacheLibraryPagingSource

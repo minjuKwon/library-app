@@ -1,4 +1,4 @@
-package com.example.library.data
+package com.example.library.data.entity
 
 import com.example.library.domain.ExternalUser
 import com.google.firebase.auth.FirebaseUser

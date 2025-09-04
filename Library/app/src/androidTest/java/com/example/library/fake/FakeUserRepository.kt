@@ -2,7 +2,7 @@ package com.example.library.fake
 
 import android.util.Patterns
 import com.example.library.domain.ExternalUser
-import com.example.library.data.User
+import com.example.library.data.entity.User
 import com.example.library.data.repository.FirebaseException
 import com.example.library.domain.UserRepository
 
@@ -130,7 +130,7 @@ class FakeUserRepository: UserRepository {
 
     override suspend fun signOutUser(): Result<Unit> {
         return try {
-            currentUser= currentUser.copy(user=User())
+            currentUser= currentUser.copy(user= User())
 
             Result.success(Unit)
         }catch (e:Exception){
@@ -210,6 +210,6 @@ data class AuthUser(
 )
 
 data class CurrentUser(
-    val user:User,
+    val user: User,
     var isEmailVerified: Boolean= false
 )

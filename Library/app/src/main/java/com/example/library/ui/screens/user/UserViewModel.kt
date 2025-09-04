@@ -3,7 +3,7 @@ package com.example.library.ui.screens.user
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.library.data.User
+import com.example.library.data.entity.User
 import com.example.library.di.ApplicationScope
 import com.example.library.domain.UserService
 import dagger.hilt.android.lifecycle.HiltViewModel

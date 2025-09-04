@@ -1,4 +1,4 @@
-package com.example.library.data
+package com.example.library.data.entity
 
 data class Item(
     val book:List<Book>,

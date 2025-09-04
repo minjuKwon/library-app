@@ -1,6 +1,6 @@
 package com.example.library.data.repository
 
-import com.example.library.data.Item
+import com.example.library.data.entity.Item
 import com.example.library.domain.BookRepository
 import com.example.library.data.api.VolumesApiService
 import com.example.library.data.toItem

@@ -1,7 +1,7 @@
 package com.example.library.ui.common
 
 import androidx.compose.foundation.lazy.LazyListState
-import com.example.library.data.Book
+import com.example.library.data.entity.Book
 import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.navigation.destination.NavigationItemContent
 import com.example.library.ui.screens.detail.LibraryDetailsUiState
@@ -35,7 +35,7 @@ data class DetailsScreenParams(
     val uiState:LibraryDetailsUiState,
     val isDataReadyForUi:Boolean,
     val textFieldKeyword:String,
-    val currentBook:Book,
+    val currentBook: Book,
     val updateDataReadyForUi: (Boolean)->Unit,
     val getBookById: (String)-> Book,
 )

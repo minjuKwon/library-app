@@ -1,6 +1,6 @@
 package com.example.library.domain
 
-import com.example.library.data.Item
+import com.example.library.data.entity.Item
 
 interface BookRepository {
     suspend fun searchVolume(query:String, limit:Int, offset:Int): Item

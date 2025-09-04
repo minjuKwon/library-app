@@ -23,9 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.example.library.R
-import com.example.library.data.Book
-import com.example.library.data.BookImage
-import com.example.library.data.BookInfo
+import com.example.library.data.entity.Book
+import com.example.library.data.entity.BookImage
+import com.example.library.data.entity.BookInfo
 import com.example.library.ui.common.LibraryListItem
 import com.example.library.ui.common.TextRadioButton
 import com.example.library.ui.common.ListContentParams

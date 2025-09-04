@@ -1,6 +1,6 @@
 package com.example.library.domain
 
-import com.example.library.data.User
+import com.example.library.data.entity.User
 import kotlinx.coroutines.flow.Flow
 
 interface SessionManager {

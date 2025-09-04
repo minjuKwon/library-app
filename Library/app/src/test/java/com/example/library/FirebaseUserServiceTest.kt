@@ -1,6 +1,6 @@
 package com.example.library
 
-import com.example.library.data.User
+import com.example.library.data.entity.User
 import com.example.library.domain.UserRepository
 import com.example.library.fake.FakeExternalUser
 import com.example.library.fake.FakeSessionManager

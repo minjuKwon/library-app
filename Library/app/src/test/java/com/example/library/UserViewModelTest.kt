@@ -1,6 +1,6 @@
 package com.example.library
 
-import com.example.library.data.User
+import com.example.library.data.entity.User
 import com.example.library.fake.FakeUserService
 import com.example.library.rules.TestDispatcherRule
 import com.example.library.ui.screens.user.UserUiState

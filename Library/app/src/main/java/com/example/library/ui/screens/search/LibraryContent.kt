@@ -42,7 +42,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.library.R
-import com.example.library.data.Book
+import com.example.library.data.entity.Book
 import com.example.library.ui.common.LibraryListItem
 import com.example.library.ui.common.DetailsScreenParams
 import com.example.library.ui.common.ListContentParams

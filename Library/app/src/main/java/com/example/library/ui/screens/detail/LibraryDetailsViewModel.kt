@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.library.data.Book
+import com.example.library.data.entity.Book
 import com.example.library.di.ApplicationScope
 import com.example.library.di.IoDispatcher
 import com.example.library.domain.BookRepository
@@ -42,7 +42,7 @@ class LibraryDetailsViewModel @Inject constructor(
 
     fun getBookById(
         id:String
-    ):Book{
+    ): Book {
         if(_isDataReadyForUi.value){
             uiState=LibraryDetailsUiState.Loading
             scope.launch {
