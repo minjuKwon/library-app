@@ -28,6 +28,10 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,6 +40,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
@@ -196,6 +201,8 @@ private fun DetailsScreenContentInformation(
 private fun DetailsScreenContentDescription(
     text:String
 ){
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
+
     OutlinedCard(
         modifier=Modifier
             .fillMaxWidth()
@@ -207,13 +214,17 @@ private fun DetailsScreenContentDescription(
         ){
             Text(
                 text = text,
+                overflow = if(isExpanded) TextOverflow.Visible else TextOverflow.Ellipsis,
+                maxLines = if(isExpanded) Int.MAX_VALUE else 5,
                 style= MaterialTheme.typography.titleSmall,
+
             )
             Text(
-                text=stringResource(R.string.see_more),
+                text= if (isExpanded) stringResource(R.string.see_less) else stringResource(R.string.see_more),
                 style=MaterialTheme.typography.labelSmall,
                 modifier =Modifier
                     .padding(top= dimensionResource(R.dimen.padding_xs))
+                    .clickable { isExpanded = !isExpanded }
             )
         }
     }

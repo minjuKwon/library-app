@@ -11,7 +11,16 @@ object FakeDataSource {
         listOf(
             VolumeDto("1",
                 VolumeInfoDto("android_1",listOf("1_1","1_2"),"publisher1",
-                    "0101","description1", VolumeImageDto(),false)
+                    "0101","description1description1description1description1" +
+                            "description1description1description1description1description1description1" +
+                            "description1description1description1description1description1description1" +
+                            "description1description1description1description1description1description1" +
+                            "description1description1description1description1description1description1" +
+                            "description1description1description1description1description1description1" +
+                            "description1description1description1description1description1description1" +
+                            "description1description1description1description1description1description1" +
+                            "description1description1description1description1",
+                    VolumeImageDto(),false)
             ),
             VolumeDto("2",
                 VolumeInfoDto("android_2",listOf("2_1","2_2"),"publisher2",
