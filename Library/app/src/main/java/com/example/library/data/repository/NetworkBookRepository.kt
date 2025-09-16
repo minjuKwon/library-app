@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class NetworkBookRepository @Inject constructor(
     private val volumesApiService: VolumesApiService
-): BookRepository {
+): BookRepository<Item> {
     override suspend fun searchVolume(query:String, limit:Int, offset:Int): Item {
         return volumesApiService.searchVolume(query, limit, offset).toItem()
     }
