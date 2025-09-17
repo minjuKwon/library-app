@@ -34,8 +34,8 @@ interface BookCacheDao {
     }
 
     @Transaction
-    @Query("SELECT * FROM search_result WHERE `query` = :keyword")
-    suspend fun getAllBooks(keyword:String):List<SearchResultWithLibrary>
+    @Query("SELECT * FROM search_result WHERE `query` = :keyword AND page = :page ORDER BY `offset` ASC")
+    suspend fun getBooks(keyword:String, page:Int):List<SearchResultWithLibrary>
 
     @Query("SELECT EXISTS(SELECT 1 FROM search_result WHERE `query` = :keyword AND page=:page)")
     suspend fun hasBooksForKeyword(keyword:String, page:Int):Boolean
