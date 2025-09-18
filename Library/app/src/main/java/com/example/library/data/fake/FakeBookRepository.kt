@@ -1,7 +1,7 @@
 package com.example.library.data.fake
 
 import com.example.library.data.entity.Item
-import com.example.library.data.toItem
+import com.example.library.data.mapper.toItem
 import com.example.library.domain.BookRepository
 import kotlinx.coroutines.delay
 

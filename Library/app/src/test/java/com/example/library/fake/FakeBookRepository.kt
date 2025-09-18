@@ -2,7 +2,7 @@ package com.example.library.fake
 
 import com.example.library.data.entity.Item
 import com.example.library.domain.BookRepository
-import com.example.library.data.toItem
+import com.example.library.data.mapper.toItem
 import okio.IOException
 
 class FakeNetworkBookRepository : BookRepository {

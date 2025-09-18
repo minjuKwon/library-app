@@ -3,7 +3,7 @@ package com.example.library.data.repository
 import com.example.library.data.entity.Item
 import com.example.library.domain.BookRepository
 import com.example.library.data.api.VolumesApiService
-import com.example.library.data.toItem
+import com.example.library.data.mapper.toItem
 import javax.inject.Inject
 
 class NetworkBookRepository @Inject constructor(
