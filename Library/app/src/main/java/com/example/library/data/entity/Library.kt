@@ -3,6 +3,7 @@ package com.example.library.data.entity
 import java.time.Instant
 
 data class Library(
+    val libraryId:String,
     val book: Book,
     val bookStatus: BookStatus,
     val callNumber:String,

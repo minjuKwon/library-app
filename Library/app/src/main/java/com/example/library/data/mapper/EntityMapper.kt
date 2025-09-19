@@ -15,6 +15,7 @@ import java.time.Instant
 fun List<SearchResultWithLibrary>.toListLibrary(offset: Int) = map{it.toLibrary(offset)}
 
 fun SearchResultWithLibrary.toLibrary(offset:Int) = Library(
+    libraryId = this.libraryBook.libraryEntity.libraryId,
     book = this.libraryBook.toBook(),
     bookStatus = toBookStatus(this.libraryBook.libraryEntity),
     callNumber = this.libraryBook.libraryEntity.callNumber,
