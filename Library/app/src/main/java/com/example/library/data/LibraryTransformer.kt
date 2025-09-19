@@ -6,13 +6,22 @@ import com.example.library.data.entity.Library
 import java.util.Locale
 import kotlin.random.Random
 
-fun Book.transformToLibrary(offset:Int): Library = Library(
+fun Book.transformToLibrary(
+    keyword:String,
+    offset:Int
+): Library = Library(
+    libraryId= generateLibraryId(this.id, keyword),
     book= this,
     bookStatus = BookStatus.Available,
     callNumber = generateCallNumber(),
     location = generateLocation(),
     offset = offset
 )
+
+fun generateLibraryId(
+    bookId: String,
+    keyword:String
+):String= StringBuilder().append(bookId).append(keyword).toString()
 
 fun generateCallNumber():String{
     val number1= Random.nextInt(0,1000)
