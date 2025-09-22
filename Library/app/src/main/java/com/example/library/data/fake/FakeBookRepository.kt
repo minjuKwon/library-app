@@ -5,7 +5,7 @@ import com.example.library.data.mapper.toItem
 import com.example.library.domain.BookRepository
 import kotlinx.coroutines.delay
 
-class FakeNetworkBookRepository : BookRepository<Item> {
+class FakeNetworkBookRepository : BookRepository{
     override suspend fun searchVolume(query: String, limit: Int, offset: Int): Item {
         delay(3000)
         return FakeDataSource.getListRange(limit, offset).toItem()
