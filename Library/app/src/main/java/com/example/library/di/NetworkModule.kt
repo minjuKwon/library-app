@@ -4,7 +4,7 @@ import com.example.library.BuildConfig
 import com.example.library.data.api.VolumesApiService
 import com.example.library.data.fake.FakeNetworkBookRepository
 import com.example.library.data.repository.NetworkBookRepository
-import com.example.library.domain.BookRepository
+import com.example.library.domain.RemoteRepository
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -35,7 +35,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideNetworkBookRepository(volumesApiService: VolumesApiService): BookRepository {
+    fun provideNetworkBookRepository(volumesApiService: VolumesApiService): RemoteRepository {
         return if(BuildConfig.DEBUG){
             FakeNetworkBookRepository()
         }else {

@@ -14,7 +14,7 @@ import com.example.library.data.entity.Book
 import com.example.library.di.ApplicationScope
 import com.example.library.di.IoDispatcher
 import com.example.library.data.CacheLibraryPagingSource
-import com.example.library.domain.BookRepository
+import com.example.library.domain.RemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -32,7 +32,7 @@ const val PAGE_SIZE=10
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
-    private val bookRepository: BookRepository,
+    private val bookRepository: RemoteRepository,
     @IoDispatcher private val ioDispatcher:CoroutineDispatcher = Dispatchers.IO,
     @ApplicationScope externalScope: CoroutineScope? = null
 ):ViewModel() {

@@ -3,10 +3,10 @@ package com.example.library.data
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.library.data.entity.Book
-import com.example.library.domain.BookRepository
+import com.example.library.domain.RemoteRepository
 
 class CacheLibraryPagingSource(
-    private val bookRepository: BookRepository,
+    private val bookRepository: RemoteRepository,
     private val keyword:String,
     private val pageSize:Int,
     private val pageNumber:Int

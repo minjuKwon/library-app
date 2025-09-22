@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.library.data.entity.Book
 import com.example.library.di.ApplicationScope
 import com.example.library.di.IoDispatcher
-import com.example.library.domain.BookRepository
+import com.example.library.domain.RemoteRepository
 import com.example.library.ui.screens.search.defaultBookInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LibraryDetailsViewModel @Inject constructor(
-    private val bookRepository: BookRepository,
+    private val bookRepository: RemoteRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher= Dispatchers.IO,
     @ApplicationScope externalScope: CoroutineScope?=null
 ): ViewModel() {
