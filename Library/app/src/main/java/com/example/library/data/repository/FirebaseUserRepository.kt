@@ -1,5 +1,6 @@
 package com.example.library.data.repository
 
+import com.example.library.data.FireStoreCollections.USER_COLLECTION
 import com.example.library.data.entity.FirebaseExternalUser
 import com.example.library.domain.ExternalUser
 import com.example.library.data.entity.User
@@ -194,10 +195,6 @@ class FirebaseUserRepository @Inject constructor(
                 Result.failure(e)
             }
         }
-
-    companion object {
-        const val USER_COLLECTION="users"
-    }
 
 }
 
