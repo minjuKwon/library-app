@@ -8,6 +8,7 @@ message UserPreferences{
   string name=2;
   Gender gender=3;
   int32 age=4;
+  string uid=5;
 }
 
 enum Gender{

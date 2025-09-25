@@ -43,10 +43,11 @@ class DefaultSessionManager @Inject constructor(
         logInStateStore.edit { it.clear() }
     }
 
-    private fun UserPreferences.toUser()= User(email, name, gender.toUser(), age)
+    private fun UserPreferences.toUser()= User(uid,email, name, gender.toUser(), age)
 
     private fun User.toProto(): UserPreferences =
         UserPreferences.newBuilder()
+            .setUid(uid)
             .setName(name)
             .setEmail(email)
             .setAge(age)

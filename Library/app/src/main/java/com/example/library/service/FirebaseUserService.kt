@@ -20,12 +20,16 @@ class FirebaseUserService @Inject constructor(
         val createdResult= userRepository.createUser(user.email, password)
         if(createdResult.isFailure) throw createdResult.exceptionOrNull()?:SignUpFailedException()
 
-        val isSave= userRepository.saveUser(user)
         val createdUser= createdResult.getOrNull()
+        val uid = createdUser?.uid
+        uid?.let {
+            val result= user.copy(uid=it)
+            val isSave= userRepository.saveUser(result)
 
-        if(isSave.isFailure) {
-            createdUser?.let { userRepository.deleteUserAccount(it) }
-            throw SaveUserInfoFailedException()
+            if(isSave.isFailure) {
+                userRepository.deleteUserAccount(createdUser)
+                throw SaveUserInfoFailedException()
+            }
         }
 
         createdUser?.let { sendVerificationEmail(it) }
