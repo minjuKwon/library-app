@@ -1,11 +1,11 @@
 package com.example.library.service
 
 import com.example.library.data.entity.Library
-import com.example.library.data.repository.CacheBookRepository
+import com.example.library.domain.LocalRepository
 import javax.inject.Inject
 
 class CacheBookService @Inject constructor(
-    private val cacheBookRepository: CacheBookRepository
+    private val cacheBookRepository: LocalRepository
 ){
 
     suspend fun getLibraryBooks(query: String, offset: Int, page: Int): List<Library>
