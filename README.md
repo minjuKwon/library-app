@@ -12,10 +12,12 @@
 - MVVM
 - Coil
 - Coroutine
-- Hilt
 - Navigation
 - Paging
+- Proto Datastore, Preferences Datastore
 - Retrofit
+- Firebase
+- Hilt
 - UI Test, Unit Test
 # 분석 및 설계
 - <p>Usecase Diagram
