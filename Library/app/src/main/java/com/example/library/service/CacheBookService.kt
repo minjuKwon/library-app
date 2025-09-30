@@ -19,6 +19,12 @@ class CacheBookService @Inject constructor(
         accessedAt:Long
     ) = cacheBookRepository.cacheLibraryBooks(library, query, page, cachedAt, accessedAt)
 
+    suspend fun getTotalCountForKeyword(query: String): Int?
+        = cacheBookRepository.searchTotalCount(query)
+
+    suspend fun saveTotalCount(query: String, count:Int)
+        = cacheBookRepository.cacheTotalCount(query, count)
+
     suspend fun isKeywordCached(keyword: String, page: Int):Boolean
         = cacheBookRepository.hasCachedKeyword(keyword, page)
 
