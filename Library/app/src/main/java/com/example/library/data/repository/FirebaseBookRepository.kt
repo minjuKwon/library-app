@@ -3,6 +3,7 @@ package com.example.library.data.repository
 import com.example.library.data.FireStoreCollections.LIBRARY_COLLECTION
 import com.example.library.data.FireStoreCollections.PAGE_NUMBER_COLLECTION
 import com.example.library.data.FireStoreCollections.SEARCH_RESULTS_COLLECTION
+import com.example.library.data.QueryNormalizer.normalizeQuery
 import com.example.library.data.entity.Library
 import com.example.library.domain.DatabaseRepository
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,10 +16,11 @@ class FirebaseBookRepository@Inject constructor(
 
     override suspend fun addLibraryBook(keyword: String, page: String, list: List<Library>) {
         val batch = fireStore.batch()
+        val normalizedQuery= normalizeQuery(keyword)
 
         list.forEach { item ->
             val docRef= fireStore.collection(SEARCH_RESULTS_COLLECTION)
-                .document(keyword)
+                .document(normalizedQuery)
                 .collection(PAGE_NUMBER_COLLECTION)
                 .document(page)
                 .collection(LIBRARY_COLLECTION)
@@ -30,8 +32,10 @@ class FirebaseBookRepository@Inject constructor(
     }
 
     override suspend fun getLibraryBook(keyword: String, page: String): List<Library> {
+        val normalizedQuery= normalizeQuery(keyword)
+
         val snapshot= fireStore.collection(SEARCH_RESULTS_COLLECTION)
-            .document(keyword)
+            .document(normalizedQuery)
             .collection(PAGE_NUMBER_COLLECTION)
             .document(page)
             .collection(LIBRARY_COLLECTION)
@@ -45,8 +49,10 @@ class FirebaseBookRepository@Inject constructor(
     }
 
     override suspend fun hasServerBook(keyword: String, page: String): Boolean {
+        val normalizedQuery= normalizeQuery(keyword)
+
         val snapshot = fireStore.collection(SEARCH_RESULTS_COLLECTION)
-            .document(keyword)
+            .document(normalizedQuery)
             .collection(PAGE_NUMBER_COLLECTION)
             .document(page)
             .get()

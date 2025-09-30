@@ -1,5 +1,6 @@
 package com.example.library.data.repository
 
+import com.example.library.data.QueryNormalizer.normalizeQuery
 import com.example.library.data.entity.Library
 import com.example.library.data.mapper.toBookEntity
 import com.example.library.data.mapper.toBookImageEntity
@@ -14,8 +15,11 @@ class CacheBookRepository @Inject constructor(
     private val bookCacheDao: BookCacheDao
 ) : LocalRepository {
 
-    override suspend fun searchResultData(query: String, offset: Int, page: Int): List<Library> =
-        bookCacheDao.getBooks(query, page).toListLibrary(offset)
+    override suspend fun searchResultData(query: String, offset: Int, page: Int): List<Library> {
+        val normalizeQuery= normalizeQuery(query)
+        return bookCacheDao.getBooks(normalizeQuery, page).toListLibrary(offset)
+    }
+
 
     override suspend fun cacheLibraryBooks(
         library: Library,
@@ -24,8 +28,10 @@ class CacheBookRepository @Inject constructor(
         cachedAt:Long,
         accessedAt:Long
     ){
+        val normalizeQuery= normalizeQuery(query)
+
         bookCacheDao.insertSearchResultWithLibrary(
-            library.toSearchResultEntity(query, page, cachedAt, accessedAt),
+            library.toSearchResultEntity(normalizeQuery, page, cachedAt, accessedAt),
             library.toLibraryEntity(),
             library.book.bookInfo.toBookEntity(library.book.id),
             library.book.bookInfo.img.toBookImageEntity(library.book.id)
@@ -33,7 +39,8 @@ class CacheBookRepository @Inject constructor(
     }
 
     override suspend fun hasCachedKeyword(keyword: String, page: Int):Boolean{
-        return bookCacheDao.hasBooksForKeyword(keyword, page)
+        val normalizeQuery= normalizeQuery(keyword)
+        return bookCacheDao.hasBooksForKeyword(normalizeQuery, page)
     }
 
 }
