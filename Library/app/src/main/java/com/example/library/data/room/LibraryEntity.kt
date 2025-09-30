@@ -82,3 +82,10 @@ data class SearchResultEntity(
     val cachedAt:Long,
     val accessedAt:Long
 )
+
+@Entity("search_total_count")
+data class SearchTotalCountEntity(
+    @PrimaryKey
+    val query: String,
+    val count:Int
+)
