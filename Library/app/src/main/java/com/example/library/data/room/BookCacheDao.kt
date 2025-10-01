@@ -1,5 +1,6 @@
 package com.example.library.data.room
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -38,7 +39,7 @@ interface BookCacheDao {
 
     @Transaction
     @Query("SELECT * FROM search_result WHERE `query` = :keyword AND page = :page ORDER BY `offset` ASC")
-    suspend fun getBooks(keyword:String, page:Int):List<SearchResultWithLibrary>
+    fun getBooks(keyword:String, page:Int): PagingSource<Int,SearchResultWithLibrary>
 
     @Query("SELECT count FROM SEARCH_TOTAL_COUNT WHERE `query` = :keyword")
     suspend fun getSearchTotalCount(keyword: String): Int?
