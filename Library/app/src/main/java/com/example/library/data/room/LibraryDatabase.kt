@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 
 @Database(
     entities = [LibraryEntity::class, BookEntity::class, BookImageEntity::class,
-        SearchResultEntity::class],
+        SearchResultEntity::class, SearchTotalCountEntity::class],
     version = 1
 )
 @TypeConverters(DatabaseConverters::class)
