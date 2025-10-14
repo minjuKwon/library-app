@@ -197,5 +197,3 @@ class FirebaseUserRepository @Inject constructor(
         }
 
 }
-
-class FirebaseException(override val message:String):Exception()
