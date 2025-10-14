@@ -11,15 +11,15 @@ class FirebaseBookService@Inject constructor(
     private val defaultSessionManager: SessionManager
 ):DatabaseService {
 
-    override suspend fun saveLibraryBooks(keyword: String, page: String, list: List<Library>) {
-        databaseRepository.addLibraryBook(keyword,page,list)
+    override suspend fun saveLibraryBooks(keyword: String, page: String, list: List<Library>): Result<Unit> {
+        return databaseRepository.addLibraryBook(keyword,page,list)
     }
 
-    override suspend fun getLibraryBooks(keyword: String, page: String): List<Library> {
+    override suspend fun getLibraryBooks(keyword: String, page: String): Result<List<Library>> {
         return databaseRepository.getLibraryBook(keyword,page)
     }
 
-    override suspend fun isSavedBook(keyword: String, page: String): Boolean {
+    override suspend fun isSavedBook(keyword: String, page: String): Result<Boolean> {
         return databaseRepository.hasServerBook(keyword,page)
     }
 

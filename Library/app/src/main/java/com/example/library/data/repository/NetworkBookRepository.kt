@@ -9,7 +9,12 @@ import javax.inject.Inject
 class NetworkBookRepository @Inject constructor(
     private val volumesApiService: VolumesApiService
 ): RemoteRepository {
-    override suspend fun searchVolume(query:String, limit:Int, offset:Int): Item {
-        return volumesApiService.searchVolume(query, limit, offset).toItem()
+    override suspend fun searchVolume(query:String, limit:Int, offset:Int): Result<Item> {
+        try{
+            val item= volumesApiService.searchVolume(query, limit, offset).toItem()
+            return Result.success(item)
+        }catch (e:Exception){
+            return Result.failure(e)
+        }
     }
 }
