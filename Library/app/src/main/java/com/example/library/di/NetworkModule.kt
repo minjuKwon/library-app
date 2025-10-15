@@ -10,6 +10,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
@@ -35,11 +37,14 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideNetworkBookRepository(volumesApiService: VolumesApiService): RemoteRepository {
+    fun provideNetworkBookRepository(
+        volumesApiService: VolumesApiService,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    ): RemoteRepository {
         return if(BuildConfig.DEBUG){
             FakeNetworkBookRepository()
         }else {
-            NetworkBookRepository(volumesApiService)
+            NetworkBookRepository(volumesApiService,ioDispatcher)
         }
     }
 
