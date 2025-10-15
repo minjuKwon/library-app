@@ -6,8 +6,9 @@ import com.example.library.domain.RemoteRepository
 import kotlinx.coroutines.delay
 
 class FakeNetworkBookRepository : RemoteRepository{
-    override suspend fun searchVolume(query: String, limit: Int, offset: Int): Item {
+    override suspend fun searchVolume(query: String, limit: Int, offset: Int): Result<Item> {
         delay(3000)
-        return FakeDataSource.getListRange(limit, offset).toItem()
+        val item= FakeDataSource.getListRange(limit, offset).toItem()
+        return Result.success(item)
     }
 }
