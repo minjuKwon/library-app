@@ -25,7 +25,6 @@ class DefaultLibrarySyncService @Inject constructor(
         if(isCached){
          return cacheBookService.getLibraryBooks(
              getSearchBooksCommands.keyword,
-             getSearchBooksCommands.offset,
              getSearchBooksCommands.pageNumber
          )
         }else{

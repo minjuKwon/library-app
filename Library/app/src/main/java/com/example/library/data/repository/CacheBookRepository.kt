@@ -16,9 +16,9 @@ class CacheBookRepository @Inject constructor(
     private val bookCacheDao: BookCacheDao
 ) : LocalRepository {
 
-    override suspend fun searchResultData(query: String, offset: Int, page: Int): List<Library> {
+    override suspend fun searchResultData(query: String, page: Int): List<Library> {
         val normalizeQuery= normalizeQuery(query)
-        return bookCacheDao.getBooks(normalizeQuery, page).toListLibrary(offset)
+        return bookCacheDao.getBooks(normalizeQuery, page).toListLibrary()
     }
 
     override suspend fun cacheLibraryBooks(

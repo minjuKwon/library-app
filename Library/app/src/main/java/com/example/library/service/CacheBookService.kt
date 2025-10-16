@@ -8,8 +8,8 @@ class CacheBookService @Inject constructor(
     private val cacheBookRepository: LocalRepository
 ){
 
-    suspend fun getLibraryBooks(query: String, offset: Int, page: Int): List<Library>
-        = cacheBookRepository.searchResultData(query, offset, page)
+    suspend fun getLibraryBooks(query: String, page: Int): List<Library>
+        = cacheBookRepository.searchResultData(query, page)
 
     suspend fun saveLibraryBooks(
         library: Library,

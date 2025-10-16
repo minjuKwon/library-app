@@ -14,15 +14,15 @@ import com.example.library.data.room.SearchResultEntity
 import com.example.library.data.room.SearchResultWithLibrary
 import java.time.Instant
 
-fun List<SearchResultWithLibrary>.toListLibrary(offset: Int) = map{it.toLibrary(offset)}
+fun List<SearchResultWithLibrary>.toListLibrary() = map{it.toLibrary()}
 
-fun SearchResultWithLibrary.toLibrary(offset:Int) = Library(
+fun SearchResultWithLibrary.toLibrary() = Library(
     libraryId = this.libraryBook.libraryEntity.libraryId,
     book = this.libraryBook.toBook(),
     bookStatus = toBookStatus(this.libraryBook.libraryEntity),
     callNumber = this.libraryBook.libraryEntity.callNumber,
     location = this.libraryBook.libraryEntity.location,
-    offset = offset
+    offset = this.searchResultEntity.offset
 )
 
 fun LibraryWithBook.toBook() = Book(
