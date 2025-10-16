@@ -1,5 +1,6 @@
 package com.example.library.service
 
+import com.example.library.core.PagingPolicy.PAGE_SIZE
 import com.example.library.data.entity.Library
 import com.example.library.data.transformToLibrary
 import com.example.library.domain.GetSearchBooksCommands
@@ -54,19 +55,23 @@ class DefaultLibrarySyncService @Inject constructor(
                     }
                 }else{
                     //원천 book 데이터를 가져와서 library 정보 생성 후 firebase, room에 저장
+                    val startIdx= PAGE_SIZE * (getSearchBooksCommands.pageNumber-1)
+
                     val isGetItem= remoteRepository.searchVolume(
                         getSearchBooksCommands.keyword,
-                        getSearchBooksCommands.limit,
-                        getSearchBooksCommands.offset
+                        PAGE_SIZE,
+                        startIdx
                     )
                     if(isGetItem.isFailure) isGetItem.exceptionOrNull()?:GetBookFailedException()
 
                     val sourceResult= isGetItem.getOrNull()
+
+                    var offset=0
                     if(sourceResult!==null){
                         val sourceList= sourceResult.book.map{
                             it.transformToLibrary(
                                 getSearchBooksCommands.keyword,
-                                getSearchBooksCommands.offset
+                                offset++
                             )
                         }
                         val isSaved= firebaseBookService

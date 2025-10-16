@@ -21,8 +21,6 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
 
-const val PAGE_SIZE=10
-
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val bookRepository: RemoteRepository,
