@@ -2,8 +2,13 @@ package com.example.library.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.library.core.DefaultTimeProvider
+import com.example.library.core.TimeProvider
+import com.example.library.data.repository.CacheBookRepository
 import com.example.library.data.room.BookCacheDao
 import com.example.library.data.room.LibraryDatabase
+import com.example.library.domain.LocalRepository
+import com.example.library.service.CacheBookService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,6 +32,29 @@ object DatabaseModule {
     @Provides
     fun provideBookDao(database: LibraryDatabase):BookCacheDao{
         return database.bookCacheDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideLocalRepository(
+        bookCacheDao: BookCacheDao
+    ): LocalRepository {
+        return CacheBookRepository(bookCacheDao)
+    }
+
+    @Singleton
+    @Provides
+    fun provideTimeProvider(): TimeProvider {
+        return DefaultTimeProvider()
+    }
+
+    @Singleton
+    @Provides
+    fun provideCacheBookService(
+        cacheBookRepository: LocalRepository,
+        timeProvider: TimeProvider
+    ): CacheBookService {
+        return CacheBookService(cacheBookRepository, timeProvider)
     }
 
 }

@@ -1,11 +1,13 @@
 package com.example.library.service
 
+import com.example.library.core.TimeProvider
 import com.example.library.data.entity.Library
 import com.example.library.domain.LocalRepository
 import javax.inject.Inject
 
 class CacheBookService @Inject constructor(
-    private val cacheBookRepository: LocalRepository
+    private val cacheBookRepository: LocalRepository,
+    private val timeProvider: TimeProvider
 ){
 
     suspend fun getLibraryBooks(query: String, page: Int): List<Library>
@@ -14,10 +16,11 @@ class CacheBookService @Inject constructor(
     suspend fun saveLibraryBooks(
         library: Library,
         query:String,
-        page:Int,
-        cachedAt:Long,
-        accessedAt:Long
-    ) = cacheBookRepository.cacheLibraryBooks(library, query, page, cachedAt, accessedAt)
+        page:Int
+    ) {
+        val currentTime= timeProvider.now()
+        cacheBookRepository.cacheLibraryBooks(library, query, page, currentTime, currentTime)
+    }
 
     suspend fun getTotalCountForKeyword(query: String): Int?
         = cacheBookRepository.searchTotalCount(query)

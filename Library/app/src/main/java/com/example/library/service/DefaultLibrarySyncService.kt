@@ -46,9 +46,7 @@ class DefaultLibrarySyncService @Inject constructor(
                             cacheBookService.saveLibraryBooks(
                                 it,
                                 getSearchBooksCommands.keyword,
-                                getSearchBooksCommands.pageNumber,
-                                getSearchBooksCommands.cachedAt,
-                                getSearchBooksCommands.accessedAt
+                                getSearchBooksCommands.pageNumber
                             )
                         }
                         return firebaseList
@@ -83,9 +81,7 @@ class DefaultLibrarySyncService @Inject constructor(
                             cacheBookService.saveLibraryBooks(
                                 it,
                                 getSearchBooksCommands.keyword,
-                                getSearchBooksCommands.pageNumber,
-                                getSearchBooksCommands.cachedAt,
-                                getSearchBooksCommands.accessedAt
+                                getSearchBooksCommands.pageNumber
                             )
                         }
                         return sourceList

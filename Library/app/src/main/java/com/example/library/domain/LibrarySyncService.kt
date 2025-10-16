@@ -9,7 +9,5 @@ interface LibrarySyncService {
 
 data class GetSearchBooksCommands(
     val keyword:String,
-    val pageNumber:Int,
-    val cachedAt:Long,
-    val accessedAt:Long
+    val pageNumber:Int
 )
