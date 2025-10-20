@@ -5,6 +5,9 @@ import com.example.library.data.FireStoreCollections.PAGE_NUMBER_COLLECTION
 import com.example.library.data.FireStoreCollections.SEARCH_RESULTS_COLLECTION
 import com.example.library.data.QueryNormalizer.normalizeQuery
 import com.example.library.data.entity.Library
+import com.example.library.data.firebase.LibraryFirebaseDto
+import com.example.library.data.mapper.toFirebaseDto
+import com.example.library.data.mapper.toLibrary
 import com.example.library.domain.DatabaseRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -21,13 +24,14 @@ class FirebaseBookRepository@Inject constructor(
             val normalizedQuery= normalizeQuery(keyword)
 
             list.forEach { item ->
+                val data= item.toFirebaseDto()
                 val docRef= fireStore.collection(SEARCH_RESULTS_COLLECTION)
                     .document(normalizedQuery)
                     .collection(PAGE_NUMBER_COLLECTION)
                     .document(page)
                     .collection(LIBRARY_COLLECTION)
-                    .document(item.libraryId)
-                batch.set(docRef, item)
+                    .document(data.libraryId)
+                batch.set(docRef, data)
             }
 
             batch.commit().await()
@@ -53,8 +57,9 @@ class FirebaseBookRepository@Inject constructor(
                 .get()
                 .await()
 
-            val list= snapshot.documents.map { doc -> doc.toObject(Library::class.java)!! }
-
+            val list= snapshot.documents.map { doc ->
+                doc.toObject(LibraryFirebaseDto::class.java)!!.toLibrary()
+            }
             return Result.success(list)
         }catch (e: FirebaseFirestoreException){
             return Result.failure(FirebaseException(e.code.name))
