@@ -17,7 +17,7 @@ data class LibraryWithBook(
     @Embedded val libraryEntity:LibraryEntity,
     @Relation(
         entity = BookEntity::class,
-        parentColumn = "libraryId",
+        parentColumn = "bookId",
         entityColumn = "id"
     )
     val book:BookWitImage

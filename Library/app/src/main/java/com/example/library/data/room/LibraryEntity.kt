@@ -5,10 +5,14 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName="library")
+@Entity(
+    tableName="library",
+    indices= [Index("bookId",unique=true)]
+)
 data class LibraryEntity(
     @PrimaryKey
     val libraryId:String,
+    val bookId:String,
     val statusType: String,
     val userEmail: String?,
     val borrowedAt: Long?,
@@ -22,7 +26,7 @@ data class LibraryEntity(
     foreignKeys = [
         ForeignKey(
             entity= LibraryEntity::class,
-            parentColumns = ["libraryId"],
+            parentColumns = ["bookId"],
             childColumns = ["id"],
             onDelete = ForeignKey.CASCADE
         )
@@ -76,6 +80,7 @@ data class BookImageEntity(
 )
 data class SearchResultEntity(
     val libraryId:String,
+    val bookId:String,
     val query:String,
     val page:Int,
     val offset:Int,

@@ -67,6 +67,7 @@ fun Library.toSearchResultEntity(
     accessedAt:Long
 ) = SearchResultEntity(
     libraryId = this.libraryId,
+    bookId = this.book.id,
     query = query,
     page = page,
     offset = this.offset,
@@ -76,6 +77,7 @@ fun Library.toSearchResultEntity(
 
 fun Library.toLibraryEntity() = LibraryEntity(
     libraryId = this.libraryId,
+    bookId= this.book.id,
     statusType= this.bookStatus.toStringType(),
     userEmail= this.bookStatus.toStringEmail(),
     borrowedAt= this.bookStatus.toLongBorrowedAt(),
