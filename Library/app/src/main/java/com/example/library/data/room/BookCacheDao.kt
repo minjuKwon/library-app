@@ -30,10 +30,10 @@ interface BookCacheDao {
         book:BookEntity,
         image:BookImageEntity
     ){
-        insertSearchResult(result)
         insertLibrary(library)
         insertBook(book)
         insertBookImage(image)
+        insertSearchResult(result)
     }
 
     @Transaction
