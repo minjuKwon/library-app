@@ -6,8 +6,8 @@ data class Item(
 )
 
 data class Book(
-    val id:String,
-    val bookInfo: BookInfo
+    val id:String= "",
+    val bookInfo: BookInfo= BookInfo()
 )
 
 data class BookInfo(
