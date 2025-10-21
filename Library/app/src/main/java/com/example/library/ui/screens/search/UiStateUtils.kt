@@ -1,9 +1,7 @@
 package com.example.library.ui.screens.search
 
-import androidx.paging.PagingData
 import com.example.library.data.entity.Book
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.example.library.data.entity.Library
 
 fun isBookmarkListEmpty(
     libraryUiState: LibraryUiState
@@ -21,7 +19,7 @@ fun getTotalItemCount(
 ):Int{
     return getDataByUiState(
         libraryUiState=libraryUiState,
-        onSuccess={it.list.totalCount},
+        onSuccess={it.totalCount},
         onFailure={0}
     )
 }
@@ -39,12 +37,12 @@ fun getBookmarkList(
 
 fun getBookList(
     libraryUiState: LibraryUiState
-): Flow<PagingData<Book>>
+): List<Library>
 {
     return getDataByUiState(
         libraryUiState=libraryUiState,
-        onSuccess={it.list.book},
-        onFailure={ MutableStateFlow(PagingData.from(emptyList())) }
+        onSuccess={it.list},
+        onFailure={ emptyList() }
     )
 }
 

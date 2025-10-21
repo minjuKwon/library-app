@@ -9,7 +9,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.library.R
 import com.example.library.ui.navigation.destination.GraphRoutes
 import com.example.library.ui.navigation.destination.LibraryDestination
@@ -45,7 +44,7 @@ fun NavGraphBuilder.booksDestination(
                 LibraryListAndDetailContent(
                     libraryUiState = libraryUiState,
                     isAtRoot=navController.previousBackStackEntry == null,
-                    books = getBookList(libraryUiState).collectAsLazyPagingItems() ,
+                    list = getBookList(libraryUiState) ,
                     listContentParams=listContentParams,
                     textFieldParams=textFieldParams,
                     detailsScreenParams=detailsScreenParams,
@@ -58,7 +57,7 @@ fun NavGraphBuilder.booksDestination(
                     when(libraryUiState){
                         is LibraryUiState.Success -> LibraryListOnlyContent(
                             libraryUiState=libraryUiState,
-                            books=libraryUiState.list.book.collectAsLazyPagingItems(),
+                            list=libraryUiState.list,
                             textFieldParams=textFieldParams,
                             listContentParams=listContentParams,
                             isAtRoot= navController.previousBackStackEntry == null,
@@ -95,6 +94,7 @@ fun NavGraphBuilder.booksDestination(
             if (id != null) {
                 LibraryDetailsScreen(
                     id=id,
+                    pageNumber = 1,
                     detailsScreenParams= detailsScreenParams,
                     onBackPressed={navController.popBackStack()}
                 )

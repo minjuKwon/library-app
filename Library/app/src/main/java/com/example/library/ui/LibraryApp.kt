@@ -109,7 +109,9 @@ fun LibraryApp(
                 textFieldKeyword = textFieldKeyword,
                 currentBook= currentBook,
                 updateDataReadyForUi = { libraryDetailsViewModel.updateDataReadyForUi(it) },
-                getBookById = {libraryDetailsViewModel.getBookById(it)},
+                getBookById = { id, page ->
+                    libraryDetailsViewModel.getBookById(id, page)
+                },
             ),
             modifier=modifier
         )

@@ -1,6 +1,5 @@
 package com.example.library.ui.screens.search
 
-import androidx.paging.PagingData
 import com.example.library.data.entity.Book
 import com.example.library.data.entity.BookImage
 import com.example.library.data.entity.BookInfo
@@ -23,7 +22,7 @@ val defaultBookInfo = BookInfo(
     BookImage("","","","")
 )
 
-data class PageData(
-    val book: Flow<PagingData<Book>>,
-    val totalCount:Int
-)
+val defaultLibrary = Library(
+        "", Book("", defaultBookInfo), BookStatus.Available,
+        "","",0
+    )

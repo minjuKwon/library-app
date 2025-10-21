@@ -7,24 +7,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.library.data.entity.Book
 import com.example.library.di.ApplicationScope
-import com.example.library.di.IoDispatcher
-import com.example.library.domain.RemoteRepository
+import com.example.library.domain.LibrarySyncService
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
-    private val bookRepository: RemoteRepository,
-    @IoDispatcher private val ioDispatcher:CoroutineDispatcher = Dispatchers.IO,
+    private val librarySyncService: LibrarySyncService,
     @ApplicationScope externalScope: CoroutineScope? = null
 ):ViewModel() {
 
@@ -49,39 +43,24 @@ class LibraryViewModel @Inject constructor(
         search:String=_textFieldKeyword.value,
         page:Int=1
     ){
+        scope.launch {
+            libraryUiState= LibraryUiState.Loading
 
-//        scope.launch {
-//            libraryUiState = try{
-//                val totalItemCount=withContext(ioDispatcher){
-//                    bookRepository
-//                        .searchVolume(search,10,0).totalCount
-//                }
-//                _currentPage.value=page
-//                when(libraryUiState){
-//                    is LibraryUiState.Success ->{
-//                        val pageDataBookmarked=pageData.map { page->
-//                            page.map { data->
-//                                data.copy(
-//                                    bookInfo = data.bookInfo.copy(
-//                                        isBookmarked =
-//                                        (libraryUiState as LibraryUiState.Success)
-//                                            .bookmarkList.any { it.id==data.id }
-//                                    )
-//                                )
-//                            }
-//                        }
-//                        (libraryUiState as LibraryUiState.Success)
-//                            .copy(list= PageData(pageDataBookmarked,totalItemCount))
-//                    }
-//                    else-> LibraryUiState.Success(
-//                        list = PageData(pageData, totalItemCount)
-//                    )
-//                }
-//            }catch (e: IOException){
-//                LibraryUiState.Error
-//            }
-//        }
+            libraryUiState = try{
+                _currentPage.value=page
 
+                val list= librarySyncService.getSearchBooks(search, page)
+                val totalItemCount= librarySyncService.getTotalCntForKeyword(search)
+
+                if(list!=null&&totalItemCount!=null) {
+                    LibraryUiState.Success(totalItemCount,list)
+                }else{
+                    LibraryUiState.Success(0, emptyList())
+                }
+            }catch (e: IOException){
+                LibraryUiState.Error
+            }
+        }
     }
 
     fun updateKeyword(input:String){

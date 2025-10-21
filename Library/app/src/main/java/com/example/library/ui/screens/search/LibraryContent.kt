@@ -39,10 +39,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import com.example.library.R
-import com.example.library.data.entity.Book
+import com.example.library.core.PagingPolicy.PAGE_SIZE
+import com.example.library.data.entity.Library
 import com.example.library.ui.common.LibraryListItem
 import com.example.library.ui.common.DetailsScreenParams
 import com.example.library.ui.common.ListContentParams
@@ -52,7 +51,7 @@ import com.example.library.ui.screens.detail.LibraryDetailsScreen
 @Composable
 fun LibraryListOnlyContent(
     libraryUiState: LibraryUiState,
-    books:LazyPagingItems<Book>,
+    list:List<Library>,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
     isAtRoot:Boolean,
@@ -82,7 +81,8 @@ fun LibraryListOnlyContent(
         LibraryTotalItemText(totalItemCount)
 
         LibraryList(
-            books= books,
+            libraryUiState= libraryUiState,
+            list= list,
             pageGroupSize = pageGroupSize,
             totalPages= totalPages,
             currentGroup= currentGroup,
@@ -188,7 +188,8 @@ private fun LibraryTotalItemText(
 
 @Composable
 private fun LibraryList(
-    books:LazyPagingItems<Book>,
+    libraryUiState: LibraryUiState,
+    list:List<Library>,
     pageGroupSize:Int,
     totalPages:Int,
     currentGroup: Int,
@@ -219,13 +220,13 @@ private fun LibraryList(
             .padding(dimensionResource(R.dimen.padding_lg))
             .testTag(stringResource(R.string.test_list))
     ){
-        items(count=books.itemCount){
-            books[it]?.let { it1 ->
+        items(count=list.size){
+            list[it].let { it1 ->
                 if(it==0&&isVisible.value){
                     listContentParams.updateCurrentBook(it1)
                 }
                 LibraryListItem(
-                    book = it1,
+                    library = it1,
                     onBookItemPressed= listContentParams.onBookItemPressed,
                     onBookMarkPressed =listContentParams.onBookmarkPressed,
                     isNotFullScreen=isNotFullScreen,
@@ -233,7 +234,7 @@ private fun LibraryList(
                 )
             }
         }
-        item{ LibraryUiStateIndicator(books) }
+        item{ LibraryUiStateIndicator(libraryUiState) }
         item {
             PageNumberButton(
                 pageGroupSize = pageGroupSize,
@@ -248,26 +249,18 @@ private fun LibraryList(
 
 @Composable
 private fun LibraryUiStateIndicator(
-    books:LazyPagingItems<Book>
+    libraryUiState: LibraryUiState,
 ){
-    books.apply  {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier=Modifier.fillMaxWidth()
-        ){
-            when{
-                loadState.refresh is LoadState.Loading -> {
-                    CircularProgressIndicator()
-                }
-                loadState.refresh is LoadState.Error ->{
-                    Text(stringResource(R.string.load_data_error))
-                }
-                loadState.append is LoadState.Loading -> {
-                    CircularProgressIndicator()
-                }
-                loadState.append is LoadState.Error -> {
-                    Text(stringResource(R.string.load_data_error))
-                }
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier=Modifier.fillMaxWidth()
+    ){
+        when{
+            libraryUiState is LibraryUiState.Loading -> {
+                CircularProgressIndicator()
+            }
+            libraryUiState is LibraryUiState.Error ->{
+                Text(stringResource(R.string.load_data_error))
             }
         }
     }
@@ -319,7 +312,7 @@ private fun PageNumberButton(
 fun LibraryListAndDetailContent(
     libraryUiState: LibraryUiState,
     isAtRoot:Boolean,
-    books:LazyPagingItems<Book>,
+    list:List<Library>,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
     detailsScreenParams: DetailsScreenParams,
@@ -329,7 +322,7 @@ fun LibraryListAndDetailContent(
     Row(modifier=modifier){
         LibraryListOnlyContent(
             libraryUiState = libraryUiState,
-            books = books,
+            list = list,
             textFieldParams=textFieldParams,
             listContentParams=listContentParams,
             onNavigateToDetails = onNavigateToDetails,
@@ -340,7 +333,7 @@ fun LibraryListAndDetailContent(
 
         val activity = LocalContext.current as Activity
 
-        if(books.loadState.refresh is LoadState.NotLoading){
+        if(libraryUiState is LibraryUiState.Success){
             LibraryDetailsScreen(
                 isNotFullScreen = false,
                 detailsScreenParams= detailsScreenParams,

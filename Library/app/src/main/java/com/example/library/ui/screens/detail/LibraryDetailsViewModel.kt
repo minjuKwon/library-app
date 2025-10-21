@@ -7,23 +7,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.library.data.entity.Library
 import com.example.library.di.ApplicationScope
-import com.example.library.di.IoDispatcher
-import com.example.library.domain.RemoteRepository
-import com.example.library.ui.screens.search.defaultBookInfo
+import com.example.library.domain.LibrarySyncService
+import com.example.library.ui.screens.search.defaultLibrary
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class LibraryDetailsViewModel @Inject constructor(
-    private val bookRepository: RemoteRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher= Dispatchers.IO,
+    private val librarySyncService: LibrarySyncService,
     @ApplicationScope externalScope: CoroutineScope?=null
 ): ViewModel() {
 
@@ -41,16 +36,15 @@ class LibraryDetailsViewModel @Inject constructor(
     val isDataReadyForUi: StateFlow<Boolean> = _isDataReadyForUi
 
     fun getBookById(
-        id:String
-    ): Book {
+        id:String,
+        pageNumber:Int
+    ): Library {
         if(_isDataReadyForUi.value){
             uiState=LibraryDetailsUiState.Loading
             scope.launch {
-                val list= withContext(ioDispatcher){
-                    bookRepository
-                        .searchVolume(_textFieldKeyword.value,10,0).book
-                }
-                _currentBook.value= list.find { it.id == id } ?: _currentBook.value
+                val list= librarySyncService.getSearchBooks(_textFieldKeyword.value, pageNumber)
+
+                _currentLibrary.value= list?.find { it.libraryId == id } ?: _currentLibrary.value
                 uiState=LibraryDetailsUiState.Success
             }
 
