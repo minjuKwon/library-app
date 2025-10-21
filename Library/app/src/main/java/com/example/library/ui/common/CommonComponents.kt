@@ -41,6 +41,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
 import com.example.library.data.entity.Book
+import com.example.library.data.entity.Library
 import com.example.library.ui.screens.user.UserUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow
@@ -48,9 +49,9 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun LibraryListItem(
-    book: Book,
+    library: Library,
     onBookMarkPressed:(Book)->Unit,
-    onBookItemPressed:(Book)->Unit,
+    onBookItemPressed:(Library)->Unit,
     onNavigateToDetails:(String)->Unit,
     isShowLibraryInfo:Boolean=true,
     isNotFullScreen:Boolean=true
@@ -62,8 +63,8 @@ fun LibraryListItem(
         Row(
             modifier= Modifier
                 .clickable {
-                    onBookItemPressed(book)
-                    if(isNotFullScreen) onNavigateToDetails(book.id)
+                    onBookItemPressed(library)
+                    if(isNotFullScreen) onNavigateToDetails(library.book.id)
                 }
                 .fillMaxWidth()
                 .padding(dimensionResource(R.dimen.padding_md)) ,
@@ -75,7 +76,7 @@ fun LibraryListItem(
                     .width(dimensionResource(R.dimen.list_item_image_width))
                     .padding(dimensionResource(R.dimen.padding_sm))
             ){
-                book.bookInfo.img?.let {
+                library.book.bookInfo.img?.let {
                     AsyncImage(
                         model= ImageRequest.Builder(context= LocalContext.current)
                             .data(it.thumbnail).build(),
@@ -90,8 +91,8 @@ fun LibraryListItem(
             Column(
                 modifier= Modifier.padding(horizontal = dimensionResource(R.dimen.padding_lg))
             ) {
-                ItemBookDescription(book)
-                if(isShowLibraryInfo) ItemLibraryDescription(book, onBookMarkPressed)
+                ItemBookDescription(library.book)
+                if(isShowLibraryInfo) ItemLibraryDescription(library, onBookMarkPressed)
             }
         }
     }
@@ -146,11 +147,11 @@ fun ItemBookDescription(
 
 @Composable
 fun ItemLibraryDescription(
-    book: Book,
+    library: Library,
     onBookMarkPressed:(Book)->Unit
 ){
     Text(
-        text= "abc.13",
+        text= library.callNumber,
         style= MaterialTheme.typography.bodySmall
     )
     Row(
@@ -164,10 +165,10 @@ fun ItemLibraryDescription(
         )
         Spacer(modifier= Modifier.weight(1f))
         IconButton(
-            onClick = {onBookMarkPressed(book)}
+            onClick = {onBookMarkPressed(library.book)}
         ) {
             Icon(
-                imageVector = if(book.bookInfo.isBookmarked){
+                imageVector = if(library.book.bookInfo.isBookmarked){
                     Icons.Default.Favorite}
                 else {
                     Icons.Default.FavoriteBorder},

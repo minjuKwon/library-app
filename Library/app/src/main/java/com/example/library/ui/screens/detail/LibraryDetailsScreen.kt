@@ -44,8 +44,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
-import com.example.library.data.entity.Book
 import com.example.library.data.entity.BookInfo
+import com.example.library.data.entity.Library
 import com.example.library.ui.common.BackIconButton
 import com.example.library.ui.common.TextRadioButton
 import com.example.library.ui.common.DetailsScreenParams
@@ -74,7 +74,7 @@ fun LibraryDetailsScreen(
                     is LibraryDetailsUiState.Success->{
                         val data: Book = if(isNotFullScreen) detailsScreenParams.getBookById(id)
                         else detailsScreenParams.currentBook
-                        DetailsScreenContent(data.bookInfo)
+                        DetailsScreenContent(data)
                         detailsScreenParams.updateDataReadyForUi(false)
                     }
                     is LibraryDetailsUiState.Loading->{
@@ -93,7 +93,9 @@ fun LibraryDetailsScreen(
 }
 
 @Composable
-private fun DetailsScreenContent(book: BookInfo){
+private fun DetailsScreenContent(library: Library){
+    val bookInfo= library.book.bookInfo
+
     Column(
         modifier=Modifier
             .fillMaxWidth()
@@ -102,7 +104,7 @@ private fun DetailsScreenContent(book: BookInfo){
     ) {
         Row{
             Card{
-                book.img?.let {
+                bookInfo.img?.let {
                     AsyncImage(
                         model=ImageRequest.Builder(context=LocalContext.current)
                             .data(it.thumbnail).build(),
@@ -115,14 +117,14 @@ private fun DetailsScreenContent(book: BookInfo){
                     )
                 }
             }
-            DetailsScreenContentInformation(book)
+            DetailsScreenContentInformation(bookInfo)
         }
 
-        book.description?.let {
+        bookInfo.description?.let {
             DetailsScreenContentDescription(it)
         }
 
-        DetailsScreenLibraryInformation()
+        DetailsScreenLibraryInformation(library)
 
         DetailsScreenComment()
     }
@@ -231,7 +233,9 @@ private fun DetailsScreenContentDescription(
 }
 
 @Composable
-private fun DetailsScreenLibraryInformation(){
+private fun DetailsScreenLibraryInformation(
+    library: Library
+){
     Card(
         modifier=Modifier
             .fillMaxWidth()
@@ -251,21 +255,21 @@ private fun DetailsScreenLibraryInformation(){
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Text(text=stringResource(R.string.call_number))
-                Text(text="abcd.123")
+                Text(text=library.callNumber)
             }
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Text(text=stringResource(R.string.location))
-                Text(text="3층 인문학실")
+                Text(text=library.location)
             }
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Text(text=stringResource(R.string.book_status))
-                Text(text=stringResource(R.string.available))
+                Text(text=library.bookStatus.toString())
             }
         }
     }

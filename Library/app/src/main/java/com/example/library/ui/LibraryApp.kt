@@ -46,7 +46,7 @@ fun LibraryApp(
     val currentPage by libraryViewModel.currentPage.collectAsState()
 
     val isDataReadyForUi by libraryDetailsViewModel.isDataReadyForUi.collectAsState()
-    val currentBook by libraryDetailsViewModel.currentBook
+    val currentBook by libraryDetailsViewModel.currentLibrary
 
     val navigationType:NavigationType
     val contentType:ContentType

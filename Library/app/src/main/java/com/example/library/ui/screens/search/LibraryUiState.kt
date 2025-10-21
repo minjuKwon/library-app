@@ -4,20 +4,22 @@ import androidx.paging.PagingData
 import com.example.library.data.entity.Book
 import com.example.library.data.entity.BookImage
 import com.example.library.data.entity.BookInfo
-import kotlinx.coroutines.flow.Flow
+import com.example.library.data.entity.BookStatus
+import com.example.library.data.entity.Library
 
 sealed class LibraryUiState{
     data class Success(
-        val list : PageData,
+        val totalCount:Int,
+        val list:List<Library>,
         val bookmarkList:MutableList<Book> = mutableListOf(),
-        var currentItem : BookInfo = defaultBookInfo,
+        var currentItem:Library = defaultLibrary,
     ): LibraryUiState()
     object Error : LibraryUiState()
     object Loading: LibraryUiState()
 }
 
-val defaultBookInfo
-= BookInfo("", emptyList(),"","","",
+val defaultBookInfo = BookInfo(
+    "", emptyList(),"","","",
     BookImage("","","","")
 )
 

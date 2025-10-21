@@ -2,6 +2,7 @@ package com.example.library.ui.common
 
 import androidx.compose.foundation.lazy.LazyListState
 import com.example.library.data.entity.Book
+import com.example.library.data.entity.Library
 import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.navigation.destination.NavigationItemContent
 import com.example.library.ui.screens.detail.LibraryDetailsUiState
@@ -27,15 +28,15 @@ data class ListContentParams(
     val updateBackPressedTime:(Long)->Unit,
     val isBackPressedDouble:()->Boolean,
     val onBookmarkPressed:(Book)->Unit,
-    val onBookItemPressed: (Book) -> Unit,
-    val updateCurrentBook:(Book)->Unit
+    val onBookItemPressed: (Library) -> Unit,
+    val updateCurrentBook:(Library)->Unit
 )
 
 data class DetailsScreenParams(
     val uiState:LibraryDetailsUiState,
     val isDataReadyForUi:Boolean,
     val textFieldKeyword:String,
-    val currentBook: Book,
+    val currentBook: Library,
     val updateDataReadyForUi: (Boolean)->Unit,
-    val getBookById: (String)-> Book,
+    val getBookById: (String, Int)-> Library,
 )

@@ -26,6 +26,8 @@ import com.example.library.R
 import com.example.library.data.entity.Book
 import com.example.library.data.entity.BookImage
 import com.example.library.data.entity.BookInfo
+import com.example.library.data.entity.BookStatus
+import com.example.library.data.entity.Library
 import com.example.library.ui.common.LibraryListItem
 import com.example.library.ui.common.TextRadioButton
 import com.example.library.ui.common.ListContentParams
@@ -34,10 +36,11 @@ import com.example.library.ui.common.ListContentParams
 fun LibraryRankingScreen(
     listContentParams:ListContentParams
 ){
-    val temp= Book("1",
-        BookInfo("android_1",listOf("1_1","1_2"),"publisher1",
-            "0101","description1", BookImage(),false)
+    val tempBook =Book("1",
+    BookInfo("android_1",listOf("1_1","1_2"),"publisher1",
+        "0101","description1", BookImage(),false)
     )
+    val tempLibrary= Library("1",tempBook, BookStatus.Available, "123.f","3층",0)
     Column(
         modifier= Modifier
             .padding(
@@ -63,7 +66,7 @@ fun LibraryRankingScreen(
                             modifier=Modifier.padding(end= dimensionResource(R.dimen.padding_xl))
                         )
                         LibraryListItem(
-                            temp,
+                            tempLibrary,
                             {},
                             listContentParams.onBookItemPressed,
                             {},
