@@ -42,6 +42,7 @@ import coil.request.ImageRequest
 import com.example.library.R
 import com.example.library.data.entity.Book
 import com.example.library.data.entity.Library
+import com.example.library.ui.common.BookStatusUiMapper.toStringName
 import com.example.library.ui.screens.user.UserUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow
@@ -160,7 +161,7 @@ fun ItemLibraryDescription(
         modifier= Modifier.fillMaxWidth(0.8f)
     ){
         Text(
-            text= stringResource(R.string.available),
+            text= library.bookStatus.toStringName(),
             style= MaterialTheme.typography.bodySmall
         )
         Spacer(modifier= Modifier.weight(1f))

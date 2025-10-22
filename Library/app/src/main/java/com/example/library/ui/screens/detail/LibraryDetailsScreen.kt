@@ -47,6 +47,7 @@ import com.example.library.R
 import com.example.library.data.entity.BookInfo
 import com.example.library.data.entity.Library
 import com.example.library.ui.common.BackIconButton
+import com.example.library.ui.common.BookStatusUiMapper.toStringName
 import com.example.library.ui.common.TextRadioButton
 import com.example.library.ui.common.DetailsScreenParams
 
@@ -270,7 +271,7 @@ private fun DetailsScreenLibraryInformation(
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Text(text=stringResource(R.string.book_status))
-                Text(text=library.bookStatus.toString())
+                Text(text=library.bookStatus.toStringName())
             }
         }
     }
