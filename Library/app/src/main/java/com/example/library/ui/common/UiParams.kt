@@ -34,9 +34,6 @@ data class ListContentParams(
 
 data class DetailsScreenParams(
     val uiState:LibraryDetailsUiState,
-    val isDataReadyForUi:Boolean,
     val textFieldKeyword:String,
-    val currentBook: Library,
-    val updateDataReadyForUi: (Boolean)->Unit,
-    val getBookById: (String, Int)-> Library,
+    val currentBook: Library
 )

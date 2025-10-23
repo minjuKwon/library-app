@@ -54,8 +54,6 @@ import com.example.library.ui.common.DetailsScreenParams
 @Composable
 fun LibraryDetailsScreen(
     isNotFullScreen:Boolean=true,
-    id:String="",
-    pageNumber:Int=1,
     detailsScreenParams: DetailsScreenParams,
     onBackPressed:()->Unit,
     modifier: Modifier =Modifier
@@ -74,10 +72,7 @@ fun LibraryDetailsScreen(
             item{
                 when(detailsScreenParams.uiState){
                     is LibraryDetailsUiState.Success->{
-                        val data: Library = if(isNotFullScreen) detailsScreenParams.getBookById(id,pageNumber)
-                        else detailsScreenParams.currentBook
-                        DetailsScreenContent(data)
-                        detailsScreenParams.updateDataReadyForUi(false)
+                        DetailsScreenContent(detailsScreenParams.currentBook)
                     }
                     is LibraryDetailsUiState.Loading->{
                         Box(
@@ -97,7 +92,6 @@ fun LibraryDetailsScreen(
 @Composable
 private fun DetailsScreenContent(library: Library){
     val bookInfo= library.book.bookInfo
-
     Column(
         modifier=Modifier
             .fillMaxWidth()

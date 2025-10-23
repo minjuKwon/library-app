@@ -93,8 +93,6 @@ fun NavGraphBuilder.booksDestination(
 
             if (id != null) {
                 LibraryDetailsScreen(
-                    id=id,
-                    pageNumber = 1,
                     detailsScreenParams= detailsScreenParams,
                     onBackPressed={navController.popBackStack()}
                 )

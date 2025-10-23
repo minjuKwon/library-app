@@ -45,7 +45,6 @@ fun LibraryApp(
     val textFieldKeyword by libraryViewModel.textFieldKeyword
     val currentPage by libraryViewModel.currentPage.collectAsState()
 
-    val isDataReadyForUi by libraryDetailsViewModel.isDataReadyForUi.collectAsState()
     val currentBook by libraryDetailsViewModel.currentLibrary
 
     val navigationType:NavigationType
@@ -86,7 +85,6 @@ fun LibraryApp(
                 textFieldKeyword=textFieldKeyword,
                 updateKeyword={
                     libraryViewModel.updateKeyword(it)
-                    libraryDetailsViewModel.updateKeyword(it)
                 },
                 onSearch = { libraryViewModel.getInformation(it)}
             ),
@@ -97,21 +95,13 @@ fun LibraryApp(
                 updateBackPressedTime = {libraryViewModel.updateBackPressedTime(it)},
                 isBackPressedDouble={libraryViewModel.isBackPressedDouble()},
                 onBookmarkPressed={libraryViewModel.updateBookmarkList(it)},
-                onBookItemPressed={
-                    libraryDetailsViewModel.updateDataReadyForUi(true)
-                    libraryDetailsViewModel.updateCurrentItem(it)
-                },
+                onBookItemPressed={ libraryDetailsViewModel.updateCurrentItem(it) },
                 updateCurrentBook={ libraryDetailsViewModel.updateCurrentItem(it) }
             ),
             detailsScreenParams = DetailsScreenParams(
                 uiState= libraryDetailsViewModel.uiState,
-                isDataReadyForUi = isDataReadyForUi,
                 textFieldKeyword = textFieldKeyword,
-                currentBook= currentBook,
-                updateDataReadyForUi = { libraryDetailsViewModel.updateDataReadyForUi(it) },
-                getBookById = { id, page ->
-                    libraryDetailsViewModel.getBookById(id, page)
-                },
+                currentBook= currentBook
             ),
             modifier=modifier
         )
