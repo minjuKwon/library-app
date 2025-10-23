@@ -20,7 +20,7 @@ class DefaultLibrarySyncService @Inject constructor(
 
         //캐시된 데이터가 있으면 가져오기
         if(isCached){
-         return cacheBookService.getLibraryBooks(keyword, pageNumber)
+            return cacheBookService.getLibraryBooks(keyword, pageNumber)
         }else{
             val isSavedFirebase= firebaseBookService.isSavedBook(keyword, strPage)
             if(isSavedFirebase.isFailure) throw isSavedFirebase.exceptionOrNull()?:SaveLibraryInfoFailedException()
@@ -28,7 +28,7 @@ class DefaultLibrarySyncService @Inject constructor(
             val firebaseResult= isSavedFirebase.getOrNull()
             firebaseResult?.let {
                 //캐시된 데이터가 없지만 firebase 저장된 데이터가 있으면 가져오고 캐시하기
-                if(!firebaseResult){
+                if(firebaseResult){
                     val isGetList= firebaseBookService
                         .getLibraryBooks(keyword, strPage)
                     if(isGetList.isFailure) throw isGetList.exceptionOrNull()?:GetLibraryInfoFailedException()
