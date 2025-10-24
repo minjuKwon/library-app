@@ -6,19 +6,22 @@ import com.example.library.data.mapper.toItem
 import okio.IOException
 
 class FakeNetworkBookRepository : RemoteRepository {
-    override suspend fun searchVolume(query: String, limit: Int, offset: Int): Item {
-        return FakeDataSource.item.toItem()
+    override suspend fun searchVolume(query: String, limit: Int, offset: Int): Result<Item> {
+        val item= FakeDataSource.item.toItem()
+        return Result.success(item)
     }
 }
 
 class FakeBookmarkedBookRepository: RemoteRepository {
-    override suspend fun searchVolume(query: String, limit: Int, offset: Int): Item {
-        return FakeDataSource.itemBookmarked.toItem()
+    override suspend fun searchVolume(query: String, limit: Int, offset: Int): Result<Item> {
+        val item= FakeDataSource.itemBookmarked.toItem()
+        return Result.success(item)
     }
 }
 
 class FakeExceptionBookRepository: RemoteRepository {
-    override suspend fun searchVolume(query: String, limit: Int, offset: Int): Item {
-        throw IOException("fake exception repository")
+    override suspend fun searchVolume(query: String, limit: Int, offset: Int): Result<Item> {
+        val exception= IOException("fake exception repository")
+        return Result.failure(exception)
     }
 }
