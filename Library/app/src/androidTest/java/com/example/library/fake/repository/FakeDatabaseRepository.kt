@@ -1,4 +1,4 @@
-package com.example.library.fake
+package com.example.library.fake.repository
 
 import com.example.library.data.QueryNormalizer.normalizeQuery
 import com.example.library.data.entity.Library

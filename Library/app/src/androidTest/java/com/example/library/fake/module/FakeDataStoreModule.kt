@@ -1,4 +1,4 @@
-package com.example.library.fake
+package com.example.library.fake.module
 
 import android.content.Context
 import androidx.datastore.core.DataStore

@@ -1,4 +1,4 @@
-package com.example.library.fake
+package com.example.library.fake.module
 
 import dagger.Module
 import dagger.Provides
@@ -8,6 +8,8 @@ import com.example.library.domain.DatabaseRepository
 import com.example.library.domain.DatabaseService
 import com.example.library.domain.UserRepository
 import com.example.library.domain.UserService
+import com.example.library.fake.repository.FakeBookRepository
+import com.example.library.fake.repository.FakeUserRepository
 import com.example.library.service.FirebaseBookService
 import com.example.library.service.FirebaseUserService
 import dagger.hilt.components.SingletonComponent

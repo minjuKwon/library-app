@@ -1,7 +1,8 @@
-package com.example.library.fake
+package com.example.library.fake.module
 
 import com.example.library.di.NetworkModule
 import com.example.library.domain.RemoteRepository
+import com.example.library.fake.repository.FakeNetworkBookRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent

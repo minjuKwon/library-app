@@ -1,10 +1,11 @@
-package com.example.library.fake
+package com.example.library.fake.repository
 
 import android.util.Patterns
 import com.example.library.domain.ExternalUser
 import com.example.library.data.entity.User
 import com.example.library.data.repository.FirebaseException
 import com.example.library.domain.UserRepository
+import com.example.library.fake.FakeExternalUser
 
 class FakeUserRepository: UserRepository {
 
@@ -28,7 +29,7 @@ class FakeUserRepository: UserRepository {
             if(password.length<6)
                 return Result.failure(FirebaseException("ERROR_WEAK_PASSWORD"))
 
-            val user=AuthUser(email+password,email, password)
+            val user= AuthUser(email+password,email, password)
             authList.add(user)
 
             Result.success(FakeExternalUser(uid=user.uid,authList=authList))
@@ -88,7 +89,7 @@ class FakeUserRepository: UserRepository {
             val user= storeList.find{it.email== userData?.email}
 
             storeList.remove(user)
-            currentUser=CurrentUser(User())
+            currentUser= CurrentUser(User())
 
             Result.success(user)
         }catch (e:Exception){
@@ -194,7 +195,7 @@ class FakeUserRepository: UserRepository {
             val index= authList.indexOfFirst { it.email== email }
             if(index==-1) return Result.failure(IllegalStateException("No Account"))
 
-            authList[index]= authList[index].copy(password=NEW_PASSWORD)
+            authList[index]= authList[index].copy(password= NEW_PASSWORD)
 
             Result.success(Unit)
         }catch (e:Exception){

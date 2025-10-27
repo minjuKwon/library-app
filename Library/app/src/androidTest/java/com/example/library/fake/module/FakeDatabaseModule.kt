@@ -1,4 +1,4 @@
-package com.example.library.fake
+package com.example.library.fake.module
 
 import android.content.Context
 import androidx.room.Room
@@ -8,6 +8,7 @@ import com.example.library.data.room.BookCacheDao
 import com.example.library.data.room.LibraryDatabase
 import com.example.library.di.DatabaseModule
 import com.example.library.domain.LocalRepository
+import com.example.library.fake.FakeTimeProvider
 import com.example.library.service.CacheBookService
 import dagger.Module
 import dagger.Provides

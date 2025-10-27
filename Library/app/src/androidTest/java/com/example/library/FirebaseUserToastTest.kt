@@ -15,7 +15,7 @@ import com.example.library.common.UserTestHelper.PASSWORD
 import com.example.library.common.UserTestHelper.register
 import com.example.library.common.UserTestHelper.unregister
 import com.example.library.common.UserTestHelper.verifyUser
-import com.example.library.fake.FakeUserRepository.Companion.NEW_PASSWORD
+import com.example.library.fake.repository.FakeUserRepository.Companion.NEW_PASSWORD
 import com.example.library.rules.onNodeWithContentDescriptionForStringId
 import com.example.library.rules.onNodeWithTagForStringId
 import com.example.library.ui.MainActivity
