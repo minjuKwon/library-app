@@ -1,43 +1,31 @@
 package com.example.library
 
-import androidx.activity.ComponentActivity
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.performClick
-import androidx.lifecycle.testing.TestLifecycleOwner
 import com.example.library.common.TestUtil.waitForToast
-import com.example.library.data.fake.FakeNetworkBookRepository
-import com.example.library.fake.FakeUserService
 import com.example.library.rules.onNodeWithContentDescriptionForStringId
 import com.example.library.rules.onNodeWithTagForStringId
-import com.example.library.ui.LibraryApp
-import com.example.library.ui.screens.detail.LibraryDetailsViewModel
-import com.example.library.ui.screens.search.LibraryViewModel
-import com.example.library.ui.screens.user.UserViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
+import com.example.library.ui.MainActivity
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.StandardTestDispatcher
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@HiltAndroidTest
 class NavigationTest {
 
     @get:Rule
-    val composeTestRule= createAndroidComposeRule<ComponentActivity>()
+    val hiltRule = HiltAndroidRule(this)
+    @get:Rule
+    val composeTestRule= createAndroidComposeRule<MainActivity>()
 
     private val testDispatcher = StandardTestDispatcher()
-    private val testScope = CoroutineScope(testDispatcher)
 
     @Before
     fun setUp(){
-        init()
-    }
-
-    @After
-    fun closeResource(){
-        testScope.cancel()
+        hiltRule.inject()
     }
 
     @Test
@@ -80,31 +68,10 @@ class NavigationTest {
         composeTestRule.waitForToast(R.string.toast_finish)
     }
 
-    private fun init(
-        fakeRepository:FakeNetworkBookRepository= FakeNetworkBookRepository(),
-        libraryViewModel:LibraryViewModel
-        = LibraryViewModel(fakeRepository, testDispatcher, testScope)
-    ){
-        val dummyDetailsViewModel= LibraryDetailsViewModel(fakeRepository, testDispatcher, testScope)
-        val dummyUserViewModel= UserViewModel(FakeUserService(), testScope)
-        val testLifecycleOwner= TestLifecycleOwner()
-
-        composeTestRule.setContent {
-            LibraryApp(
-                WindowWidthSizeClass.Compact,
-                testLifecycleOwner,
-                libraryViewModel,
-                dummyDetailsViewModel,
-                dummyUserViewModel
-            )
-        }
-
+    private fun pressTab(tabId:Int){
         composeTestRule.runOnIdle {
             testDispatcher.scheduler.advanceUntilIdle()
         }
-    }
-
-    private fun pressTab(tabId:Int){
         composeTestRule.onNodeWithContentDescriptionForStringId(
             tabId
         ).assertExists()
