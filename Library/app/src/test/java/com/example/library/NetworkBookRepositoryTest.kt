@@ -18,7 +18,7 @@ class NetworkBookRepositoryTest {
             )
             assertEquals(
                 FakeDataSource.item.toItem(),
-                repository.searchVolume("android",0,0)
+                repository.searchVolume("android",0,0).getOrNull()
             )
         }
 }
