@@ -27,9 +27,9 @@ object FakeDatabaseModule {
     @Singleton
     @Provides
     fun provideDatabase(@ApplicationContext context: Context):LibraryDatabase{
-        return Room.databaseBuilder(
-            context,LibraryDatabase::class.java,"library_test_database"
-        ).build()
+        return Room.inMemoryDatabaseBuilder(context,LibraryDatabase::class.java)
+            .allowMainThreadQueries()
+            .build()
     }
 
     @Singleton
