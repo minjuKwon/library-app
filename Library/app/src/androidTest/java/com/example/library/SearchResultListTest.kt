@@ -1,44 +1,46 @@
 package com.example.library
 
-import androidx.activity.ComponentActivity
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
-import androidx.lifecycle.testing.TestLifecycleOwner
-import com.example.library.fake.FakeNetworkBookRepository
-import com.example.library.fake.FakeUserService
+import com.example.library.data.room.LibraryDatabase
 import com.example.library.rules.onNodeWithTagForStringId
-import com.example.library.ui.screens.search.LibraryViewModel
-import com.example.library.ui.LibraryApp
-import com.example.library.ui.screens.detail.LibraryDetailsViewModel
-import com.example.library.ui.screens.user.UserViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
+import com.example.library.ui.MainActivity
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import javax.inject.Inject
 
+@HiltAndroidTest
 class SearchResultListTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+    val hiltRule = HiltAndroidRule(this)
+    @get:Rule
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
+    @Inject
+    lateinit var db: LibraryDatabase
+
     private val testDispatcher = StandardTestDispatcher()
-    private val testScope = CoroutineScope(testDispatcher)
 
     @Before
     fun setUp(){
-        initial(testDispatcher, testScope)
+        hiltRule.inject()
+        composeTestRule.runOnIdle {
+            testDispatcher.scheduler.advanceUntilIdle()
+        }
     }
 
     @After
     fun closeResource(){
-        testScope.cancel()
+        db.close()
     }
 
     @Test
@@ -94,43 +96,14 @@ class SearchResultListTest {
         }
     }
 
-    private fun initial(testDispatcher: TestDispatcher, testScope: CoroutineScope){
-        val fakeRepository= FakeNetworkBookRepository()
-        val libraryViewModel= LibraryViewModel(
-            bookRepository = fakeRepository,
-            ioDispatcher = testDispatcher,
-            externalScope = testScope
-        )
-
-        composeTestRule.runOnIdle {
-            testDispatcher.scheduler.advanceUntilIdle()
-        }
-
-        val testLifecycleOwner = TestLifecycleOwner()
-        val dummyDetailsViewModel= LibraryDetailsViewModel(fakeRepository, testDispatcher, testScope)
-        val dummyUserViewModel= UserViewModel(FakeUserService(), testScope)
-
-        composeTestRule.setContent {
-            LibraryApp(
-                WindowWidthSizeClass.Compact,
-                testLifecycleOwner,
-                libraryViewModel,
-                dummyDetailsViewModel,
-                dummyUserViewModel
-            )
-        }
-
-        composeTestRule.runOnIdle {
-            testDispatcher.scheduler.advanceUntilIdle()
-        }
-
-    }
-
     private fun verifyListItemText(
         testDispatcher: TestDispatcher,
         index:Int,
         str:String
     ){
+        composeTestRule
+            .onNodeWithTagForStringId(R.string.test_list)
+            .performScrollToIndex(index)
         composeTestRule
             .onNodeWithTag(str, useUnmergedTree = true)
             .assertTextEquals(str)
