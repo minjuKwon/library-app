@@ -3,12 +3,9 @@ package com.example.library.ui
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.library.ui.navigation.destination.LibraryDestination
@@ -27,7 +24,6 @@ import com.example.library.ui.common.TextFieldParams
 @Composable
 fun LibraryApp(
     windowSize: WindowWidthSizeClass,
-    lifecycleOwner:LifecycleOwner= LocalLifecycleOwner.current,
     libraryViewModel: LibraryViewModel,
     libraryDetailsViewModel: LibraryDetailsViewModel,
     userViewModel: UserViewModel,
@@ -67,43 +63,39 @@ fun LibraryApp(
             contentType=ContentType.LIST_ONLY
         }
     }
-    CompositionLocalProvider(LocalLifecycleOwner provides lifecycleOwner) {
-        LibraryAppContent(
-            navController=navController,
-            userViewModel=userViewModel,
-            libraryUiState=libraryViewModel.libraryUiState,
-            navigationConfig = NavigationConfig(
-                contentType=contentType,
-                navigationType = navigationType,
-                currentTab= currentTab,
-                navigationItemContentList= navigationItemContentList,
-                onTabPressed = {type->
-                    navController.navigateSingleTopTo(type.route)
-                }
-            ),
-            textFieldParams = TextFieldParams(
-                textFieldKeyword=textFieldKeyword,
-                updateKeyword={
-                    libraryViewModel.updateKeyword(it)
-                },
-                onSearch = { libraryViewModel.getInformation(it)}
-            ),
-            listContentParams = ListContentParams(
-                scrollState=scrollState,
-                currentPage=currentPage,
-                updatePage={libraryViewModel.getInformation(page=it)},
-                updateBackPressedTime = {libraryViewModel.updateBackPressedTime(it)},
-                isBackPressedDouble={libraryViewModel.isBackPressedDouble()},
-                onBookmarkPressed={libraryViewModel.updateBookmarkList(it)},
-                onBookItemPressed={ libraryDetailsViewModel.updateCurrentItem(it) },
-                updateCurrentBook={ libraryDetailsViewModel.updateCurrentItem(it) }
-            ),
-            detailsScreenParams = DetailsScreenParams(
-                uiState= libraryDetailsViewModel.uiState,
-                textFieldKeyword = textFieldKeyword,
-                currentBook= currentBook
-            ),
-            modifier=modifier
-        )
-    }
+    LibraryAppContent(
+        navController=navController,
+        userViewModel=userViewModel,
+        libraryUiState=libraryViewModel.libraryUiState,
+        navigationConfig = NavigationConfig(
+            contentType=contentType,
+            navigationType = navigationType,
+            currentTab= currentTab,
+            navigationItemContentList= navigationItemContentList,
+            onTabPressed = {type->
+                navController.navigateSingleTopTo(type.route)
+            }
+        ),
+        textFieldParams = TextFieldParams(
+            textFieldKeyword=textFieldKeyword,
+            updateKeyword={ libraryViewModel.updateKeyword(it) },
+            onSearch = { libraryViewModel.getInformation(it)}
+        ),
+        listContentParams = ListContentParams(
+            scrollState=scrollState,
+            currentPage=currentPage,
+            updatePage={libraryViewModel.getInformation(page=it)},
+            updateBackPressedTime = {libraryViewModel.updateBackPressedTime(it)},
+            isBackPressedDouble={libraryViewModel.isBackPressedDouble()},
+            onBookmarkPressed={libraryViewModel.updateBookmarkList(it)},
+            onBookItemPressed={ libraryDetailsViewModel.updateCurrentItem(it) },
+            updateCurrentBook={ libraryDetailsViewModel.updateCurrentItem(it) }
+        ),
+        detailsScreenParams = DetailsScreenParams(
+            uiState= libraryDetailsViewModel.uiState,
+            textFieldKeyword = textFieldKeyword,
+            currentBook= currentBook
+        ),
+        modifier=modifier
+    )
 }

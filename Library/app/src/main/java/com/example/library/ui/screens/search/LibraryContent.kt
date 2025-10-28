@@ -24,8 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,9 +35,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.library.R
 import com.example.library.core.PagingPolicy.PAGE_SIZE
 import com.example.library.data.entity.Library
@@ -85,6 +81,7 @@ fun LibraryListOnlyContent(
             list= list,
             pageGroupSize = pageGroupSize,
             totalPages= totalPages,
+            currentPage= listContentParams.currentPage,
             currentGroup= currentGroup,
             listContentParams= listContentParams,
             isNotFullScreen=isNotFullScreen,
@@ -192,27 +189,13 @@ private fun LibraryList(
     list:List<Library>,
     pageGroupSize:Int,
     totalPages:Int,
+    currentPage:Int,
     currentGroup: Int,
     listContentParams: ListContentParams,
     isNotFullScreen:Boolean,
     onNavigateToDetails:(String)->Unit,
 ){
-    val isVisible = remember { mutableStateOf(false) }
-    val lifecycleOwner = LocalLifecycleOwner.current
-
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_RESUME -> isVisible.value = true
-                else -> isVisible.value = false
-            }
-        }
-
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
+    val prePage = remember { mutableIntStateOf(0) }
 
     LazyColumn(
         state=listContentParams.scrollState,
@@ -222,8 +205,9 @@ private fun LibraryList(
     ){
         items(count=list.size){
             list[it].let { it1 ->
-                if(it==0&&isVisible.value){
+                if(it==0&&prePage.intValue != currentPage){
                     listContentParams.updateCurrentBook(it1)
+                    prePage.intValue = currentPage
                 }
                 LibraryListItem(
                     library = it1,
