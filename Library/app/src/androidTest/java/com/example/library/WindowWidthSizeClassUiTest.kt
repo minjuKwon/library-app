@@ -3,8 +3,8 @@ package com.example.library
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import com.example.library.fake.FakeLibrarySyncService
-import com.example.library.fake.FakeUserService
+import com.example.library.fake.service.FakeLibrarySyncService
+import com.example.library.fake.service.FakeUserService
 import com.example.library.rules.onNodeWithTagForStringId
 import com.example.library.ui.LibraryApp
 import com.example.library.ui.screens.detail.LibraryDetailsViewModel

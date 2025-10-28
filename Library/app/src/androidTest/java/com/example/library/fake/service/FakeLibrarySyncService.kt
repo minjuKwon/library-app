@@ -1,4 +1,4 @@
-package com.example.library.fake
+package com.example.library.fake.service
 
 import com.example.library.data.entity.Library
 import com.example.library.domain.LibrarySyncService
