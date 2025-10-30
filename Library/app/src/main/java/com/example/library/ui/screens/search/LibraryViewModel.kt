@@ -57,7 +57,7 @@ class LibraryViewModel @Inject constructor(
                 }else{
                     LibraryUiState.Success(0, emptyList())
                 }
-            }catch (e: IOException){
+            }catch (e: Exception){
                 LibraryUiState.Error
             }
         }
