@@ -1,8 +1,9 @@
-package com.example.library.fake
+package com.example.library.fake.service
 
 import com.example.library.domain.ExternalUser
 import com.example.library.data.entity.User
 import com.example.library.domain.UserService
+import com.example.library.fake.FakeSessionManager
 import kotlinx.coroutines.flow.Flow
 
 class FakeUserService:UserService {

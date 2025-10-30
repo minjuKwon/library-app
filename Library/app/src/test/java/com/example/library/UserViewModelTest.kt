@@ -1,7 +1,7 @@
 package com.example.library
 
 import com.example.library.data.entity.User
-import com.example.library.fake.FakeUserService
+import com.example.library.fake.service.FakeUserService
 import com.example.library.rules.TestDispatcherRule
 import com.example.library.ui.screens.user.UserUiState
 import com.example.library.ui.screens.user.UserViewModel
@@ -17,7 +17,7 @@ import org.junit.Test
 
 class UserViewModelTest {
 
-    private lateinit var fakeService:FakeUserService
+    private lateinit var fakeService: FakeUserService
     private lateinit var viewModel:UserViewModel
     private lateinit var testScope:CoroutineScope
 
