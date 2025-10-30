@@ -45,7 +45,7 @@ class DefaultLibrarySyncService @Inject constructor(
                     val startIdx= PAGE_SIZE * (pageNumber-1)
 
                     val isGetItem= remoteRepository.searchVolume(keyword, PAGE_SIZE, startIdx)
-                    if(isGetItem.isFailure) isGetItem.exceptionOrNull()?:GetBookFailedException()
+                    if(isGetItem.isFailure) throw isGetItem.exceptionOrNull()?:GetBookFailedException()
 
                     val sourceResult= isGetItem.getOrNull()
 
@@ -57,7 +57,7 @@ class DefaultLibrarySyncService @Inject constructor(
                         val isSaved= firebaseBookService
                             .saveLibraryBooks(keyword, strPage, sourceList)
                         if(isSaved.isFailure)
-                            isSaved.exceptionOrNull()?:SaveLibraryInfoFailedException()
+                            throw isSaved.exceptionOrNull()?:SaveLibraryInfoFailedException()
 
                         sourceList.forEach {
                             cacheBookService.saveLibraryBooks(it, keyword, pageNumber)
@@ -74,7 +74,7 @@ class DefaultLibrarySyncService @Inject constructor(
         var count = cacheBookService.getTotalCountForKeyword(keyword)
         if(count==null){
             val isGetItem= remoteRepository.searchVolume(keyword,10,0)
-            if(isGetItem.isFailure) isGetItem.exceptionOrNull()?:GetBookFailedException()
+            if(isGetItem.isFailure) throw isGetItem.exceptionOrNull()?:GetBookFailedException()
 
             val sourceResult= isGetItem.getOrNull()
             if(sourceResult!=null){
