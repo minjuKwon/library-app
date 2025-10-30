@@ -44,11 +44,10 @@ class FakeCacheBookRepository: LocalRepository {
         itemList.add(LocalItem(page, cachedAt, accessedAt, normalizedQuery, library))
     }
 
-    override suspend fun searchTotalCount(query: String): Int {
+    override suspend fun searchTotalCount(query: String): Int? {
         val normalizedQuery= normalizeQuery(query)
         val list= countList.filter { it.query== normalizedQuery }
-        return if(list.isNotEmpty()) list[0].count
-        else -1
+        return if(list.isEmpty()) null else list[0].count
     }
 
     override suspend fun cacheTotalCount(query: String, count: Int) {
