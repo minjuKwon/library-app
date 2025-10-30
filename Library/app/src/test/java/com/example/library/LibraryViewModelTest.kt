@@ -1,21 +1,19 @@
 package com.example.library
 
-import androidx.paging.AsyncPagingDataDiffer
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListUpdateCallback
-import com.example.library.data.entity.Book
-import com.example.library.fake.FakeBookmarkedBookRepository
+import com.example.library.fake.FakeBookRepository
+import com.example.library.fake.FakeCacheBookRepository
 import com.example.library.fake.FakeExceptionBookRepository
 import com.example.library.fake.FakeNetworkBookRepository
+import com.example.library.fake.FakeSessionManager
+import com.example.library.fake.FakeTimeProvider
 import com.example.library.rules.TestDispatcherRule
+import com.example.library.service.CacheBookService
+import com.example.library.service.DefaultLibrarySyncService
+import com.example.library.service.FirebaseBookService
 import com.example.library.ui.screens.search.LibraryUiState
 import com.example.library.ui.screens.search.LibraryViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Rule
@@ -26,52 +24,35 @@ class LibraryViewModelTest {
     @get:Rule
     val testDispatcherRule= TestDispatcherRule()
 
-    object NoopListCallback : ListUpdateCallback {
-        override fun onInserted(position: Int, count: Int) = Unit
-        override fun onRemoved(position: Int, count: Int) = Unit
-        override fun onMoved(fromPosition: Int, toPosition: Int) = Unit
-        override fun onChanged(position: Int, count: Int, payload: Any?) = Unit
-    }
-
     @Test
     fun libraryViewModel_getBookListInformation_verifyLibraryUiStateSuccess()= runTest {
-
-        val fakeRepository = FakeNetworkBookRepository()
-
         val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
+        val fakeRepository = FakeNetworkBookRepository()
+        val fakeLibrarySyncService= DefaultLibrarySyncService(
+            fakeRepository,
+            CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
+            FirebaseBookService(FakeBookRepository(), FakeSessionManager())
+            )
         val libraryViewModel = LibraryViewModel(
-            bookRepository = fakeRepository,
-            ioDispatcher = testDispatcherRule.testDispatcher,
+            librarySyncService = fakeLibrarySyncService,
             externalScope = testScope
         )
 
         Assert.assertEquals(LibraryUiState.Loading, libraryViewModel.libraryUiState)
 
         testScheduler.advanceUntilIdle()
-
-        val successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
-        val pagingData = successState.list.book.first()
-        val differ = AsyncPagingDataDiffer(
-            diffCallback = MyDiffCallback(),
-            updateCallback = NoopListCallback,
-            workerDispatcher = testDispatcherRule.testDispatcher
-        )
-
-        // collectLatest 사용하여 강제 수집 및 완료 처리
-        launch {
-            flowOf(pagingData).collectLatest { differ.submitData(it) }
-        }
-
         testScheduler.advanceUntilIdle()
 
-        val actualItems = differ.snapshot().items
+        val successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+        val actualItems = successState.list.map { it.book }
         val expectedItems = fakeRepository.searchVolume(
             libraryViewModel.textFieldKeyword.value,
             10,
             0
-        ).book
+        ).getOrNull()
 
-        Assert.assertEquals(expectedItems, actualItems)
+        Assert.assertEquals(expectedItems?.book, actualItems)
+        Assert.assertEquals(expectedItems?.totalCount, successState.totalCount)
 
         testScope.cancel()
 
@@ -135,28 +116,25 @@ class LibraryViewModelTest {
 
     @Test
     fun libraryViewModel_getBookListInformation_verityLibraryUiStateError()= runTest {
-
-        val fakeRepository = FakeExceptionBookRepository()
         val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
+        val fakeLibrarySyncService= DefaultLibrarySyncService(
+            FakeExceptionBookRepository(),
+            CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
+            FirebaseBookService(FakeBookRepository(), FakeSessionManager())
+        )
+
         val viewModel = LibraryViewModel(
-            bookRepository = fakeRepository,
-            ioDispatcher = testDispatcherRule.testDispatcher,
+            librarySyncService = fakeLibrarySyncService,
             externalScope = testScope
         )
+
+        Assert.assertTrue(viewModel.libraryUiState is LibraryUiState.Loading)
 
         testScheduler.advanceUntilIdle()
 
         Assert.assertTrue(viewModel.libraryUiState is LibraryUiState.Error)
+
+        testScope.cancel()
     }
 
-}
-
-private class MyDiffCallback : DiffUtil.ItemCallback<Book>() {
-    override fun areItemsTheSame(oldItem: Book, newItem: Book): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    override fun areContentsTheSame(oldItem: Book, newItem: Book): Boolean {
-        return oldItem == newItem
-    }
 }
