@@ -3,6 +3,7 @@ package com.example.library.service
 import com.example.library.core.PagingPolicy.PAGE_SIZE
 import com.example.library.data.entity.Library
 import com.example.library.data.transformToLibrary
+import com.example.library.domain.DatabaseService
 import com.example.library.domain.LibrarySyncService
 import com.example.library.domain.RemoteRepository
 import javax.inject.Inject
@@ -10,7 +11,7 @@ import javax.inject.Inject
 class DefaultLibrarySyncService @Inject constructor(
     private val remoteRepository: RemoteRepository,
     private val cacheBookService: CacheBookService,
-    private val firebaseBookService: FirebaseBookService
+    private val firebaseBookService: DatabaseService
 ): LibrarySyncService {
 
     override suspend fun getSearchBooks(keyword: String, pageNumber: Int): List<Library>? {
@@ -23,7 +24,7 @@ class DefaultLibrarySyncService @Inject constructor(
             return cacheBookService.getLibraryBooks(keyword, pageNumber)
         }else{
             val isSavedFirebase= firebaseBookService.isSavedBook(keyword, strPage)
-            if(isSavedFirebase.isFailure) throw isSavedFirebase.exceptionOrNull()?:SaveLibraryInfoFailedException()
+            if(isSavedFirebase.isFailure) throw isSavedFirebase.exceptionOrNull()?:CheckLibraryInfoFailedException()
 
             val firebaseResult= isSavedFirebase.getOrNull()
             firebaseResult?.let {
