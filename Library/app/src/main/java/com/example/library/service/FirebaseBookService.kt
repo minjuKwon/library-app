@@ -7,8 +7,7 @@ import com.example.library.domain.SessionManager
 import javax.inject.Inject
 
 class FirebaseBookService@Inject constructor(
-    private val databaseRepository: DatabaseRepository,
-    private val defaultSessionManager: SessionManager
+    private val databaseRepository: DatabaseRepository
 ):DatabaseService {
 
     override suspend fun saveLibraryBooks(keyword: String, page: String, list: List<Library>): Result<Unit> {
