@@ -5,24 +5,40 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.library.data.entity.Book
+import com.example.library.data.entity.LibraryLiked
+import com.example.library.data.entity.User
+import com.example.library.data.mapper.toListUiModel
 import com.example.library.di.ApplicationScope
 import com.example.library.domain.LibrarySyncService
+import com.example.library.domain.SessionManager
+import com.example.library.service.FirebaseBookService
+import com.example.library.ui.common.LibraryUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val librarySyncService: LibrarySyncService,
+    private val firebaseBookService: FirebaseBookService,
+    defaultSessionManager: SessionManager,
     @ApplicationScope externalScope: CoroutineScope? = null
 ):ViewModel() {
 
     private val scope = externalScope ?: viewModelScope
+
+    private val _userPreferences: StateFlow<User> =
+        defaultSessionManager.userPreferences.stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            User()
+    )
+    val userPreferences= _userPreferences
 
     var libraryUiState: LibraryUiState by mutableStateOf(LibraryUiState.Loading)
         private set
@@ -53,13 +69,55 @@ class LibraryViewModel @Inject constructor(
                 val totalItemCount= librarySyncService.getTotalCntForKeyword(search)
 
                 if(list!=null&&totalItemCount!=null) {
-                    LibraryUiState.Success(totalItemCount,list)
+                    var uiList= list.toListUiModel()
+                    val likedList= firebaseBookService.getLibraryLiked(_userPreferences.value.uid)
+                    if(likedList.isFailure){
+                        LibraryUiState.Error
+                    }else{
+                        val likedResult= likedList.getOrNull()
+                        if(likedResult!=null){
+                            uiList= updateLikedList(likedResult, uiList)
+                            LibraryUiState.Success(totalItemCount,uiList)
+                        }else{
+                            LibraryUiState.Error
+                        }
+                    }
                 }else{
                     LibraryUiState.Success(0, emptyList())
                 }
             }catch (e: Exception){
                 LibraryUiState.Error
             }
+        }
+    }
+
+    fun toggleLike(bookId:String, isLiked:Boolean){
+        scope.launch {
+            libraryUiState = try{
+                LibraryUiState.Loading
+                val likedList= firebaseBookService.updateLibraryLiked(
+                    _userPreferences.value.uid,
+                    bookId,
+                    isLiked
+                )
+
+                if(likedList.isFailure){
+                    LibraryUiState.Error
+                } else{
+                    val likedResult= likedList.getOrNull()
+                    if(likedResult!=null){
+                        updateCopiedUiState(libraryUiState){
+                            val list= updateLikedList(likedResult, it.list)
+                            it.copy(list=list)
+                        }
+                    }else{
+                        LibraryUiState.Error
+                    }
+                }
+            }catch (e: Exception){
+                LibraryUiState.Error
+            }
+
         }
     }
 
@@ -77,17 +135,19 @@ class LibraryViewModel @Inject constructor(
         return currentTime - _backPressedTime.value<2000
     }
 
-    fun updateBookmarkList(book: Book){
-        book.bookInfo.isBookmarked= !book.bookInfo.isBookmarked
-        libraryUiState=updateCopiedUiState(libraryUiState){
-            var tempList:MutableList<Book> = it.bookmarkList
-            tempList = if(book.bookInfo.isBookmarked){
-                (tempList+book) as MutableList<Book>
-            }else{
-                (tempList-book) as MutableList<Book>
-            }
-            it.copy(bookmarkList = tempList)
+    private fun updateLikedList(
+        likedList:List<LibraryLiked>,
+        uiList:List<LibraryUiModel>
+    ):List<LibraryUiModel>{
+        val likedMap= likedList.associateBy { it.bookId }
+
+        val updatedList = uiList.map { library ->
+            likedMap[library.library.book.id]?.let {
+                library.copy(isLiked = it.isLiked)
+            }?:library
         }
+
+        return updatedList
     }
 
     private fun updateCopiedUiState(
