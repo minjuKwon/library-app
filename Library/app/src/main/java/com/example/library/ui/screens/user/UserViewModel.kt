@@ -28,7 +28,7 @@ class UserViewModel @Inject constructor(
     private val _userPreferences: StateFlow<User> =
         firebaseUserService.userPreferences.stateIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
+            SharingStarted.Eagerly,
             User()
     )
     val userPreferences= _userPreferences
