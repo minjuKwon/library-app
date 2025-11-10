@@ -1,10 +1,12 @@
 package com.example.library.data.repository
 
 import com.example.library.data.FireStoreCollections.LIBRARY_COLLECTION
+import com.example.library.data.FireStoreCollections.LIBRARY_LIKED
 import com.example.library.data.FireStoreCollections.PAGE_NUMBER_COLLECTION
 import com.example.library.data.FireStoreCollections.SEARCH_RESULTS_COLLECTION
 import com.example.library.data.QueryNormalizer.normalizeQuery
 import com.example.library.data.entity.Library
+import com.example.library.data.entity.LibraryLiked
 import com.example.library.data.firebase.LibraryFirebaseDto
 import com.example.library.data.mapper.toFirebaseDto
 import com.example.library.data.mapper.toLibrary
@@ -76,6 +78,73 @@ class FirebaseBookRepository@Inject constructor(
                 .document(normalizedQuery)
                 .collection(PAGE_NUMBER_COLLECTION)
                 .document(page)
+                .get()
+                .await()
+
+            val isExists= snapshot.exists()
+
+            return Result.success(isExists)
+        }catch (e: FirebaseFirestoreException){
+            return Result.failure(FirebaseException(e.code.name))
+        }catch (e:Exception){
+            return Result.failure(e)
+        }
+    }
+
+    override suspend fun addLibraryLiked(libraryLiked: LibraryLiked): Result<Unit> {
+        try{
+            fireStore.collection(LIBRARY_LIKED)
+                .document(libraryLiked.likedId)
+                .set(libraryLiked)
+                .await()
+
+            return Result.success(Unit)
+        }catch (e: FirebaseFirestoreException){
+            return Result.failure(FirebaseException(e.code.name))
+        }catch (e:Exception){
+            return Result.failure(e)
+        }
+    }
+
+    override suspend fun updateLibraryLiked(id: String, data: Map<String, Any>): Result<Unit> {
+        try{
+            fireStore.collection(LIBRARY_LIKED)
+                .document(id)
+                .update(data)
+                .await()
+            Result.success(Unit)
+
+            return Result.success(Unit)
+        }catch (e: FirebaseFirestoreException){
+            return Result.failure(FirebaseException(e.code.name))
+        }catch (e:Exception){
+            return Result.failure(e)
+        }
+    }
+
+    override suspend fun getLibraryLiked(userId: String): Result<List<LibraryLiked>> {
+        try{
+            val snapshot= fireStore.collection(LIBRARY_LIKED)
+                .whereEqualTo("userId", userId)
+                .get()
+                .await()
+
+            val list= snapshot.documents.map { doc ->
+                doc.toObject(LibraryLiked::class.java)!!
+            }
+
+            return Result.success(list)
+        }catch (e: FirebaseFirestoreException){
+            return Result.failure(FirebaseException(e.code.name))
+        }catch (e:Exception){
+            return Result.failure(e)
+        }
+    }
+
+    override suspend fun hasLibraryLiked(id: String): Result<Boolean> {
+        try{
+            val snapshot = fireStore.collection(LIBRARY_LIKED)
+                .document(id)
                 .get()
                 .await()
 
