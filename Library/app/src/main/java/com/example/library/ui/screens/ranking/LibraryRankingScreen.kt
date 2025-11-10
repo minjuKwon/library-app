@@ -29,6 +29,7 @@ import com.example.library.data.entity.BookInfo
 import com.example.library.data.entity.BookStatus
 import com.example.library.data.entity.Library
 import com.example.library.ui.common.LibraryListItem
+import com.example.library.ui.common.LibraryUiModel
 import com.example.library.ui.common.TextRadioButton
 import com.example.library.ui.common.ListContentParams
 
@@ -66,8 +67,8 @@ fun LibraryRankingScreen(
                             modifier=Modifier.padding(end= dimensionResource(R.dimen.padding_xl))
                         )
                         LibraryListItem(
-                            tempLibrary,
-                            {},
+                            LibraryUiModel(tempLibrary, false),
+                            listContentParams.onLikedPressed,
                             listContentParams.onBookItemPressed,
                             {},
                             false

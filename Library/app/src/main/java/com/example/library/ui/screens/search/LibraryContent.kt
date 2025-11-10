@@ -37,9 +37,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import com.example.library.R
 import com.example.library.core.PagingPolicy.PAGE_SIZE
-import com.example.library.data.entity.Library
 import com.example.library.ui.common.LibraryListItem
 import com.example.library.ui.common.DetailsScreenParams
+import com.example.library.ui.common.LibraryUiModel
 import com.example.library.ui.common.ListContentParams
 import com.example.library.ui.common.TextFieldParams
 import com.example.library.ui.screens.detail.LibraryDetailsScreen
@@ -47,7 +47,7 @@ import com.example.library.ui.screens.detail.LibraryDetailsScreen
 @Composable
 fun LibraryListOnlyContent(
     libraryUiState: LibraryUiState,
-    list:List<Library>,
+    list:List<LibraryUiModel>,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
     isAtRoot:Boolean,
@@ -186,7 +186,7 @@ private fun LibraryTotalItemText(
 @Composable
 private fun LibraryList(
     libraryUiState: LibraryUiState,
-    list:List<Library>,
+    list:List<LibraryUiModel>,
     pageGroupSize:Int,
     totalPages:Int,
     currentPage:Int,
@@ -206,13 +206,13 @@ private fun LibraryList(
         items(count=list.size){
             list[it].let { it1 ->
                 if(it==0&&prePage.intValue != currentPage){
-                    listContentParams.updateCurrentBook(it1)
+                    listContentParams.updateCurrentBook(it1.library)
                     prePage.intValue = currentPage
                 }
                 LibraryListItem(
-                    library = it1,
+                    libraryUiModel = it1,
                     onBookItemPressed= listContentParams.onBookItemPressed,
-                    onBookMarkPressed =listContentParams.onBookmarkPressed,
+                    onLikedPressed =listContentParams.onLikedPressed,
                     isNotFullScreen=isNotFullScreen,
                     onNavigateToDetails= onNavigateToDetails
                 )
@@ -296,7 +296,7 @@ private fun PageNumberButton(
 fun LibraryListAndDetailContent(
     libraryUiState: LibraryUiState,
     isAtRoot:Boolean,
-    list:List<Library>,
+    list:List<LibraryUiModel>,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
     detailsScreenParams: DetailsScreenParams,

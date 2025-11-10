@@ -87,7 +87,9 @@ fun LibraryApp(
             updatePage={libraryViewModel.getInformation(page=it)},
             updateBackPressedTime = {libraryViewModel.updateBackPressedTime(it)},
             isBackPressedDouble={libraryViewModel.isBackPressedDouble()},
-            onBookmarkPressed={libraryViewModel.updateBookmarkList(it)},
+            onLikedPressed={ id, isLiked ->
+                libraryViewModel.toggleLike(id, isLiked)
+            },
             onBookItemPressed={ libraryDetailsViewModel.updateCurrentItem(it) },
             updateCurrentBook={ libraryDetailsViewModel.updateCurrentItem(it) }
         ),

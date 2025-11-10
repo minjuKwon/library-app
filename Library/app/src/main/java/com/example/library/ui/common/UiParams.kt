@@ -27,7 +27,7 @@ data class ListContentParams(
     val updatePage:(Int)->Unit,
     val updateBackPressedTime:(Long)->Unit,
     val isBackPressedDouble:()->Boolean,
-    val onBookmarkPressed:(Book)->Unit,
+    val onLikedPressed:(String, Boolean)->Unit,
     val onBookItemPressed: (Library) -> Unit,
     val updateCurrentBook:(Library)->Unit
 )

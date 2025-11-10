@@ -1,7 +1,7 @@
 package com.example.library.ui.screens.search
 
 import com.example.library.data.entity.Book
-import com.example.library.data.entity.Library
+import com.example.library.ui.common.LibraryUiModel
 
 fun isBookmarkListEmpty(
     libraryUiState: LibraryUiState
@@ -37,7 +37,7 @@ fun getBookmarkList(
 
 fun getBookList(
     libraryUiState: LibraryUiState
-): List<Library>
+): List<LibraryUiModel>
 {
     return getDataByUiState(
         libraryUiState=libraryUiState,

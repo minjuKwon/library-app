@@ -50,8 +50,8 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun LibraryListItem(
-    library: Library,
-    onBookMarkPressed:(Book)->Unit,
+    libraryUiModel: LibraryUiModel,
+    onLikedPressed:(String, Boolean)->Unit,
     onBookItemPressed:(Library)->Unit,
     onNavigateToDetails:(String)->Unit,
     isShowLibraryInfo:Boolean=true,
@@ -64,8 +64,8 @@ fun LibraryListItem(
         Row(
             modifier= Modifier
                 .clickable {
-                    onBookItemPressed(library)
-                    if(isNotFullScreen) onNavigateToDetails(library.book.id)
+                    onBookItemPressed(libraryUiModel.library)
+                    if(isNotFullScreen) onNavigateToDetails(libraryUiModel.library.book.id)
                 }
                 .fillMaxWidth()
                 .padding(dimensionResource(R.dimen.padding_md)) ,
@@ -77,7 +77,7 @@ fun LibraryListItem(
                     .width(dimensionResource(R.dimen.list_item_image_width))
                     .padding(dimensionResource(R.dimen.padding_sm))
             ){
-                library.book.bookInfo.img?.let {
+                libraryUiModel.library.book.bookInfo.img?.let {
                     AsyncImage(
                         model= ImageRequest.Builder(context= LocalContext.current)
                             .data(it.thumbnail).build(),
@@ -92,8 +92,8 @@ fun LibraryListItem(
             Column(
                 modifier= Modifier.padding(horizontal = dimensionResource(R.dimen.padding_lg))
             ) {
-                ItemBookDescription(library.book)
-                if(isShowLibraryInfo) ItemLibraryDescription(library, onBookMarkPressed)
+                ItemBookDescription(libraryUiModel.library.book)
+                if(isShowLibraryInfo) ItemLibraryDescription(libraryUiModel, onLikedPressed)
             }
         }
     }
@@ -148,9 +148,10 @@ fun ItemBookDescription(
 
 @Composable
 fun ItemLibraryDescription(
-    library: Library,
-    onBookMarkPressed:(Book)->Unit
+    libraryUiModel: LibraryUiModel,
+    onLikedPressed:(String, Boolean)->Unit
 ){
+    val library= libraryUiModel.library
     Text(
         text= library.callNumber,
         style= MaterialTheme.typography.bodySmall
@@ -166,10 +167,10 @@ fun ItemLibraryDescription(
         )
         Spacer(modifier= Modifier.weight(1f))
         IconButton(
-            onClick = {onBookMarkPressed(library.book)}
+            onClick = { onLikedPressed(library.book.id, !libraryUiModel.isLiked) }
         ) {
             Icon(
-                imageVector = if(library.book.bookInfo.isBookmarked){
+                imageVector = if(libraryUiModel.isLiked){
                     Icons.Default.Favorite}
                 else {
                     Icons.Default.FavoriteBorder},
