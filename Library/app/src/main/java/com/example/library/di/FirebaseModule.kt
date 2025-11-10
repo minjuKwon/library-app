@@ -1,5 +1,6 @@
 package com.example.library.di
 
+import com.example.library.core.TimeProvider
 import com.example.library.data.repository.FirebaseBookRepository
 import com.example.library.domain.SessionManager
 import com.example.library.data.repository.FirebaseUserRepository
@@ -63,9 +64,9 @@ object FirebaseModule {
     @Singleton
     fun provideFirebaseBookService(
         databaseRepository: DatabaseRepository,
-        defaultSessionManager: SessionManager
+        timeProvider: TimeProvider
     ): DatabaseService {
-        return FirebaseBookService(databaseRepository, defaultSessionManager)
+        return FirebaseBookService(databaseRepository, timeProvider)
     }
 
 }
