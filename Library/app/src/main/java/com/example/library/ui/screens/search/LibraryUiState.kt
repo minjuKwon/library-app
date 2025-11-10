@@ -5,11 +5,12 @@ import com.example.library.data.entity.BookImage
 import com.example.library.data.entity.BookInfo
 import com.example.library.data.entity.BookStatus
 import com.example.library.data.entity.Library
+import com.example.library.ui.common.LibraryUiModel
 
 sealed class LibraryUiState{
     data class Success(
         val totalCount:Int,
-        val list:List<Library>,
+        val list:List<LibraryUiModel>,
         val bookmarkList:MutableList<Book> = mutableListOf(),
         var currentItem:Library = defaultLibrary,
     ): LibraryUiState()
