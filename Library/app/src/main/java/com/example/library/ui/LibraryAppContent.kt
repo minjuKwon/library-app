@@ -48,6 +48,7 @@ fun LibraryAppContent(
     listContentParams: ListContentParams,
     detailsScreenParams: DetailsScreenParams,
     resetLibraryList:()->Unit,
+    resetLiked:()->Unit,
     modifier: Modifier = Modifier
 ){
 
@@ -81,6 +82,7 @@ fun LibraryAppContent(
                 userViewModel=userViewModel,
                 detailsScreenParams= detailsScreenParams,
                 resetLibraryList=resetLibraryList,
+                resetLiked= resetLiked
             )
         }
     }else{
@@ -107,6 +109,7 @@ fun LibraryAppContent(
                         detailsScreenParams= detailsScreenParams,
                         userViewModel=userViewModel,
                         resetLibraryList=resetLibraryList,
+                        resetLiked= resetLiked,
                         modifier=Modifier.weight(1f)
                     )
 

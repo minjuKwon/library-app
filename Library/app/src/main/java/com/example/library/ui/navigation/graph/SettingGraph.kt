@@ -25,6 +25,7 @@ fun NavGraphBuilder.settingDestination(
     navController: NavHostController,
     userViewModel: UserViewModel,
     resetLibraryList:()->Unit,
+    resetLiked:()->Unit
 ){
     navigation(
         startDestination = LibraryDestination.Setting.route,
@@ -37,6 +38,7 @@ fun NavGraphBuilder.settingDestination(
                 LibraryUserScreen(
                     userViewModel=userViewModel,
                     userInfo= userInfo,
+                    resetLiked= resetLiked,
                     onNavigationToEdit={
                         navController.navigateSingle(LibraryDestination.UserEdit.route)
                     },

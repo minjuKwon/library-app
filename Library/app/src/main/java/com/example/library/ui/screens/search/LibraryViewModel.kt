@@ -140,6 +140,18 @@ class LibraryViewModel @Inject constructor(
             }
         }
     }
+
+    fun resetLiked(){
+        scope.launch {
+            libraryUiState = updateCopiedUiState(libraryUiState){
+                val updatedList= it.list.map { library ->
+                    library.copy(isLiked = false)
+                }
+                it.copy(list=updatedList)
+            }
+        }
+    }
+
     fun updateKeyword(input:String){
         _textFieldKeyword.value=input
     }

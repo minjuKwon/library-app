@@ -99,6 +99,7 @@ fun LibraryApp(
             currentBook= currentBook
         ),
         resetLibraryList={libraryViewModel.getLiked()},
+        resetLiked={libraryViewModel.resetLiked()},
         modifier=modifier
     )
 }

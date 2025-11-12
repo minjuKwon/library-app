@@ -42,6 +42,7 @@ import com.example.library.ui.common.HandleUserUiState
 fun LibraryUserScreen(
     userViewModel:UserViewModel,
     userInfo: User,
+    resetLiked:()->Unit,
     onNavigationToEdit:()->Unit,
     onNavigationToSetting:()->Unit,
     onNavigationToLoanHistory:()->Unit,
@@ -91,7 +92,10 @@ fun LibraryUserScreen(
                 stringResource(R.string.log_out),
                 Modifier
                     .padding(start= dimensionResource(R.dimen.padding_md))
-                    .clickable { userViewModel.signOut() }
+                    .clickable {
+                        userViewModel.signOut()
+                        resetLiked()
+                    }
                     .testTag(stringResource(R.string.test_logOut))
             )
         }

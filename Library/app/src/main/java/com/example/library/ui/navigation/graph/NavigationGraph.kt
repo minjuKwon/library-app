@@ -22,6 +22,7 @@ fun NavigationGraph(
     detailsScreenParams: DetailsScreenParams,
     userViewModel: UserViewModel,
     resetLibraryList:()->Unit,
+    resetLiked:()->Unit,
     modifier:Modifier=Modifier
 ){
     NavHost(
@@ -42,6 +43,7 @@ fun NavigationGraph(
             navController,
             userViewModel,
             resetLibraryList,
+            resetLiked
         )
     }
 }
