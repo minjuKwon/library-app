@@ -21,6 +21,7 @@ fun NavigationGraph(
     listContentParams: ListContentParams,
     detailsScreenParams: DetailsScreenParams,
     userViewModel: UserViewModel,
+    resetLibraryList:()->Unit,
     modifier:Modifier=Modifier
 ){
     NavHost(
@@ -39,7 +40,8 @@ fun NavigationGraph(
         rankingDestination(listContentParams)
         settingDestination(
             navController,
-            userViewModel
+            userViewModel,
+            resetLibraryList,
         )
     }
 }

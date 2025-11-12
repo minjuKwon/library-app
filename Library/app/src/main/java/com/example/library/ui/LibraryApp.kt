@@ -98,6 +98,7 @@ fun LibraryApp(
             textFieldKeyword = textFieldKeyword,
             currentBook= currentBook
         ),
+        resetLibraryList={libraryViewModel.getLiked()},
         modifier=modifier
     )
 }

@@ -69,6 +69,7 @@ private fun paddingModifier()= Modifier
 fun LogInScreen(
     userViewModel:UserViewModel,
     isClickEmailLink:Boolean,
+    resetLibraryList:()->Unit,
     onBackPressed:()->Unit,
     onNavigationToSetting:()->Unit
 ){
@@ -92,6 +93,7 @@ fun LogInScreen(
         event= userViewModel.event,
         onSuccess = {
             isClick=true
+            resetLibraryList()
             userViewModel.updateLogInState(true)
             onNavigationToSetting()
         },

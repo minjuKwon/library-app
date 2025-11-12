@@ -23,7 +23,8 @@ import com.example.library.ui.screens.user.UserViewModel
 
 fun NavGraphBuilder.settingDestination(
     navController: NavHostController,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    resetLibraryList:()->Unit,
 ){
     navigation(
         startDestination = LibraryDestination.Setting.route,
@@ -70,6 +71,7 @@ fun NavGraphBuilder.settingDestination(
                 LogInScreen(
                     userViewModel= userViewModel,
                     isClickEmailLink=isClickEmailLink,
+                    resetLibraryList=resetLibraryList,
                     onBackPressed = {navController.popBackStack()},
                     onNavigationToSetting={
                         navController.navigateToSetting()

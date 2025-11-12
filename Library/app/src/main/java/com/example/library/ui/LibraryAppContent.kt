@@ -47,6 +47,7 @@ fun LibraryAppContent(
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
     detailsScreenParams: DetailsScreenParams,
+    resetLibraryList:()->Unit,
     modifier: Modifier = Modifier
 ){
 
@@ -79,6 +80,7 @@ fun LibraryAppContent(
                 listContentParams= listContentParams,
                 userViewModel=userViewModel,
                 detailsScreenParams= detailsScreenParams,
+                resetLibraryList=resetLibraryList,
             )
         }
     }else{
@@ -104,6 +106,7 @@ fun LibraryAppContent(
                         listContentParams= listContentParams,
                         detailsScreenParams= detailsScreenParams,
                         userViewModel=userViewModel,
+                        resetLibraryList=resetLibraryList,
                         modifier=Modifier.weight(1f)
                     )
 

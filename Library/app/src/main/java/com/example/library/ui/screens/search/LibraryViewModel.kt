@@ -121,6 +121,25 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
+    fun getLiked(){
+        scope.launch {
+            val likedList= firebaseBookService.getLibraryLiked(_userPreferences.value.uid)
+            if(likedList.isFailure){
+                LibraryUiState.Error
+            }else{
+                libraryUiState = updateCopiedUiState(libraryUiState){
+                    var uiList= it.list
+                    val likedResult= likedList.getOrNull()
+                    if(likedResult!=null){
+                        uiList= updateLikedList(likedResult, uiList)
+                    }else{
+                        LibraryUiState.Error
+                    }
+                    it.copy(list=uiList)
+                }
+            }
+        }
+    }
     fun updateKeyword(input:String){
         _textFieldKeyword.value=input
     }
