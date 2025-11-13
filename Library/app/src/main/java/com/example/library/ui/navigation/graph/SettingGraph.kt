@@ -11,6 +11,7 @@ import com.example.library.ui.navigation.destination.UserRoutes
 import com.example.library.ui.navigation.navigateSingle
 import com.example.library.ui.navigation.navigateToSetting
 import com.example.library.ui.screens.user.LibraryUserScreen
+import com.example.library.ui.screens.user.LikedListScreen
 import com.example.library.ui.screens.user.LoanHistoryScreen
 import com.example.library.ui.screens.user.LoanStatusScreen
 import com.example.library.ui.screens.user.LogInScreen
@@ -53,6 +54,9 @@ fun NavGraphBuilder.settingDestination(
                     },
                     onNavigationToReservation={
                         navController.navigateSingle(LibraryDestination.ReservationStatus.route)
+                    },
+                    onNavigationToLiked = {
+                        navController.navigateSingle(LibraryDestination.LikedList.route)
                     }
                 )
             }else{
@@ -127,5 +131,10 @@ fun NavGraphBuilder.settingDestination(
                 onBackPressed = {navController.popBackStack()}
             )
         }
+
+        composable(route=LibraryDestination.LikedList.route){
+            LikedListScreen()
+        }
+
     }
 }

@@ -18,6 +18,7 @@ sealed class LibraryDestination(val route:String){
     object LoanHistory: LibraryDestination(SettingRoutes.LOAN_HISTORY)
     object LoanStatus: LibraryDestination(SettingRoutes.LOAN_STATUS)
     object ReservationStatus: LibraryDestination(SettingRoutes.RESERVATION_STATUS)
+    object LikedList: LibraryDestination(SettingRoutes.LIKED)
     object LogIn: LibraryDestination(AuthRoutes.LOG_IN)
     object Register: LibraryDestination(AuthRoutes.REGISTER)
 }
@@ -28,6 +29,7 @@ object SettingRoutes{
     const val LOAN_HISTORY ="$ROOT/loan_history"
     const val LOAN_STATUS= "$ROOT/loan_status"
     const val RESERVATION_STATUS= "$ROOT/reservation_status"
+    const val LIKED= "$ROOT/liked"
 }
 
 object AuthRoutes{

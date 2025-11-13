@@ -140,6 +140,11 @@ fun ReservationStatusScreen(
 }
 
 @Composable
+fun LikedListScreen(){
+    Text("list")
+}
+
+@Composable
 private fun UserUsageSection(
     screenTitle:String,
     titleList:List<Int>,

@@ -47,7 +47,8 @@ fun LibraryUserScreen(
     onNavigationToSetting:()->Unit,
     onNavigationToLoanHistory:()->Unit,
     onNavigationToLoanStatus:()->Unit,
-    onNavigationToReservation:()->Unit
+    onNavigationToReservation:()->Unit,
+    onNavigationToLiked:()->Unit
 ){
 
     val context = LocalContext.current
@@ -109,6 +110,7 @@ fun LibraryUserScreen(
                 R.string.loan_history to {onNavigationToLoanHistory()},
                 R.string.loan_status to {onNavigationToLoanStatus()},
                 R.string.reservation_status to {onNavigationToReservation()},
+                R.string.liked_list to {onNavigationToLiked()},
                 R.string.unregister to {openAlertDialog=true}
             )
             Column{

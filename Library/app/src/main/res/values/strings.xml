@@ -34,6 +34,7 @@
     <string name="loan_history">대출 내역</string>
     <string name="loan_status">대출 현황</string>
     <string name="reservation_status">예약 현황</string>
+    <string name="liked_list">좋아요 목록</string>
     <string name="unregister">회원 탈퇴</string>
     <string name="no_account">로그인된 계정이 없습니다</string>
     <string name="log_in">로그인</string>
