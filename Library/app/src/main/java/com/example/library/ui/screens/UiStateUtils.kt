@@ -1,6 +1,7 @@
-package com.example.library.ui.screens.search
+package com.example.library.ui.screens
 
 import com.example.library.ui.common.LibraryUiModel
+import com.example.library.ui.screens.search.LibraryUiState
 
 fun getTotalItemCount(
     libraryUiState: LibraryUiState
@@ -12,10 +13,14 @@ fun getTotalItemCount(
     )
 }
 
+fun getLikedList(
     libraryUiState: LibraryUiState
+):List<LibraryUiModel>
 {
     return getDataByUiState(
         libraryUiState=libraryUiState,
+        onSuccess={it.list.filter { item-> item.isLiked }},
+        onFailure={ emptyList()}
     )
 }
 
@@ -36,7 +41,7 @@ fun <T> getDataByUiState(
     onFailure:()->T
 ):T{
     return when(libraryUiState){
-        is LibraryUiState.Success->onSuccess(libraryUiState)
+        is LibraryUiState.Success ->onSuccess(libraryUiState)
         else->onFailure()
     }
 }

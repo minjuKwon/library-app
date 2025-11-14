@@ -20,7 +20,7 @@ import com.example.library.ui.screens.search.LibraryListAndDetailContent
 import com.example.library.ui.screens.search.LibraryListOnlyContent
 import com.example.library.ui.screens.search.LibraryUiState
 import com.example.library.ui.screens.search.LoadingScreen
-import com.example.library.ui.screens.search.getBookList
+import com.example.library.ui.screens.getBookList
 import com.example.library.ui.common.ContentType
 import com.example.library.ui.common.DetailsScreenParams
 import com.example.library.ui.common.ListContentParams

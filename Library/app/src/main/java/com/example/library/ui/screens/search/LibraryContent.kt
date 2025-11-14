@@ -43,6 +43,7 @@ import com.example.library.ui.common.LibraryUiModel
 import com.example.library.ui.common.ListContentParams
 import com.example.library.ui.common.TextFieldParams
 import com.example.library.ui.screens.detail.LibraryDetailsScreen
+import com.example.library.ui.screens.getTotalItemCount
 
 @Composable
 fun LibraryListOnlyContent(
