@@ -6,10 +6,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.library.ui.common.ListContentParams
 import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.navigation.destination.UserRoutes
 import com.example.library.ui.navigation.navigateSingle
 import com.example.library.ui.navigation.navigateToSetting
+import com.example.library.ui.screens.search.LibraryUiState
 import com.example.library.ui.screens.getLikedList
 import com.example.library.ui.screens.user.LibraryUserScreen
 import com.example.library.ui.screens.user.LikedListScreen
@@ -24,8 +26,10 @@ import com.example.library.ui.screens.user.UserInformationEditScreen
 import com.example.library.ui.screens.user.UserViewModel
 
 fun NavGraphBuilder.settingDestination(
+    libraryUiState:LibraryUiState,
     navController: NavHostController,
     userViewModel: UserViewModel,
+    listContentParams: ListContentParams,
     resetLibraryList:()->Unit,
     resetLiked:()->Unit
 ){
@@ -134,7 +138,15 @@ fun NavGraphBuilder.settingDestination(
         }
 
         composable(route=LibraryDestination.LikedList.route){
-            LikedListScreen()
+            LikedListScreen(
+                list= getLikedList(libraryUiState),
+                listContentParams=listContentParams,
+                onBackPressed = {navController.popBackStack()},
+                onNavigateToDetails={
+                    navController
+                        .navigateSingle("${LibraryDestination.Details.route}/$it")
+                }
+            )
         }
 
     }

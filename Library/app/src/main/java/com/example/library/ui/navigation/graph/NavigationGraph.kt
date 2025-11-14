@@ -40,8 +40,10 @@ fun NavigationGraph(
         )
         rankingDestination(listContentParams)
         settingDestination(
+            libraryUiState,
             navController,
             userViewModel,
+            listContentParams,
             resetLibraryList,
             resetLiked
         )

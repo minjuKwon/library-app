@@ -17,8 +17,16 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.example.library.R
+import com.example.library.data.entity.Book
+import com.example.library.data.entity.BookImage
+import com.example.library.data.entity.BookInfo
+import com.example.library.data.entity.BookStatus
+import com.example.library.data.entity.Library
 import com.example.library.ui.common.BackIconButton
 import com.example.library.ui.common.Divider
+import com.example.library.ui.common.LibraryListItem
+import com.example.library.ui.common.LibraryUiModel
+import com.example.library.ui.common.ListContentParams
 
 @Composable
 fun LoanHistoryScreen(
@@ -140,8 +148,34 @@ fun ReservationStatusScreen(
 }
 
 @Composable
-fun LikedListScreen(){
-    Text("list")
+fun LikedListScreen(
+    list:List<LibraryUiModel>,
+    listContentParams: ListContentParams,
+    onBackPressed:()->Unit,
+    onNavigateToDetails:(String)->Unit,
+){
+    Column{
+        BackIconButton(stringResource(R.string.liked_list)){onBackPressed()}
+
+        LazyColumn(
+            modifier= Modifier
+                .padding(
+                    top= dimensionResource(R.dimen.padding_lg),
+                    start = dimensionResource(R.dimen.padding_xxl),
+                    end = dimensionResource(R.dimen.padding_xxl)
+            )
+        ){
+            items(list.size){
+                LibraryListItem(
+                    list[it],
+                    listContentParams.onLikedPressed,
+                    listContentParams.onBookItemPressed,
+                    onNavigateToDetails,
+                    true
+                )
+            }
+        }
+    }
 }
 
 @Composable
