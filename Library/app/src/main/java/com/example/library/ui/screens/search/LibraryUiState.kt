@@ -10,9 +10,7 @@ import com.example.library.ui.common.LibraryUiModel
 sealed class LibraryUiState{
     data class Success(
         val totalCount:Int,
-        val list:List<LibraryUiModel>,
-        val bookmarkList:MutableList<Book> = mutableListOf(),
-        var currentItem:Library = defaultLibrary,
+        val list:List<LibraryUiModel>
     ): LibraryUiState()
     object Error : LibraryUiState()
     object Loading: LibraryUiState()

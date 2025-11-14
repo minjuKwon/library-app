@@ -1,18 +1,6 @@
 package com.example.library.ui.screens.search
 
-import com.example.library.data.entity.Book
 import com.example.library.ui.common.LibraryUiModel
-
-fun isBookmarkListEmpty(
-    libraryUiState: LibraryUiState
-):Boolean
-{
-    return getDataByUiState(
-        libraryUiState=libraryUiState,
-        onSuccess={it.bookmarkList.isEmpty()},
-        onFailure={false}
-    )
-}
 
 fun getTotalItemCount(
     libraryUiState: LibraryUiState
@@ -24,14 +12,10 @@ fun getTotalItemCount(
     )
 }
 
-fun getBookmarkList(
     libraryUiState: LibraryUiState
-):MutableList<Book>
 {
     return getDataByUiState(
         libraryUiState=libraryUiState,
-        onSuccess={it.bookmarkList},
-        onFailure={ mutableListOf()}
     )
 }
 
