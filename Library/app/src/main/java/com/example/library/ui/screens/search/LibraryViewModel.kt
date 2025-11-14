@@ -18,6 +18,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,11 +34,11 @@ class LibraryViewModel @Inject constructor(
 
     private val scope = externalScope ?: viewModelScope
 
-    private val _userPreferences: StateFlow<User> =
+    private val _userPreferences: StateFlow<User?> =
         defaultSessionManager.userPreferences.stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
-            User()
+            null
     )
     val userPreferences= _userPreferences
 
@@ -69,13 +71,15 @@ class LibraryViewModel @Inject constructor(
                 val totalItemCount= librarySyncService.getTotalCntForKeyword(search)
 
                 if(list!=null&&totalItemCount!=null) {
-                    var uiList= list.toListUiModel()
-                    val likedList= firebaseBookService.getLibraryLiked(_userPreferences.value.uid)
+                    val uid=awaitUserId()
+                    val likedList= firebaseBookService.getLibraryLiked(uid)
+
                     if(likedList.isFailure){
                         LibraryUiState.Error
                     }else{
                         val likedResult= likedList.getOrNull()
                         if(likedResult!=null){
+                            var uiList= list.toListUiModel()
                             uiList= updateLikedList(likedResult, uiList)
                             LibraryUiState.Success(totalItemCount,uiList)
                         }else{
@@ -96,7 +100,7 @@ class LibraryViewModel @Inject constructor(
             libraryUiState = try{
                 LibraryUiState.Loading
                 val likedList= firebaseBookService.updateLibraryLiked(
-                    _userPreferences.value.uid,
+                    awaitUserId(),
                     bookId,
                     isLiked
                 )
@@ -123,7 +127,7 @@ class LibraryViewModel @Inject constructor(
 
     fun getLiked(){
         scope.launch {
-            val likedList= firebaseBookService.getLibraryLiked(_userPreferences.value.uid)
+            val likedList= firebaseBookService.getLibraryLiked(awaitUserId())
             if(likedList.isFailure){
                 LibraryUiState.Error
             }else{
@@ -166,6 +170,10 @@ class LibraryViewModel @Inject constructor(
         return currentTime - _backPressedTime.value<2000
     }
 
+    private suspend fun awaitUserId(): String {
+        return userPreferences.filterNotNull().first().uid
+    }
+
     private fun updateLikedList(
         likedList:List<LibraryLiked>,
         uiList:List<LibraryUiModel>
@@ -177,7 +185,6 @@ class LibraryViewModel @Inject constructor(
                 library.copy(isLiked = it.isLiked)
             }?:library
         }
-
         return updatedList
     }
 
