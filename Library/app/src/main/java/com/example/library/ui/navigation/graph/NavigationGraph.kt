@@ -33,6 +33,7 @@ fun NavigationGraph(
         booksDestination(
             libraryUiState,
             navController,
+            userViewModel,
             navigationConfig,
             textFieldParams,
             listContentParams,

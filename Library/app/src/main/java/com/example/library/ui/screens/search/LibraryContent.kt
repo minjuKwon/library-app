@@ -53,7 +53,9 @@ fun LibraryListOnlyContent(
     listContentParams: ListContentParams,
     isAtRoot:Boolean,
     isNotFullScreen:Boolean,
+    isLogIn:Boolean,
     onNavigateToDetails:(String)->Unit,
+    onNavigationToLogIn:()->Unit,
     modifier:Modifier= Modifier
 ){
     Column(
@@ -86,7 +88,9 @@ fun LibraryListOnlyContent(
             currentGroup= currentGroup,
             listContentParams= listContentParams,
             isNotFullScreen=isNotFullScreen,
-            onNavigateToDetails= onNavigateToDetails
+            isLogIn= isLogIn,
+            onNavigateToDetails= onNavigateToDetails,
+            onNavigationToLogIn= onNavigationToLogIn
         )
 
     }
@@ -194,7 +198,9 @@ private fun LibraryList(
     currentGroup: Int,
     listContentParams: ListContentParams,
     isNotFullScreen:Boolean,
+    isLogIn:Boolean,
     onNavigateToDetails:(String)->Unit,
+    onNavigationToLogIn:()->Unit,
 ){
     val prePage = remember { mutableIntStateOf(0) }
 
@@ -215,7 +221,9 @@ private fun LibraryList(
                     onBookItemPressed= listContentParams.onBookItemPressed,
                     onLikedPressed =listContentParams.onLikedPressed,
                     isNotFullScreen=isNotFullScreen,
-                    onNavigateToDetails= onNavigateToDetails
+                    isLogIn= isLogIn,
+                    onNavigateToDetails= onNavigateToDetails,
+                    onNavigationToLogIn= onNavigationToLogIn
                 )
             }
         }
@@ -297,11 +305,13 @@ private fun PageNumberButton(
 fun LibraryListAndDetailContent(
     libraryUiState: LibraryUiState,
     isAtRoot:Boolean,
+    isLogIn: Boolean,
     list:List<LibraryUiModel>,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
     detailsScreenParams: DetailsScreenParams,
     onNavigateToDetails:(String)->Unit,
+    onNavigationToLogIn:()->Unit,
     modifier:Modifier= Modifier
 ){
     Row(modifier=modifier){
@@ -311,8 +321,10 @@ fun LibraryListAndDetailContent(
             textFieldParams=textFieldParams,
             listContentParams=listContentParams,
             onNavigateToDetails = onNavigateToDetails,
+            onNavigationToLogIn=onNavigationToLogIn,
             isAtRoot=isAtRoot,
             isNotFullScreen=false,
+            isLogIn = isLogIn,
             modifier=Modifier.weight(1f)
         )
 

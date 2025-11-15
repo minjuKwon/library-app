@@ -17,11 +17,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.example.library.R
-import com.example.library.data.entity.Book
-import com.example.library.data.entity.BookImage
-import com.example.library.data.entity.BookInfo
-import com.example.library.data.entity.BookStatus
-import com.example.library.data.entity.Library
 import com.example.library.ui.common.BackIconButton
 import com.example.library.ui.common.Divider
 import com.example.library.ui.common.LibraryListItem
@@ -167,11 +162,11 @@ fun LikedListScreen(
         ){
             items(list.size){
                 LibraryListItem(
-                    list[it],
-                    listContentParams.onLikedPressed,
-                    listContentParams.onBookItemPressed,
-                    onNavigateToDetails,
-                    true
+                    libraryUiModel=list[it],
+                    onLikedPressed=listContentParams.onLikedPressed,
+                    onBookItemPressed=listContentParams.onBookItemPressed,
+                    onNavigateToDetails=onNavigateToDetails,
+                    isShowLibraryInfo=true
                 )
             }
         }

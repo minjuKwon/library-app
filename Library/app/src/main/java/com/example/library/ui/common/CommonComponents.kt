@@ -16,12 +16,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -54,8 +56,10 @@ fun LibraryListItem(
     onLikedPressed:(String, Boolean)->Unit,
     onBookItemPressed:(Library)->Unit,
     onNavigateToDetails:(String)->Unit,
+    onNavigationToLogIn:()->Unit={},
     isShowLibraryInfo:Boolean=true,
-    isNotFullScreen:Boolean=true
+    isNotFullScreen:Boolean=true,
+    isLogIn:Boolean= true
 ){
     OutlinedCard(
         modifier= Modifier
@@ -93,7 +97,13 @@ fun LibraryListItem(
                 modifier= Modifier.padding(horizontal = dimensionResource(R.dimen.padding_lg))
             ) {
                 ItemBookDescription(libraryUiModel.library.book)
-                if(isShowLibraryInfo) ItemLibraryDescription(libraryUiModel, onLikedPressed)
+                if(isShowLibraryInfo)
+                    ItemLibraryDescription(
+                        libraryUiModel= libraryUiModel,
+                        isLogIn= isLogIn,
+                        onNavigationToLogIn=onNavigationToLogIn,
+                        onLikedPressed = onLikedPressed
+                    )
             }
         }
     }
@@ -149,9 +159,13 @@ fun ItemBookDescription(
 @Composable
 fun ItemLibraryDescription(
     libraryUiModel: LibraryUiModel,
+    isLogIn:Boolean,
+    onNavigationToLogIn:()->Unit,
     onLikedPressed:(String, Boolean)->Unit
 ){
     val library= libraryUiModel.library
+    var openAlertDialog by remember { mutableStateOf(false) }
+
     Text(
         text= library.callNumber,
         style= MaterialTheme.typography.bodySmall
@@ -167,7 +181,13 @@ fun ItemLibraryDescription(
         )
         Spacer(modifier= Modifier.weight(1f))
         IconButton(
-            onClick = { onLikedPressed(library.book.id, !libraryUiModel.isLiked) }
+            onClick = {
+                if(isLogIn){
+                    onLikedPressed(library.book.id, !libraryUiModel.isLiked)
+                }else{
+                  openAlertDialog= true
+                }
+            }
         ) {
             Icon(
                 imageVector = if(libraryUiModel.isLiked){
@@ -179,6 +199,37 @@ fun ItemLibraryDescription(
         }
         Spacer(modifier= Modifier.weight(1f))
     }
+    if(openAlertDialog){
+        UserCheckLikedDialog(
+            onDismissRequest = {openAlertDialog=false},
+            onConfirmation = {onNavigationToLogIn()}
+        )
+    }
+}
+
+@Composable
+private fun UserCheckLikedDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+){
+    AlertDialog(
+        text = {
+            Text(stringResource(R.string.liked_dialog_content))
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirmation() }) {
+                Text(stringResource(R.string.log_in))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { onDismissRequest() }) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
 }
 
 @Composable

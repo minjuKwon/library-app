@@ -8,6 +8,7 @@
     <string name="available">대출 가능</string>
     <string name="unavailable">대출 불가</string>
     <string name="liked">좋아요</string>
+    <string name="liked_dialog_content">좋아요는 로그인 후 이용할 수 있습니다</string>
     <string name="previous_page">&lt;</string>
     <string name="next_page">&gt;</string>
     <string name="toast_finish">뒤로가기 버튼을 한번 더 누르시면 앱이 종료됩니다</string>

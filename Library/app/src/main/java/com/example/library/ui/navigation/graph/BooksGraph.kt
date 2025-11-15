@@ -3,6 +3,8 @@ package com.example.library.ui.navigation.graph
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.navigation.NavGraphBuilder
@@ -26,10 +28,12 @@ import com.example.library.ui.common.DetailsScreenParams
 import com.example.library.ui.common.ListContentParams
 import com.example.library.ui.common.NavigationConfig
 import com.example.library.ui.common.TextFieldParams
+import com.example.library.ui.screens.user.UserViewModel
 
 fun NavGraphBuilder.booksDestination(
     libraryUiState: LibraryUiState,
     navController: NavHostController,
+    userViewModel: UserViewModel,
     navigationConfig: NavigationConfig,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
@@ -40,16 +44,22 @@ fun NavGraphBuilder.booksDestination(
         route=GraphRoutes.HOME
     ){
         composable(route= LibraryDestination.Books.route){
+            val isLogIn by userViewModel.isLogIn.collectAsState()
+
             if(navigationConfig.contentType== ContentType.LIST_AND_DETAIL){
                 LibraryListAndDetailContent(
                     libraryUiState = libraryUiState,
                     isAtRoot=navController.previousBackStackEntry == null,
+                    isLogIn=isLogIn,
                     list = getBookList(libraryUiState) ,
                     listContentParams=listContentParams,
                     textFieldParams=textFieldParams,
                     detailsScreenParams=detailsScreenParams,
                     onNavigateToDetails={ itemId->
                         navController.navigateSingle("${LibraryDestination.Details.route}/$itemId")
+                    },
+                    onNavigationToLogIn = {
+                        navController.navigateSingle(LibraryDestination.LogIn.route)
                     }
                 )
             }else{
@@ -62,9 +72,13 @@ fun NavGraphBuilder.booksDestination(
                             listContentParams=listContentParams,
                             isAtRoot= navController.previousBackStackEntry == null,
                             isNotFullScreen = true,
+                            isLogIn = isLogIn,
                             onNavigateToDetails={
                                 navController
                                     .navigateSingle("${LibraryDestination.Details.route}/$it")
+                            },
+                            onNavigationToLogIn = {
+                                navController.navigateSingle(LibraryDestination.LogIn.route)
                             },
                             modifier= Modifier
                                 .padding(dimensionResource(R.dimen.padding_sm))
