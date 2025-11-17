@@ -72,7 +72,7 @@ class LibraryViewModel @Inject constructor(
 
                 if(list!=null&&totalItemCount!=null) {
                     val uid=awaitUserId()
-                    val likedList= firebaseBookService.getLibraryLiked(uid)
+                    val likedList= firebaseBookService.getLibraryLikedList(uid)
 
                     if(likedList.isFailure){
                         LibraryUiState.Error
@@ -127,7 +127,7 @@ class LibraryViewModel @Inject constructor(
 
     fun getLiked(){
         scope.launch {
-            val likedList= firebaseBookService.getLibraryLiked(awaitUserId())
+            val likedList= firebaseBookService.getLibraryLikedList(awaitUserId())
             if(likedList.isFailure){
                 LibraryUiState.Error
             }else{

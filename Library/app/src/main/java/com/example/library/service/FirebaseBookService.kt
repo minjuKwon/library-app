@@ -44,11 +44,11 @@ class FirebaseBookService@Inject constructor(
             }
         }
 
-        return databaseRepository.getLibraryLiked(userId)
+        return databaseRepository.getLibraryLikedList(userId)
     }
 
-    override suspend fun getLibraryLiked(userId: String): Result<List<LibraryLiked>> {
-        return databaseRepository.getLibraryLiked(userId)
+    override suspend fun getLibraryLikedList(userId: String): Result<List<LibraryLiked>> {
+        return databaseRepository.getLibraryLikedList(userId)
     }
 
 }

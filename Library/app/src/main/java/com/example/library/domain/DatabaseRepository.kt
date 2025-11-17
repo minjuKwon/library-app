@@ -9,6 +9,6 @@ interface DatabaseRepository {
     suspend fun hasServerBook(keyword:String, page:String):Result<Boolean>
     suspend fun addLibraryLiked(libraryLiked: LibraryLiked):Result<Unit>
     suspend fun updateLibraryLiked(id:String, data: Map<String, Any>):Result<Unit>
-    suspend fun getLibraryLiked(userId:String):Result<List<LibraryLiked>>
+    suspend fun getLibraryLikedList(userId:String):Result<List<LibraryLiked>>
     suspend fun hasLibraryLiked(id:String):Result<Boolean>
 }

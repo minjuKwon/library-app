@@ -122,7 +122,7 @@ class FirebaseBookRepository@Inject constructor(
         }
     }
 
-    override suspend fun getLibraryLiked(userId: String): Result<List<LibraryLiked>> {
+    override suspend fun getLibraryLikedList(userId: String): Result<List<LibraryLiked>> {
         try{
             val snapshot= fireStore.collection(LIBRARY_LIKED)
                 .whereEqualTo("userId", userId)
