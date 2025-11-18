@@ -5,6 +5,7 @@ import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryLiked
 import com.example.library.domain.DatabaseRepository
 import com.example.library.domain.DatabaseService
+import com.google.firebase.firestore.ListenerRegistration
 import javax.inject.Inject
 
 class FirebaseBookService@Inject constructor(
@@ -49,6 +50,10 @@ class FirebaseBookService@Inject constructor(
 
     override suspend fun getLibraryLikedList(userId: String): Result<List<LibraryLiked>> {
         return databaseRepository.getLibraryLikedList(userId)
+    }
+
+    override fun getLibraryLikedCount(bookId: String, onUpdate: (Int) -> Unit): ListenerRegistration {
+        return databaseRepository.getLibraryLikedCount(bookId, onUpdate)
     }
 
 }
