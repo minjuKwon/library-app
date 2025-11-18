@@ -2,6 +2,7 @@ package com.example.library.domain
 
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryLiked
+import com.google.firebase.firestore.ListenerRegistration
 
 interface DatabaseRepository {
     suspend fun addLibraryBook(keyword:String, page: String, list:List<Library>):Result<Unit>
@@ -10,5 +11,6 @@ interface DatabaseRepository {
     suspend fun addLibraryLiked(libraryLiked: LibraryLiked):Result<Unit>
     suspend fun updateLibraryLiked(id:String, data: Map<String, Any>):Result<Unit>
     suspend fun getLibraryLikedList(userId:String):Result<List<LibraryLiked>>
+    fun getLibraryLikedCount(bookId: String, onUpdate: (Int) -> Unit):ListenerRegistration
     suspend fun hasLibraryLiked(id:String):Result<Boolean>
 }

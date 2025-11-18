@@ -13,6 +13,7 @@ import com.example.library.data.mapper.toLibrary
 import com.example.library.domain.DatabaseRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -138,6 +139,24 @@ class FirebaseBookRepository@Inject constructor(
             return Result.failure(FirebaseException(e.code.name))
         }catch (e:Exception){
             return Result.failure(e)
+        }
+    }
+
+    override fun getLibraryLikedCount(
+        bookId: String,
+        onUpdate: (Int) -> Unit
+    ): ListenerRegistration {
+        val query = fireStore.collection(LIBRARY_LIKED)
+            .whereEqualTo("bookId",bookId)
+            .whereEqualTo("isLiked",true)
+
+        return query.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                return@addSnapshotListener
+            }
+
+            val likeCount = snapshot?.documents?.count () ?: -1
+            onUpdate(likeCount)
         }
     }
 
