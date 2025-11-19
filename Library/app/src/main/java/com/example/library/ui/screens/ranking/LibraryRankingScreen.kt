@@ -67,7 +67,7 @@ fun LibraryRankingScreen(
                             modifier=Modifier.padding(end= dimensionResource(R.dimen.padding_xl))
                         )
                         LibraryListItem(
-                            libraryUiModel= LibraryUiModel(tempLibrary, false),
+                            libraryUiModel= LibraryUiModel(tempLibrary, false, 0),
                             onLikedPressed= listContentParams.onLikedPressed,
                             onBookItemPressed=listContentParams.onBookItemPressed,
                             onNavigateToDetails={},

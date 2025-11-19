@@ -13,11 +13,13 @@ import com.example.library.domain.LibrarySyncService
 import com.example.library.domain.SessionManager
 import com.example.library.service.FirebaseBookService
 import com.example.library.ui.common.LibraryUiModel
+import com.google.firebase.firestore.ListenerRegistration
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
@@ -52,9 +54,17 @@ class LibraryViewModel @Inject constructor(
     val currentPage: StateFlow<Int> = _currentPage
 
     private val _backPressedTime= MutableStateFlow(0L)
+    private val _loadComplete = MutableStateFlow(false)
+    private val listeners = mutableMapOf<String, ListenerRegistration>()
 
     init {
         getInformation()
+        getItem()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        listeners.values.forEach { it.remove() }
     }
 
     fun getInformation(
@@ -62,6 +72,7 @@ class LibraryViewModel @Inject constructor(
         page:Int=1
     ){
         scope.launch {
+            _loadComplete.value = false
             libraryUiState= LibraryUiState.Loading
 
             libraryUiState = try{
@@ -92,6 +103,8 @@ class LibraryViewModel @Inject constructor(
             }catch (e: Exception){
                 LibraryUiState.Error
             }
+
+            _loadComplete.value = true
         }
     }
 
@@ -153,6 +166,42 @@ class LibraryViewModel @Inject constructor(
                 }
                 it.copy(list=updatedList)
             }
+        }
+    }
+
+    fun getItem(){
+        scope.launch {
+            _loadComplete.filter { it }.first()
+            getLikedCount()
+        }
+    }
+
+    private fun getLikedCount(){
+        listeners.values.forEach { it.remove() }
+        listeners.clear()
+
+        val state= libraryUiState as LibraryUiState.Success
+
+        state.list.forEach { item ->
+            val bookId = item.library.book.id
+
+            val registration = firebaseBookService.getLibraryLikedCount(
+                bookId = bookId,
+                onUpdate = { updateCount(bookId, it) }
+            )
+
+            listeners[bookId] = registration
+        }
+    }
+
+    private fun updateCount(bookId: String, count: Int) {
+        libraryUiState= updateCopiedUiState(libraryUiState){
+            val updatedList = it.list.map { item ->
+                if (item.library.book.id == bookId)
+                    item.copy(count = count)
+                else item
+            }
+            it.copy(list = updatedList)
         }
     }
 

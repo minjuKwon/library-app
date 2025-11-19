@@ -7,5 +7,6 @@ fun List<Library>.toListUiModel()= map{it.toUiModel()}
 
 fun Library.toUiModel()= LibraryUiModel(
     library= this,
-    isLiked= false
+    isLiked= false,
+    count = 0
 )

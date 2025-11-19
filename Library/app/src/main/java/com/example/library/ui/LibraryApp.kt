@@ -79,12 +79,18 @@ fun LibraryApp(
         textFieldParams = TextFieldParams(
             textFieldKeyword=textFieldKeyword,
             updateKeyword={ libraryViewModel.updateKeyword(it) },
-            onSearch = { libraryViewModel.getInformation(it)}
+            onSearch = {
+                libraryViewModel.getInformation(it)
+                libraryViewModel.getItem()
+            }
         ),
         listContentParams = ListContentParams(
             scrollState=scrollState,
             currentPage=currentPage,
-            updatePage={libraryViewModel.getInformation(page=it)},
+            updatePage={
+                libraryViewModel.getInformation(page=it)
+                libraryViewModel.getItem()
+            },
             updateBackPressedTime = {libraryViewModel.updateBackPressedTime(it)},
             isBackPressedDouble={libraryViewModel.isBackPressedDouble()},
             onLikedPressed={ id, isLiked ->

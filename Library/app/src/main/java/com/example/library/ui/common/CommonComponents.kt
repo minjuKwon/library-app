@@ -179,7 +179,9 @@ fun ItemLibraryDescription(
             text= library.bookStatus.toStringName(),
             style= MaterialTheme.typography.bodySmall
         )
+
         Spacer(modifier= Modifier.weight(1f))
+
         IconButton(
             onClick = {
                 if(isLogIn){
@@ -197,6 +199,12 @@ fun ItemLibraryDescription(
                 contentDescription = stringResource(R.string.liked),
             )
         }
+
+        Text(
+            text= libraryUiModel.count.toString(),
+            style= MaterialTheme.typography.bodySmall
+        )
+
         Spacer(modifier= Modifier.weight(1f))
     }
     if(openAlertDialog){

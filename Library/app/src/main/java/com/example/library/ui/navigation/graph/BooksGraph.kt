@@ -37,7 +37,7 @@ fun NavGraphBuilder.booksDestination(
     navigationConfig: NavigationConfig,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
-    detailsScreenParams: DetailsScreenParams,
+    detailsScreenParams: DetailsScreenParams
 ){
     navigation(
         startDestination = LibraryDestination.Books.route,
