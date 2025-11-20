@@ -1,5 +1,6 @@
 package com.example.library.fake.module
 
+import com.example.library.core.TimeProvider
 import dagger.Module
 import dagger.Provides
 import com.example.library.domain.SessionManager
@@ -48,9 +49,9 @@ object FakeFirebaseModule {
     @Singleton
     fun provideFirebaseBookService(
         databaseRepository: DatabaseRepository,
-        defaultSessionManager: SessionManager
+        timeProvider: TimeProvider
     ): DatabaseService {
-        return FirebaseBookService(databaseRepository, defaultSessionManager)
+        return FirebaseBookService(databaseRepository, timeProvider)
     }
 
 }

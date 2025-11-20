@@ -1,9 +1,9 @@
 package com.example.library
 
-import com.example.library.fake.FakeBookRepository
-import com.example.library.fake.FakeCacheBookRepository
-import com.example.library.fake.FakeExceptionBookRepository
-import com.example.library.fake.FakeNetworkBookRepository
+import com.example.library.fake.repository.FakeBookRepository
+import com.example.library.fake.repository.FakeCacheBookRepository
+import com.example.library.fake.repository.FakeExceptionBookRepository
+import com.example.library.fake.repository.FakeNetworkBookRepository
 import com.example.library.fake.FakeSessionManager
 import com.example.library.fake.FakeTimeProvider
 import com.example.library.rules.TestDispatcherRule
@@ -28,13 +28,17 @@ class LibraryViewModelTest {
     fun libraryViewModel_getBookListInformation_verifyLibraryUiStateSuccess()= runTest {
         val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
         val fakeRepository = FakeNetworkBookRepository()
+        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
+
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             fakeRepository,
             CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
-            FirebaseBookService(FakeBookRepository(), FakeSessionManager())
-            )
+            fakeFirebaseBookService
+        )
         val libraryViewModel = LibraryViewModel(
             librarySyncService = fakeLibrarySyncService,
+            firebaseBookService = fakeFirebaseBookService,
+            defaultSessionManager = FakeSessionManager(),
             externalScope = testScope
         )
 
@@ -44,7 +48,7 @@ class LibraryViewModelTest {
         testScheduler.advanceUntilIdle()
 
         val successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
-        val actualItems = successState.list.map { it.book }
+        val actualItems = successState.list.map { it.library.book }
         val expectedItems = fakeRepository.searchVolume(
             libraryViewModel.textFieldKeyword.value,
             10,
@@ -117,14 +121,18 @@ class LibraryViewModelTest {
     @Test
     fun libraryViewModel_getBookListInformation_verityLibraryUiStateError()= runTest {
         val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
+        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
+
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             FakeExceptionBookRepository(),
             CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
-            FirebaseBookService(FakeBookRepository(), FakeSessionManager())
+            fakeFirebaseBookService
         )
 
         val viewModel = LibraryViewModel(
             librarySyncService = fakeLibrarySyncService,
+            firebaseBookService= fakeFirebaseBookService,
+            defaultSessionManager = FakeSessionManager(),
             externalScope = testScope
         )
 

@@ -3,9 +3,13 @@ package com.example.library
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import com.example.library.fake.FakeSessionManager
+import com.example.library.fake.FakeTimeProvider
+import com.example.library.fake.repository.FakeBookRepository
 import com.example.library.fake.service.FakeLibrarySyncService
 import com.example.library.fake.service.FakeUserService
 import com.example.library.rules.onNodeWithTagForStringId
+import com.example.library.service.FirebaseBookService
 import com.example.library.ui.LibraryApp
 import com.example.library.ui.screens.detail.LibraryDetailsViewModel
 import com.example.library.ui.screens.search.LibraryViewModel
@@ -43,8 +47,11 @@ class WindowWidthSizeClassUiTest {
         val dispatcher = StandardTestDispatcher()
         val scope = CoroutineScope(dispatcher)
 
+        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
         val dummyLibraryViewModel = LibraryViewModel(
             librarySyncService = FakeLibrarySyncService(),
+            firebaseBookService = fakeFirebaseBookService,
+            defaultSessionManager = FakeSessionManager(),
             externalScope = scope
         )
         val dummyDetailsViewModel= LibraryDetailsViewModel()

@@ -6,7 +6,6 @@ import com.example.library.data.entity.BookStatus
 import com.example.library.data.entity.Library
 import com.example.library.data.mapper.toItem
 import com.example.library.fake.FakeDataSource
-import com.example.library.fake.FakeSessionManager
 import com.example.library.fake.FakeTimeProvider
 import com.example.library.fake.repository.FakeBookRepository
 import com.example.library.fake.repository.FakeCacheBookRepository
@@ -43,7 +42,7 @@ class LibrarySyncServiceTest {
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             fakeRepository,
             CacheBookService(fakeCacheBookRepository, FakeTimeProvider()),
-            FirebaseBookService(FakeBookRepository(), FakeSessionManager())
+            FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
         )
 
         val result= fakeLibrarySyncService.getSearchBooks("cache",1)
@@ -65,7 +64,7 @@ class LibrarySyncServiceTest {
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             fakeRepository,
             CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
-            FirebaseBookService(fakeBookRepository, FakeSessionManager())
+            FirebaseBookService(fakeBookRepository, FakeTimeProvider())
         )
 
         val result= fakeLibrarySyncService.getSearchBooks("database",1)
@@ -79,7 +78,7 @@ class LibrarySyncServiceTest {
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             fakeRepository,
             CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
-            FirebaseBookService(FakeBookRepository(), FakeSessionManager())
+            FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
         )
 
         val result= fakeLibrarySyncService.getSearchBooks("android",1)
@@ -131,7 +130,7 @@ class LibrarySyncServiceTest {
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             FakeExceptionBookRepository(),
             CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
-            FirebaseBookService(FakeBookRepository(), FakeSessionManager())
+            FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
         )
 
         assertFailsWith<IOException>{
@@ -148,7 +147,7 @@ class LibrarySyncServiceTest {
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             fakeRepository,
             CacheBookService(fakeCacheBookRepository, FakeTimeProvider()),
-            FirebaseBookService(FakeBookRepository(), FakeSessionManager())
+            FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
         )
 
         val result= fakeLibrarySyncService.getTotalCntForKeyword("cache")
@@ -162,7 +161,7 @@ class LibrarySyncServiceTest {
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             fakeRepository,
             CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
-            FirebaseBookService(FakeBookRepository(), FakeSessionManager())
+            FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
         )
 
         val result= fakeLibrarySyncService.getTotalCntForKeyword("android")
