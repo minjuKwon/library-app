@@ -2,7 +2,9 @@ package com.example.library.fake.repository
 
 import com.example.library.data.QueryNormalizer.normalizeQuery
 import com.example.library.data.entity.Library
+import com.example.library.data.entity.LibraryLiked
 import com.example.library.domain.DatabaseRepository
+import com.google.firebase.firestore.ListenerRegistration
 
 class FakeBookRepository:DatabaseRepository {
 
@@ -13,6 +15,7 @@ class FakeBookRepository:DatabaseRepository {
     )
 
     private val itemList= mutableListOf<DatabaseItem>()
+    private val likeList= mutableListOf<LibraryLiked>()
 
     override suspend fun addLibraryBook(
         keyword: String,
@@ -52,6 +55,57 @@ class FakeBookRepository:DatabaseRepository {
             val isSave= itemList.any { it.query==normalizedQuery && it.page==page }
 
             Result.success(isSave)
+        }catch(e:Exception){
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun addLibraryLiked(libraryLiked: LibraryLiked): Result<Unit> {
+        return try {
+            likeList.add(libraryLiked)
+
+            Result.success(Unit)
+        }catch(e:Exception){
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun updateLibraryLiked(id: String, data: Map<String, Any>): Result<Unit> {
+        return try {
+            val index= likeList.indexOfFirst { it.likedId==id }
+            likeList[index]= likeList[index].copy(
+                isLiked = (data["isLiked"] as Boolean),
+                timestamp = (data["timestamp"] as Number).toLong()
+            )
+            Result.success(Unit)
+        }catch(e:Exception){
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getLibraryLikedList(userId: String): Result<List<LibraryLiked>> {
+        return try {
+            Result.success(likeList)
+        }catch(e:Exception){
+            Result.failure(e)
+        }
+    }
+
+    override fun getLibraryLikedCount(
+        bookId: String,
+        onUpdate: (Int) -> Unit
+    ): ListenerRegistration {
+        val count= likeList.count { it.bookId==bookId }
+        onUpdate(count)
+
+        return ListenerRegistration { }
+    }
+
+    override suspend fun hasLibraryLiked(id: String): Result<Boolean> {
+        return try {
+            val hasLiked= likeList.any { it.likedId == id }
+
+            Result.success(hasLiked)
         }catch(e:Exception){
             Result.failure(e)
         }
