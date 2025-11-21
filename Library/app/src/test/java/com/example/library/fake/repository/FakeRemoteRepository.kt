@@ -13,13 +13,6 @@ class FakeNetworkBookRepository : RemoteRepository {
     }
 }
 
-class FakeBookmarkedBookRepository: RemoteRepository {
-    override suspend fun searchVolume(query: String, limit: Int, offset: Int): Result<Item> {
-        val item= FakeDataSource.itemBookmarked.toItem()
-        return Result.success(item)
-    }
-}
-
 class FakeExceptionBookRepository: RemoteRepository {
     override suspend fun searchVolume(query: String, limit: Int, offset: Int): Result<Item> {
         val exception= IOException("fake exception repository")
