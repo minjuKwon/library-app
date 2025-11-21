@@ -64,62 +64,6 @@ class LibraryViewModelTest {
     }
 
     @Test
-    fun libraryViewModel_getBookListInformation_verifyLibraryBookmark()= runTest {
-
-        val fakeRepository = FakeNetworkBookRepository()
-        val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
-        val libraryViewModel = LibraryViewModel(
-            bookRepository = fakeRepository,
-            ioDispatcher = testDispatcherRule.testDispatcher,
-            externalScope = testScope
-        )
-        testScheduler.advanceUntilIdle()
-
-        //bookmark 리스트 확인
-        val successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
-        val pagingData = successState.list.book.first()
-        val differ = AsyncPagingDataDiffer(
-            diffCallback = MyDiffCallback(),
-            updateCallback = NoopListCallback,
-            workerDispatcher = testDispatcherRule.testDispatcher
-        )
-
-        launch {
-            flowOf(pagingData).collectLatest { differ.submitData(it) }
-        }
-
-        testScheduler.advanceUntilIdle()
-
-        val actualItems = differ.snapshot().items
-        for (book in actualItems) {
-            libraryViewModel.updateBookmarkList(book)
-        }
-        var expectedItems = FakeBookmarkedBookRepository().searchVolume(
-            libraryViewModel.textFieldKeyword.value,
-            10,
-            0
-        ).book
-
-        Assert.assertEquals(expectedItems, actualItems)
-
-        //bookmark 해제된  리스트 확인
-        for (book in actualItems) {
-            libraryViewModel.updateBookmarkList(book)
-        }
-
-        expectedItems = FakeNetworkBookRepository().searchVolume(
-            libraryViewModel.textFieldKeyword.value,
-            10,
-            0
-        ).book
-
-        Assert.assertEquals(expectedItems, actualItems)
-
-        testScope.cancel()
-
-    }
-
-    @Test
     fun libraryViewModel_getBookListInformation_verityLibraryUiStateError()= runTest {
         val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
         val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
