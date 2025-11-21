@@ -180,17 +180,19 @@ class LibraryViewModel @Inject constructor(
         listeners.values.forEach { it.remove() }
         listeners.clear()
 
-        val state= libraryUiState as LibraryUiState.Success
+        if(libraryUiState is LibraryUiState.Success){
+            val state= libraryUiState as LibraryUiState.Success
+            state.list.forEach { item ->
+                val bookId = item.library.book.id
 
-        state.list.forEach { item ->
-            val bookId = item.library.book.id
-
-            val registration = firebaseBookService.getLibraryLikedCount(
-                bookId = bookId,
-                onUpdate = { updateCount(bookId, it) }
-            )
-
-            listeners[bookId] = registration
+                val registration = firebaseBookService.getLibraryLikedCount(
+                    bookId = bookId,
+                    onUpdate = { updateCount(bookId, it) }
+                )
+                listeners[bookId] = registration
+            }
+        }else{
+            libraryUiState= LibraryUiState.Error
         }
     }
 
