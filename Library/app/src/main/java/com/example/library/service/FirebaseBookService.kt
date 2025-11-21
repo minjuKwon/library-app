@@ -30,7 +30,7 @@ class FirebaseBookService@Inject constructor(
         val now= timeProvider.now()
 
         val isExist= databaseRepository.hasLibraryLiked(id)
-        if(isExist.isFailure) throw isExist.exceptionOrNull()?:Exception()
+        if(isExist.isFailure) throw isExist.exceptionOrNull()?:CheckLibraryLikeFailedException()
 
         val isExistResult= isExist.getOrNull()
         isExistResult?.let {
@@ -57,3 +57,5 @@ class FirebaseBookService@Inject constructor(
     }
 
 }
+
+class CheckLibraryLikeFailedException:Exception("도서 좋아요 저장 확인 실패")
