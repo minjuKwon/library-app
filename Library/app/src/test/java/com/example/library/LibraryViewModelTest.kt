@@ -6,6 +6,7 @@ import com.example.library.fake.repository.FakeExceptionBookRepository
 import com.example.library.fake.repository.FakeNetworkBookRepository
 import com.example.library.fake.FakeSessionManager
 import com.example.library.fake.FakeTimeProvider
+import com.example.library.fake.repository.FakeExceptionNetworkBookRepository
 import com.example.library.rules.TestDispatcherRule
 import com.example.library.service.CacheBookService
 import com.example.library.service.DefaultLibrarySyncService
@@ -124,7 +125,7 @@ class LibraryViewModelTest {
         val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
 
         val fakeLibrarySyncService= DefaultLibrarySyncService(
-            FakeExceptionBookRepository(),
+            FakeExceptionNetworkBookRepository(),
             CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
             fakeFirebaseBookService
         )

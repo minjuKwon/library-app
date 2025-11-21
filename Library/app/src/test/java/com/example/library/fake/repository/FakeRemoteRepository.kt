@@ -13,7 +13,7 @@ class FakeNetworkBookRepository : RemoteRepository {
     }
 }
 
-class FakeExceptionBookRepository: RemoteRepository {
+class FakeExceptionNetworkBookRepository: RemoteRepository {
     override suspend fun searchVolume(query: String, limit: Int, offset: Int): Result<Item> {
         val exception= IOException("fake exception repository")
         return Result.failure(exception)

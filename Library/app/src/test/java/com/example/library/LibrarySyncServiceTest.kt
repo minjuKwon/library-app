@@ -9,7 +9,7 @@ import com.example.library.fake.FakeDataSource
 import com.example.library.fake.FakeTimeProvider
 import com.example.library.fake.repository.FakeBookRepository
 import com.example.library.fake.repository.FakeCacheBookRepository
-import com.example.library.fake.repository.FakeExceptionBookRepository
+import com.example.library.fake.repository.FakeExceptionNetworkBookRepository
 import com.example.library.fake.repository.FakeNetworkBookRepository
 import com.example.library.fake.service.FakeCheckDatabaseService
 import com.example.library.fake.service.FakeGetDatabaseService
@@ -128,7 +128,7 @@ class LibrarySyncServiceTest {
     @Test
     fun librarySyncService_getSearchBooks_verifyToGetRemoteDataFailure()= runTest{
         val fakeLibrarySyncService= DefaultLibrarySyncService(
-            FakeExceptionBookRepository(),
+            FakeExceptionNetworkBookRepository(),
             CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
             FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
         )
