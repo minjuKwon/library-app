@@ -122,7 +122,11 @@ fun LibraryUserScreen(
                             Modifier.testTag(stringResource(R.string.test_unregister))
                         )
                     }else{
-                        UserTextButton(i,onClick)
+                        UserTextButton(
+                            i,
+                            onClick,
+                            Modifier.testTag(stringResource(i))
+                        )
                         Divider()
                     }
                 }

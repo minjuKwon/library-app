@@ -197,6 +197,7 @@ fun ItemLibraryDescription(
                 else {
                     Icons.Default.FavoriteBorder},
                 contentDescription = stringResource(R.string.liked),
+                modifier=Modifier.testTag("${library.book.bookInfo.title}${libraryUiModel.isLiked}")
             )
         }
 
@@ -222,7 +223,10 @@ private fun UserCheckLikedDialog(
 ){
     AlertDialog(
         text = {
-            Text(stringResource(R.string.liked_dialog_content))
+            Text(
+                text=stringResource(R.string.liked_dialog_content),
+                modifier=Modifier.testTag(stringResource(R.string.test_check_like_dialog))
+            )
         },
         onDismissRequest = {
             onDismissRequest()

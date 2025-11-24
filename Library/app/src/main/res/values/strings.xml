@@ -124,6 +124,7 @@
 
     <string name="test_itemCount">total book count </string>
     <string name="test_list">list</string>
+    <string name="test_check_like_dialog">CheckLikedDialog</string>
     <string name="test_back">back</string>
     <string name="test_pageNum">page</string>
     <string name="test_noMember">no member</string>

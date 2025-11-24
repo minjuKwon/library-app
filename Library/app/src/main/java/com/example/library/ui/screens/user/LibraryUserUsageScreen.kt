@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -158,7 +159,8 @@ fun LikedListScreen(
                     top= dimensionResource(R.dimen.padding_lg),
                     start = dimensionResource(R.dimen.padding_xxl),
                     end = dimensionResource(R.dimen.padding_xxl)
-            )
+                )
+                .testTag(stringResource(R.string.test_list))
         ){
             items(list.size){
                 LibraryListItem(
