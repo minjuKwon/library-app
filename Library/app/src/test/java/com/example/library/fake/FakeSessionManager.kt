@@ -7,7 +7,10 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 
 class FakeSessionManager: SessionManager {
-    override val userPreferences: Flow<User> = flowOf(User())
+    companion object{
+        const val UID= "user1"
+    }
+    override val userPreferences: Flow<User> = flowOf(User(uid=UID))
     override val logInPreferences: Flow<Boolean> = emptyFlow()
 
     override suspend fun saveUserData(user: User) {
