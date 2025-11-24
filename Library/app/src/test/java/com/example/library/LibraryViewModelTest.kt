@@ -2,7 +2,6 @@ package com.example.library
 
 import com.example.library.fake.repository.FakeBookRepository
 import com.example.library.fake.repository.FakeCacheBookRepository
-import com.example.library.fake.repository.FakeExceptionBookRepository
 import com.example.library.fake.repository.FakeNetworkBookRepository
 import com.example.library.fake.FakeSessionManager
 import com.example.library.fake.FakeTimeProvider
@@ -29,7 +28,23 @@ class LibraryViewModelTest {
     fun libraryViewModel_getBookListInformation_verifyLibraryUiStateSuccess()= runTest {
         val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
         val fakeRepository = FakeNetworkBookRepository()
-        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
+
+        val fakeBookRepository= FakeBookRepository()
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+
+        val expectedItems = fakeRepository.searchVolume(
+            "query",
+            10,
+            0
+        ).getOrNull()
+
+        expectedItems?.book?.forEachIndexed { index, book ->
+            if(index%2==0){
+                for(i in 1..index){
+                    fakeFirebaseBookService.updateLibraryLiked("user${i}", book.id, true)
+                }
+            }
+        }
 
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             fakeRepository,
@@ -46,21 +61,24 @@ class LibraryViewModelTest {
         Assert.assertEquals(LibraryUiState.Loading, libraryViewModel.libraryUiState)
 
         testScheduler.advanceUntilIdle()
-        testScheduler.advanceUntilIdle()
 
         val successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
         val actualItems = successState.list.map { it.library.book }
-        val expectedItems = fakeRepository.searchVolume(
-            libraryViewModel.textFieldKeyword.value,
-            10,
-            0
-        ).getOrNull()
 
         Assert.assertEquals(expectedItems?.book, actualItems)
+
+        successState.list.forEachIndexed { index, libraryUiModel ->
+            if(index%2==0){
+                Assert.assertEquals(index, libraryUiModel.count)
+                if(index!=0) Assert.assertTrue(libraryUiModel.isLiked)
+            } else{
+                Assert.assertFalse(libraryUiModel.isLiked)
+            }
+        }
+
         Assert.assertEquals(expectedItems?.totalCount, successState.totalCount)
 
         testScope.cancel()
-
     }
 
     @Test
