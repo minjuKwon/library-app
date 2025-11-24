@@ -4,6 +4,7 @@ import com.example.library.fake.repository.FakeBookRepository
 import com.example.library.fake.repository.FakeCacheBookRepository
 import com.example.library.fake.repository.FakeNetworkBookRepository
 import com.example.library.fake.FakeSessionManager
+import com.example.library.fake.FakeSessionManager.Companion.UID
 import com.example.library.fake.FakeTimeProvider
 import com.example.library.fake.repository.FakeExceptionNetworkBookRepository
 import com.example.library.rules.TestDispatcherRule
@@ -106,6 +107,133 @@ class LibraryViewModelTest {
         Assert.assertTrue(viewModel.libraryUiState is LibraryUiState.Error)
 
         testScope.cancel()
+    }
+
+    @Test
+    fun libraryViewModel_toggleLike_verifyCorrectValue()= runTest {
+        val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
+        val fakeRepository = FakeNetworkBookRepository()
+
+        val fakeBookRepository= FakeBookRepository()
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+
+        val fakeLibrarySyncService= DefaultLibrarySyncService(
+            fakeRepository,
+            CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
+            fakeFirebaseBookService
+        )
+        val libraryViewModel = LibraryViewModel(
+            librarySyncService = fakeLibrarySyncService,
+            firebaseBookService = fakeFirebaseBookService,
+            defaultSessionManager = FakeSessionManager(),
+            externalScope = testScope
+        )
+
+        testScheduler.advanceUntilIdle()
+
+        var successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+
+        successState.list.forEachIndexed { index, libraryUiModel ->
+            if(index%2==1){
+                libraryViewModel.toggleLike(libraryUiModel.library.book.id, true)
+                testScheduler.advanceUntilIdle()
+            }
+        }
+
+        successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+
+        successState.list.forEachIndexed { index, libraryUiModel ->
+            if(index%2==1){
+                Assert.assertTrue(libraryUiModel.isLiked)
+            } else{
+                Assert.assertFalse(libraryUiModel.isLiked)
+            }
+        }
+
+    }
+
+    @Test
+    fun libraryViewModel_getLiked_verifyCorrectValue()= runTest {
+        val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
+        val fakeRepository = FakeNetworkBookRepository()
+        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
+
+        val fakeLibrarySyncService= DefaultLibrarySyncService(
+            fakeRepository,
+            CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
+            fakeFirebaseBookService
+        )
+        val libraryViewModel = LibraryViewModel(
+            librarySyncService = fakeLibrarySyncService,
+            firebaseBookService = fakeFirebaseBookService,
+            defaultSessionManager = FakeSessionManager(),
+            externalScope = testScope
+        )
+
+        testScheduler.advanceUntilIdle()
+
+        var successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+
+        successState.list.forEachIndexed { index, libraryUiModel ->
+            if(index%2==0){
+                fakeFirebaseBookService.updateLibraryLiked(UID, libraryUiModel.library.book.id, true)
+            }
+        }
+
+        libraryViewModel.getLiked()
+        testScheduler.advanceUntilIdle()
+
+        successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+
+        successState.list.forEachIndexed { index, libraryUiModel ->
+            if(index%2==0){
+                Assert.assertTrue(libraryUiModel.isLiked)
+            }else{
+                Assert.assertFalse(libraryUiModel.isLiked)
+            }
+        }
+
+    }
+
+    @Test
+    fun libraryViewModel_resetLiked_verifyCorrectValue()= runTest {
+        val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
+        val fakeRepository = FakeNetworkBookRepository()
+
+        val fakeBookRepository= FakeBookRepository()
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+
+        val fakeLibrarySyncService= DefaultLibrarySyncService(
+            fakeRepository,
+            CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
+            fakeFirebaseBookService
+        )
+        val libraryViewModel = LibraryViewModel(
+            librarySyncService = fakeLibrarySyncService,
+            firebaseBookService = fakeFirebaseBookService,
+            defaultSessionManager = FakeSessionManager(),
+            externalScope = testScope
+        )
+
+        testScheduler.advanceUntilIdle()
+
+        var successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+
+        successState.list.forEachIndexed { index, libraryUiModel ->
+            if(index%2==1){
+                fakeFirebaseBookService.updateLibraryLiked(UID, libraryUiModel.library.book.id, true)
+            }
+        }
+
+        libraryViewModel.resetLiked()
+        testScheduler.advanceUntilIdle()
+
+        successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+
+        successState.list.forEach { libraryUiModel ->
+            Assert.assertFalse(libraryUiModel.isLiked)
+        }
+
     }
 
 }
