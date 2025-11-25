@@ -25,8 +25,7 @@ fun VolumeInfoDto.toBookInfo() = BookInfo(
     publisher = this.publisher,
     publishedDate= this.publishedDate,
     description = this.description,
-    img = this.img?.toBookImage(),
-    isBookmarked = this.isBookmarked
+    img = this.img?.toBookImage()
 )
 
 fun VolumeImageDto.toBookImage() = BookImage(

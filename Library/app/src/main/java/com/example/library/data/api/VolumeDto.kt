@@ -26,8 +26,7 @@ data class VolumeInfoDto(
     val publishedDate:String?=null,
     val description:String?=null,
     @SerialName(value="imageLinks")
-    val img: VolumeImageDto?=null,
-    var isBookmarked:Boolean=false
+    val img: VolumeImageDto?=null
 )
 
 @Serializable

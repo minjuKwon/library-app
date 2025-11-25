@@ -10,15 +10,15 @@ object FakeDataSource {
         listOf(
         VolumeDto("1",
             VolumeInfoDto("android_1",listOf("1_1","1_2"),"publisher1",
-                "1111","description1", VolumeImageDto(),false)
+                "1111","description1", VolumeImageDto())
         ),
         VolumeDto("2",
             VolumeInfoDto("android_2",listOf("2_1","2_2"),"publisher2",
-                "0202","description2", VolumeImageDto(),false)
+                "0202","description2", VolumeImageDto())
         ),
         VolumeDto("3",
             VolumeInfoDto("android_3",listOf("3_1","3_2"),"publisher3",
-                "0303","description3", VolumeImageDto(),false)
+                "0303","description3", VolumeImageDto())
         ),
     ),0)
 }
