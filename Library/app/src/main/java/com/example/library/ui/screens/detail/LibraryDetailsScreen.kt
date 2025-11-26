@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.filled.ThumbUpOffAlt
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -121,6 +122,13 @@ private fun DetailsScreenContent(library: Library){
         }
 
         DetailsScreenLibraryInformation(library)
+
+        Button(
+            onClick = {},
+            modifier=Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.borrow_book))
+        }
 
         DetailsScreenComment()
     }
@@ -235,7 +243,7 @@ private fun DetailsScreenLibraryInformation(
     Card(
         modifier=Modifier
             .fillMaxWidth()
-            .padding(top= dimensionResource(R.dimen.padding_md))
+            .padding(vertical = dimensionResource(R.dimen.padding_md))
     ){
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,

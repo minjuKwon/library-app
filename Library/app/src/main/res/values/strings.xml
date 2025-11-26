@@ -19,6 +19,7 @@
     <string name="call_number">청구기호</string>
     <string name="location">위치</string>
     <string name="book_status">대출 상태</string>
+    <string name="borrow_book">대출하기</string>
     <string name="most_relatable">공감순</string>
     <string name="newest">최신순</string>
     <string name="comment_upload">댓글 달기</string>
