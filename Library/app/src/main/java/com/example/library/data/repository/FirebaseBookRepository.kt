@@ -1,11 +1,13 @@
 package com.example.library.data.repository
 
 import com.example.library.data.FireStoreCollections.LIBRARY_COLLECTION
+import com.example.library.data.FireStoreCollections.LIBRARY_HISTORY
 import com.example.library.data.FireStoreCollections.LIBRARY_LIKED
 import com.example.library.data.FireStoreCollections.PAGE_NUMBER_COLLECTION
 import com.example.library.data.FireStoreCollections.SEARCH_RESULTS_COLLECTION
 import com.example.library.data.QueryNormalizer.normalizeQuery
 import com.example.library.data.entity.Library
+import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.LibraryLiked
 import com.example.library.data.firebase.LibraryFirebaseDto
 import com.example.library.data.mapper.toFirebaseDto
@@ -38,6 +40,33 @@ class FirebaseBookRepository@Inject constructor(
             }
 
             batch.commit().await()
+
+            return Result.success(Unit)
+        }catch (e: FirebaseFirestoreException){
+            return Result.failure(FirebaseException(e.code.name))
+        }catch (e:Exception){
+            return Result.failure(e)
+        }
+    }
+
+    override suspend fun updateLibraryBook(
+        libraryId:String,
+        keyword: String,
+        page: String,
+        data: Map<String, Any>
+    ): Result<Unit> {
+        try{
+            val normalizedQuery= normalizeQuery(keyword)
+
+            fireStore.collection(SEARCH_RESULTS_COLLECTION)
+                .document(normalizedQuery)
+                .collection(PAGE_NUMBER_COLLECTION)
+                .document(page)
+                .collection(LIBRARY_COLLECTION)
+                .document(libraryId)
+                .update(data)
+                .await()
+            Result.success(Unit)
 
             return Result.success(Unit)
         }catch (e: FirebaseFirestoreException){
@@ -170,6 +199,21 @@ class FirebaseBookRepository@Inject constructor(
             val isExists= snapshot.exists()
 
             return Result.success(isExists)
+        }catch (e: FirebaseFirestoreException){
+            return Result.failure(FirebaseException(e.code.name))
+        }catch (e:Exception){
+            return Result.failure(e)
+        }
+    }
+
+    override suspend fun addLoanHistory(libraryHistory: LibraryHistory): Result<Unit> {
+        try{
+            fireStore.collection(LIBRARY_HISTORY)
+                .document(libraryHistory.loanHistoryId)
+                .set(libraryHistory)
+                .await()
+
+            return Result.success(Unit)
         }catch (e: FirebaseFirestoreException){
             return Result.failure(FirebaseException(e.code.name))
         }catch (e:Exception){
