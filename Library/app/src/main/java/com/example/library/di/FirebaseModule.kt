@@ -1,11 +1,13 @@
 package com.example.library.di
 
 import com.example.library.core.TimeProvider
+import com.example.library.data.DefaultLoanDateCalculator
 import com.example.library.data.repository.FirebaseBookRepository
 import com.example.library.domain.SessionManager
 import com.example.library.data.repository.FirebaseUserRepository
 import com.example.library.domain.DatabaseRepository
 import com.example.library.domain.DatabaseService
+import com.example.library.domain.LoanDateCalculator
 import com.example.library.domain.UserRepository
 import com.example.library.domain.UserService
 import com.example.library.service.FirebaseBookService
@@ -62,11 +64,18 @@ object FirebaseModule {
 
     @Provides
     @Singleton
+    fun provideLoanDateCalculator():LoanDateCalculator{
+        return DefaultLoanDateCalculator()
+    }
+
+    @Provides
+    @Singleton
     fun provideFirebaseBookService(
         databaseRepository: DatabaseRepository,
-        timeProvider: TimeProvider
+        timeProvider: TimeProvider,
+        loanDateCalculator: LoanDateCalculator
     ): DatabaseService {
-        return FirebaseBookService(databaseRepository, timeProvider)
+        return FirebaseBookService(databaseRepository, timeProvider, loanDateCalculator)
     }
 
 }
