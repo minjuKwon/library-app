@@ -6,4 +6,5 @@ object FireStoreCollections {
     const val PAGE_NUMBER_COLLECTION = "page_number"
     const val LIBRARY_COLLECTION= "library"
     const val LIBRARY_LIKED="library_liked"
+    const val LIBRARY_HISTORY="library_history"
 }
