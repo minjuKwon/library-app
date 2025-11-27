@@ -14,4 +14,8 @@ object FireStoreField{
     const val USER_ID="userId"
     const val BOOK_ID="bookId"
     const val IS_LIKED="isLiked"
+    const val TIMESTAMP="timestamp"
+    const val STATUS_TYPE="statusType"
+    const val BORROWED_AT="borrowedAt"
+    const val DUE_DATE="dueDate"
 }
