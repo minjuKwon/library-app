@@ -5,6 +5,10 @@ import com.example.library.data.FireStoreCollections.LIBRARY_HISTORY
 import com.example.library.data.FireStoreCollections.LIBRARY_LIKED
 import com.example.library.data.FireStoreCollections.PAGE_NUMBER_COLLECTION
 import com.example.library.data.FireStoreCollections.SEARCH_RESULTS_COLLECTION
+import com.example.library.data.FireStoreField.BOOK_ID
+import com.example.library.data.FireStoreField.IS_LIKED
+import com.example.library.data.FireStoreField.OFFSET
+import com.example.library.data.FireStoreField.USER_ID
 import com.example.library.data.QueryNormalizer.normalizeQuery
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryHistory
@@ -85,7 +89,7 @@ class FirebaseBookRepository@Inject constructor(
                 .collection(PAGE_NUMBER_COLLECTION)
                 .document(page)
                 .collection(LIBRARY_COLLECTION)
-                .orderBy("offset")
+                .orderBy(OFFSET)
                 .get()
                 .await()
 
@@ -155,7 +159,7 @@ class FirebaseBookRepository@Inject constructor(
     override suspend fun getLibraryLikedList(userId: String): Result<List<LibraryLiked>> {
         try{
             val snapshot= fireStore.collection(LIBRARY_LIKED)
-                .whereEqualTo("userId", userId)
+                .whereEqualTo(USER_ID, userId)
                 .get()
                 .await()
 
@@ -176,8 +180,8 @@ class FirebaseBookRepository@Inject constructor(
         onUpdate: (Int) -> Unit
     ): ListenerRegistration {
         val query = fireStore.collection(LIBRARY_LIKED)
-            .whereEqualTo("bookId",bookId)
-            .whereEqualTo("isLiked",true)
+            .whereEqualTo(BOOK_ID,bookId)
+            .whereEqualTo(IS_LIKED,true)
 
         return query.addSnapshotListener { snapshot, error ->
             if (error != null) {
