@@ -8,3 +8,10 @@ object FireStoreCollections {
     const val LIBRARY_LIKED="library_liked"
     const val LIBRARY_HISTORY="library_history"
 }
+
+object FireStoreField{
+    const val OFFSET="offset"
+    const val USER_ID="userId"
+    const val BOOK_ID="bookId"
+    const val IS_LIKED="isLiked"
+}
