@@ -11,4 +11,11 @@ interface DatabaseService {
     suspend fun updateLibraryLiked(userId:String, bookId:String, isLiked:Boolean):Result<List<LibraryLiked>>
     suspend fun getLibraryLikedList(userId:String):Result<List<LibraryLiked>>
     fun getLibraryLikedCount(bookId: String, onUpdate: (Int) -> Unit): ListenerRegistration
+    suspend fun saveLoanHistory(
+        userId:String,
+        keyword:String,
+        page: String,
+        libraryId:String,
+        bookId:String
+    ):Result<Unit>
 }
