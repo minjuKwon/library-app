@@ -1,5 +1,6 @@
 package com.example.library.data.room
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -16,6 +17,7 @@ data class LibraryEntity(
     val statusType: String,
     val userEmail: String?,
     val borrowedAt: Long?,
+    @ColumnInfo(defaultValue = "null")
     val dueDate: Long?,
     val reservedAt: Long?,
     val callNumber:String,
