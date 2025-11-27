@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c44aef88c10606da84dc84165af3c064",
+    "identityHash": "5eaa688b469dd09dd6cd8a91ab9b0849",
     "entities": [
       {
         "tableName": "library",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`libraryId` TEXT NOT NULL, `bookId` TEXT NOT NULL, `statusType` TEXT NOT NULL, `userEmail` TEXT, `borrowedAt` INTEGER, `reservedAt` INTEGER, `callNumber` TEXT NOT NULL, `location` TEXT NOT NULL, PRIMARY KEY(`libraryId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`libraryId` TEXT NOT NULL, `bookId` TEXT NOT NULL, `statusType` TEXT NOT NULL, `userEmail` TEXT, `borrowedAt` INTEGER, `dueDate` INTEGER, `reservedAt` INTEGER, `callNumber` TEXT NOT NULL, `location` TEXT NOT NULL, PRIMARY KEY(`libraryId`))",
         "fields": [
           {
             "fieldPath": "libraryId",
@@ -35,6 +35,12 @@
           {
             "fieldPath": "borrowedAt",
             "columnName": "borrowedAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dueDate",
+            "columnName": "dueDate",
             "affinity": "INTEGER",
             "notNull": false
           },
@@ -329,7 +335,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c44aef88c10606da84dc84165af3c064')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5eaa688b469dd09dd6cd8a91ab9b0849')"
     ]
   }
 }

@@ -51,7 +51,8 @@ fun toBookStatus(libraryEntity: LibraryEntity) = when(libraryEntity.statusType){
     "Available" -> BookStatus.Available
     "Borrowed" -> BookStatus.Borrowed(
         libraryEntity.userEmail!!,
-        Instant.ofEpochMilli(libraryEntity.borrowedAt!!)
+        Instant.ofEpochMilli(libraryEntity.borrowedAt!!),
+        Instant.ofEpochMilli(libraryEntity.dueDate!!)
     )
     "Reserved" -> BookStatus.Reserved(
         libraryEntity.userEmail!!,
@@ -81,6 +82,7 @@ fun Library.toLibraryEntity() = LibraryEntity(
     statusType= this.bookStatus.toStringType(),
     userEmail= this.bookStatus.toStringEmail(),
     borrowedAt= this.bookStatus.toLongBorrowedAt(),
+    dueDate = this.bookStatus.toLongDueDate(),
     reservedAt= this.bookStatus.toLongReservedAt(),
     callNumber= this.callNumber,
     location = this.location
@@ -101,6 +103,12 @@ fun BookStatus.toStringEmail()  = when(this) {
 fun BookStatus.toLongBorrowedAt()  = when(this) {
     is BookStatus.Available -> null
     is BookStatus.Borrowed -> this.borrowedAt.toEpochMilli()
+    is BookStatus.Reserved -> null
+}
+
+fun BookStatus.toLongDueDate()  = when(this) {
+    is BookStatus.Available -> null
+    is BookStatus.Borrowed -> this.dueDate.toEpochMilli()
     is BookStatus.Reserved -> null
 }
 

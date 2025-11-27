@@ -13,6 +13,6 @@ data class Library(
 
 sealed class BookStatus {
     object Available: BookStatus()
-    data class Borrowed(val userEmail:String, val borrowedAt: Instant): BookStatus()
+    data class Borrowed(val userEmail:String, val borrowedAt: Instant, val dueDate:Instant): BookStatus()
     data class Reserved(val userEmail:String, val reservedAt: Instant): BookStatus()
 }

@@ -9,6 +9,7 @@ data class LibraryFirebaseDto(
     val statusType: String="",
     val userEmail: String? ="",
     val borrowedAt: Long? =0L,
+    val dueDate: Long? =0L,
     val reservedAt: Long? =0L,
     val callNumber:String="",
     val location:String="",

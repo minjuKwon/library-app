@@ -16,6 +16,7 @@ data class LibraryEntity(
     val statusType: String,
     val userEmail: String?,
     val borrowedAt: Long?,
+    val dueDate: Long?,
     val reservedAt: Long?,
     val callNumber:String,
     val location:String

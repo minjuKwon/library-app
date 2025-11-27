@@ -30,7 +30,8 @@ fun toBookStatus(libraryFirebaseDto: LibraryFirebaseDto) = when(libraryFirebaseD
     "Available" -> BookStatus.Available
     "Borrowed" -> BookStatus.Borrowed(
         libraryFirebaseDto.userEmail!!,
-        Instant.ofEpochMilli(libraryFirebaseDto.borrowedAt!!)
+        Instant.ofEpochMilli(libraryFirebaseDto.borrowedAt!!),
+        Instant.ofEpochMilli(libraryFirebaseDto.dueDate!!)
     )
     "Reserved" -> BookStatus.Reserved(
         libraryFirebaseDto.userEmail!!,
