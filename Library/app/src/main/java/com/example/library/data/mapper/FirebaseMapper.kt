@@ -1,6 +1,7 @@
 package com.example.library.data.mapper
 
 import com.example.library.data.entity.BookStatus
+import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.Library
 import com.example.library.data.firebase.LibraryFirebaseDto
 import java.time.Instant
@@ -27,13 +28,13 @@ fun LibraryFirebaseDto.toLibrary(): Library= Library(
 )
 
 fun toBookStatus(libraryFirebaseDto: LibraryFirebaseDto) = when(libraryFirebaseDto.statusType){
-    "Available" -> BookStatus.Available
-    "Borrowed" -> BookStatus.Borrowed(
+    BookStatusType.AVAILABLE.name -> BookStatus.Available
+    BookStatusType.BORROWED.name -> BookStatus.Borrowed(
         libraryFirebaseDto.userEmail!!,
         Instant.ofEpochMilli(libraryFirebaseDto.borrowedAt!!),
         Instant.ofEpochMilli(libraryFirebaseDto.dueDate!!)
     )
-    "Reserved" -> BookStatus.Reserved(
+    BookStatusType.RESERVED.name -> BookStatus.Reserved(
         libraryFirebaseDto.userEmail!!,
         Instant.ofEpochMilli(libraryFirebaseDto.reservedAt!!)
     )

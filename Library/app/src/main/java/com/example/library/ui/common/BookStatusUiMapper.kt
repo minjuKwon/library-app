@@ -1,11 +1,12 @@
 package com.example.library.ui.common
 
 import com.example.library.data.entity.BookStatus
+import com.example.library.data.entity.BookStatusType
 
 object BookStatusUiMapper {
     fun BookStatus.toStringName() = when(this){
-        is BookStatus.Available -> "대출 가능"
-        is BookStatus.Borrowed -> "대출 불가능"
-        is BookStatus.Reserved -> "예약 중"
+        is BookStatus.Available -> BookStatusType.AVAILABLE.ko
+        is BookStatus.Borrowed -> BookStatusType.BORROWED.ko
+        is BookStatus.Reserved -> BookStatusType.RESERVED.ko
     }
 }

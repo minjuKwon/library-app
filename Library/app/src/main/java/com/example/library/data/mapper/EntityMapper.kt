@@ -4,6 +4,7 @@ import com.example.library.data.entity.Book
 import com.example.library.data.entity.BookImage
 import com.example.library.data.entity.BookInfo
 import com.example.library.data.entity.BookStatus
+import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.Library
 import com.example.library.data.room.BookEntity
 import com.example.library.data.room.BookImageEntity
@@ -89,9 +90,9 @@ fun Library.toLibraryEntity() = LibraryEntity(
 )
 
 fun BookStatus.toStringType()  = when(this) {
-    is BookStatus.Available -> "Available"
-    is BookStatus.Borrowed -> "Borrowed"
-    is BookStatus.Reserved -> "Reserved"
+    is BookStatus.Available -> BookStatusType.AVAILABLE.name
+    is BookStatus.Borrowed -> BookStatusType.BORROWED.name
+    is BookStatus.Reserved -> BookStatusType.RESERVED.name
 }
 
 fun BookStatus.toStringEmail()  = when(this) {
