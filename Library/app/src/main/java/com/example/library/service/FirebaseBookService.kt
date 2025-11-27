@@ -1,16 +1,27 @@
 package com.example.library.service
 
 import com.example.library.core.TimeProvider
+import com.example.library.data.FireStoreField.BORROWED_AT
+import com.example.library.data.FireStoreField.DUE_DATE
+import com.example.library.data.FireStoreField.IS_LIKED
+import com.example.library.data.FireStoreField.STATUS_TYPE
+import com.example.library.data.FireStoreField.TIMESTAMP
+import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.Library
+import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.LibraryLiked
+import com.example.library.data.repository.FirebaseException
 import com.example.library.domain.DatabaseRepository
 import com.example.library.domain.DatabaseService
+import com.example.library.domain.LoanDateCalculator
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
 import javax.inject.Inject
 
 class FirebaseBookService@Inject constructor(
     private val databaseRepository: DatabaseRepository,
-    private val timeProvider: TimeProvider
+    private val timeProvider: TimeProvider,
+    private val loanDateCalculator: LoanDateCalculator
 ):DatabaseService {
 
     override suspend fun saveLibraryBooks(keyword: String, page: String, list: List<Library>): Result<Unit> {
@@ -37,7 +48,7 @@ class FirebaseBookService@Inject constructor(
             if(it){
                 databaseRepository.updateLibraryLiked(
                     id,
-                    mapOf("isLiked" to isLiked, "timestamp" to now)
+                    mapOf(IS_LIKED to isLiked, TIMESTAMP to now)
                 )
             }else{
                 val libraryLiked= LibraryLiked(id, userId, bookId, isLiked, now)
@@ -56,6 +67,46 @@ class FirebaseBookService@Inject constructor(
         return databaseRepository.getLibraryLikedCount(bookId, onUpdate)
     }
 
+    override suspend fun saveLoanHistory(
+        userId: String,
+        keyword: String,
+        page: String,
+        libraryId: String,
+        bookId: String
+    ): Result<Unit> {
+        return try{
+            val loanDate= timeProvider.now()
+            val dueDate= loanDateCalculator.calculateDueDate(loanDate)
+
+            val id="${userId}_${bookId}_${loanDate}"
+
+            val isSave= databaseRepository.addLoanHistory(
+                LibraryHistory(id, userId, bookId, BookStatusType.BORROWED.name, loanDate, dueDate)
+            )
+
+            if(isSave.isSuccess){
+                databaseRepository.updateLibraryBook(
+                    libraryId,
+                    keyword,
+                    page,
+                    mapOf(
+                        STATUS_TYPE to BookStatusType.BORROWED.name,
+                        BORROWED_AT to loanDate,
+                        DUE_DATE to dueDate
+                    )
+                )
+                Result.success(Unit)
+            }else{
+                Result.failure(isSave.exceptionOrNull()?:UpdateLibraryStatusFailedException())
+            }
+        }catch (e: FirebaseFirestoreException){
+            return Result.failure(FirebaseException(e.code.name))
+        }catch (e:Exception){
+            return Result.failure(e)
+        }
+    }
+
 }
 
 class CheckLibraryLikeFailedException:Exception("도서 좋아요 저장 확인 실패")
+class UpdateLibraryStatusFailedException:Exception("도서 상태 수정 실패")
