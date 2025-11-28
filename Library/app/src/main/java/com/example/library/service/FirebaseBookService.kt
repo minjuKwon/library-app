@@ -6,6 +6,7 @@ import com.example.library.data.FireStoreField.DUE_DATE
 import com.example.library.data.FireStoreField.IS_LIKED
 import com.example.library.data.FireStoreField.STATUS_TYPE
 import com.example.library.data.FireStoreField.TIMESTAMP
+import com.example.library.data.entity.BookStatus
 import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryHistory
@@ -104,6 +105,13 @@ class FirebaseBookService@Inject constructor(
         }catch (e:Exception){
             return Result.failure(e)
         }
+    }
+
+    override fun getLibraryStatus(
+        bookId: String,
+        callback: (BookStatus) -> Unit
+    ): ListenerRegistration {
+        return databaseRepository.getLibraryStatus(bookId, callback)
     }
 
 }
