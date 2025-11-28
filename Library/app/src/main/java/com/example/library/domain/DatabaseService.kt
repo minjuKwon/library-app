@@ -1,5 +1,6 @@
 package com.example.library.domain
 
+import com.example.library.data.entity.BookStatus
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryLiked
 import com.google.firebase.firestore.ListenerRegistration
@@ -18,4 +19,5 @@ interface DatabaseService {
         libraryId:String,
         bookId:String
     ):Result<Unit>
+    fun getLibraryStatus(bookId: String, callback: (BookStatus) -> Unit):ListenerRegistration
 }
