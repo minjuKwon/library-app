@@ -212,10 +212,13 @@ class FirebaseBookRepository@Inject constructor(
 
     override suspend fun addLoanHistory(libraryHistory: LibraryHistory): Result<Unit> {
         try{
-            fireStore.collection(LIBRARY_HISTORY)
-                .document(libraryHistory.loanHistoryId)
-                .set(libraryHistory)
-                .await()
+            fireStore.runTransaction { transaction ->
+                val docRef= fireStore.collection(LIBRARY_HISTORY)
+                    .document(libraryHistory.loanHistoryId)
+                transaction.set(docRef, libraryHistory)
+
+                true
+            }
 
             return Result.success(Unit)
         }catch (e: FirebaseFirestoreException){
