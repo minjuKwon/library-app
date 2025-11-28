@@ -10,10 +10,12 @@ import com.example.library.data.FireStoreField.IS_LIKED
 import com.example.library.data.FireStoreField.OFFSET
 import com.example.library.data.FireStoreField.USER_ID
 import com.example.library.data.QueryNormalizer.normalizeQuery
+import com.example.library.data.entity.BookStatus
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.LibraryLiked
 import com.example.library.data.firebase.LibraryFirebaseDto
+import com.example.library.data.mapper.toBookStatus
 import com.example.library.data.mapper.toFirebaseDto
 import com.example.library.data.mapper.toLibrary
 import com.example.library.domain.DatabaseRepository
@@ -225,6 +227,24 @@ class FirebaseBookRepository@Inject constructor(
             return Result.failure(FirebaseException(e.code.name))
         }catch (e:Exception){
             return Result.failure(e)
+        }
+    }
+
+    override fun getLibraryStatus(
+        bookId: String,
+        callback: (BookStatus) -> Unit
+    ): ListenerRegistration {
+        val query = fireStore.collection(LIBRARY_HISTORY)
+            .whereEqualTo(BOOK_ID,bookId)
+
+        return query.addSnapshotListener { snapshot, error ->
+            if (snapshot==null || error != null) {
+                return@addSnapshotListener
+            }
+
+            val data= snapshot.documents.firstOrNull()?.toObject(LibraryHistory::class.java)
+                ?:return@addSnapshotListener
+            callback(data.toBookStatus())
         }
     }
 
