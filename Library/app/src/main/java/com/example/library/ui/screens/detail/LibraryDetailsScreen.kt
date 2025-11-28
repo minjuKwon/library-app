@@ -73,7 +73,7 @@ fun LibraryDetailsScreen(
             item{
                 when(detailsScreenParams.uiState){
                     is LibraryDetailsUiState.Success->{
-                        DetailsScreenContent(detailsScreenParams.currentBook)
+                        DetailsScreenContent(detailsScreenParams)
                     }
                     is LibraryDetailsUiState.Loading->{
                         Box(
@@ -84,6 +84,15 @@ fun LibraryDetailsScreen(
                             CircularProgressIndicator()
                         }
                     }
+                    is LibraryDetailsUiState.Error->{
+                        Box(
+                            modifier=Modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ){
+                            Text(stringResource(R.string.load_data_error))
+                        }
+                    }
                 }
             }
         }
@@ -91,8 +100,10 @@ fun LibraryDetailsScreen(
 }
 
 @Composable
-private fun DetailsScreenContent(library: Library){
-    val bookInfo= library.book.bookInfo
+private fun DetailsScreenContent(
+    detailsScreenParams: DetailsScreenParams
+){
+    val bookInfo= detailsScreenParams.currentBook.book.bookInfo
     Column(
         modifier=Modifier
             .fillMaxWidth()
@@ -121,10 +132,10 @@ private fun DetailsScreenContent(library: Library){
             DetailsScreenContentDescription(it)
         }
 
-        DetailsScreenLibraryInformation(library)
+        DetailsScreenLibraryInformation(detailsScreenParams.currentBook)
 
         Button(
-            onClick = {},
+            onClick = {detailsScreenParams.loanLibrary()},
             modifier=Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.borrow_book))
@@ -267,6 +278,13 @@ private fun DetailsScreenLibraryInformation(
             ){
                 Text(text=stringResource(R.string.location))
                 Text(text=library.location)
+            }
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Text(text=stringResource(R.string.expected_return_date))
+                Text(text="2025-00-00")
             }
             Column(
                 verticalArrangement = Arrangement.Center,

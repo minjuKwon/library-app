@@ -101,8 +101,12 @@ fun LibraryApp(
         ),
         detailsScreenParams = DetailsScreenParams(
             uiState= libraryDetailsViewModel.uiState,
+            currentPage = currentPage,
             textFieldKeyword = textFieldKeyword,
-            currentBook= currentBook
+            currentBook= currentBook,
+            loanLibrary = {
+                libraryDetailsViewModel.loanLibrary(textFieldKeyword, currentPage.toString())
+            }
         ),
         resetLibraryList={libraryViewModel.getLiked()},
         resetLiked={libraryViewModel.resetLiked()},

@@ -34,6 +34,8 @@ data class ListContentParams(
 
 data class DetailsScreenParams(
     val uiState:LibraryDetailsUiState,
+    val currentPage:Int,
     val textFieldKeyword:String,
-    val currentBook: Library
+    val currentBook: Library,
+    val loanLibrary: () -> Unit
 )
