@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.library.data.entity.BookStatus
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.User
 import com.example.library.di.ApplicationScope
@@ -13,6 +14,7 @@ import com.example.library.service.FirebaseBookService
 import com.example.library.ui.screens.search.defaultLibrary
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -44,6 +46,9 @@ class LibraryDetailsViewModel @Inject constructor(
     private val _currentLibrary= mutableStateOf(defaultLibrary)
     val currentLibrary= _currentLibrary
 
+    private val _isSuccessLoan = MutableStateFlow(false)
+    val isSuccessLoan: StateFlow<Boolean> = _isSuccessLoan
+
     fun updateCurrentItem(library: Library){
         uiState=LibraryDetailsUiState.Loading
         _currentLibrary.value= library
@@ -66,7 +71,11 @@ class LibraryDetailsViewModel @Inject constructor(
                     libraryId = _currentLibrary.value.libraryId,
                     bookId = _currentLibrary.value.book.id
                 )
-                if(isSave.isSuccess)LibraryDetailsUiState.Success
+
+                if(isSave.isSuccess){
+                    _isSuccessLoan.value=true
+                    LibraryDetailsUiState.Success
+                }
                 else LibraryDetailsUiState.Error
             }catch(e: Exception){
                 LibraryDetailsUiState.Error
@@ -77,6 +86,11 @@ class LibraryDetailsViewModel @Inject constructor(
     fun updateCurrentBookStatus(bookStatus: BookStatus){
         _currentLibrary.value=_currentLibrary.value.copy(bookStatus = bookStatus)
     }
+
+    fun resetLoanFlag(){
+        _isSuccessLoan.value=false
+    }
+
     private suspend fun awaitUserId(): String {
         return userPreferences.filterNotNull().first().uid
     }
