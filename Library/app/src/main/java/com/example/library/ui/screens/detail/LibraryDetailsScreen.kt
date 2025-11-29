@@ -150,12 +150,7 @@ private fun DetailsScreenContent(
 
         DetailsScreenLibraryInformation(detailsScreenParams)
 
-        Button(
-            onClick = {detailsScreenParams.loanLibrary()},
-            modifier=Modifier.fillMaxWidth()
-        ) {
-            Text(stringResource(R.string.borrow_book))
-        }
+        BookStatusButton(detailsScreenParams)
 
         DetailsScreenComment()
     }
@@ -327,6 +322,22 @@ private fun formatDateOnly(date: Instant): String  {
         .atZone(seoulZone)
         .toLocalDate()
         .format(formatter)
+}
+
+@Composable
+private fun BookStatusButton(
+    detailsScreenParams: DetailsScreenParams
+){
+    Button(
+        onClick = {detailsScreenParams.loanLibrary()},
+        modifier=Modifier.fillMaxWidth()
+    ) {
+        when(detailsScreenParams.currentBook.bookStatus){
+            is BookStatus.Available -> Text(stringResource(R.string.borrow_book))
+            is BookStatus.Borrowed -> Text(stringResource(R.string.return_book))
+            is BookStatus.Reserved -> Text("")
+        }
+    }
 }
 
 @Composable
