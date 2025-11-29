@@ -30,6 +30,7 @@ fun LibraryFirebaseDto.toLibrary(): Library= Library(
 
 fun toBookStatus(libraryFirebaseDto: LibraryFirebaseDto) = when(libraryFirebaseDto.statusType){
     BookStatusType.AVAILABLE.name -> BookStatus.Available
+    BookStatusType.UNAVAILABLE.name -> BookStatus.UnAvailable
     BookStatusType.BORROWED.name -> BookStatus.Borrowed(
         libraryFirebaseDto.userEmail!!,
         Instant.ofEpochMilli(libraryFirebaseDto.borrowedAt!!),
@@ -45,6 +46,7 @@ fun toBookStatus(libraryFirebaseDto: LibraryFirebaseDto) = when(libraryFirebaseD
 fun LibraryHistory.toBookStatus():BookStatus {
     return when(this.status){
         BookStatusType.AVAILABLE.name -> BookStatus.Available
+        BookStatusType.UNAVAILABLE.name -> BookStatus.UnAvailable
         BookStatusType.BORROWED.name->
             BookStatus.Borrowed(this.userId,Instant.ofEpochMilli(this.loanDate), Instant.ofEpochMilli(this.dueDate))
         BookStatusType.RESERVED.name->

@@ -13,12 +13,14 @@ data class Library(
 
 sealed class BookStatus {
     object Available: BookStatus()
+    object UnAvailable: BookStatus()
     data class Borrowed(val userEmail:String, val borrowedAt: Instant, val dueDate:Instant): BookStatus()
     data class Reserved(val userEmail:String, val reservedAt: Instant): BookStatus()
 }
 
 enum class BookStatusType(val ko:String){
     AVAILABLE("대출 가능"),
+    UNAVAILABLE("대출 불가"),
     BORROWED("대출 중"),
     RESERVED("예약 중")
 }

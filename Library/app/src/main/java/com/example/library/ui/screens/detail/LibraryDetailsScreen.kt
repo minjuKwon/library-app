@@ -334,6 +334,7 @@ private fun BookStatusButton(
     ) {
         when(detailsScreenParams.currentBook.bookStatus){
             is BookStatus.Available -> Text(stringResource(R.string.borrow_book))
+            is BookStatus.UnAvailable -> Text("")
             is BookStatus.Borrowed -> Text(stringResource(R.string.return_book))
             is BookStatus.Reserved -> Text("")
         }

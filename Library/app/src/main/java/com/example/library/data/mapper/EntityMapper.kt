@@ -50,6 +50,7 @@ fun BookImageEntity.toBookImage() = BookImage(
 
 fun toBookStatus(libraryEntity: LibraryEntity) = when(libraryEntity.statusType){
     BookStatusType.AVAILABLE.name -> BookStatus.Available
+    BookStatusType.UNAVAILABLE.name -> BookStatus.UnAvailable
     BookStatusType.BORROWED.name -> BookStatus.Borrowed(
         libraryEntity.userEmail!!,
         Instant.ofEpochMilli(libraryEntity.borrowedAt!!),
@@ -91,30 +92,35 @@ fun Library.toLibraryEntity() = LibraryEntity(
 
 fun BookStatus.toStringType()  = when(this) {
     is BookStatus.Available -> BookStatusType.AVAILABLE.name
+    is BookStatus.UnAvailable -> BookStatusType.UNAVAILABLE.name
     is BookStatus.Borrowed -> BookStatusType.BORROWED.name
     is BookStatus.Reserved -> BookStatusType.RESERVED.name
 }
 
 fun BookStatus.toStringEmail()  = when(this) {
     is BookStatus.Available -> null
+    is BookStatus.UnAvailable -> null
     is BookStatus.Borrowed -> this.userEmail
     is BookStatus.Reserved -> this.userEmail
 }
 
 fun BookStatus.toLongBorrowedAt()  = when(this) {
     is BookStatus.Available -> null
+    is BookStatus.UnAvailable -> null
     is BookStatus.Borrowed -> this.borrowedAt.toEpochMilli()
     is BookStatus.Reserved -> null
 }
 
 fun BookStatus.toLongDueDate()  = when(this) {
     is BookStatus.Available -> null
+    is BookStatus.UnAvailable -> null
     is BookStatus.Borrowed -> this.dueDate.toEpochMilli()
     is BookStatus.Reserved -> null
 }
 
 fun BookStatus.toLongReservedAt()  = when(this) {
     is BookStatus.Available -> null
+    is BookStatus.UnAvailable -> null
     is BookStatus.Borrowed -> null
     is BookStatus.Reserved -> this.reservedAt.toEpochMilli()
 }
