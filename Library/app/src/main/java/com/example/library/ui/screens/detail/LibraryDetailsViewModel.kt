@@ -74,6 +74,9 @@ class LibraryDetailsViewModel @Inject constructor(
         }
     }
 
+    fun updateCurrentBookStatus(bookStatus: BookStatus){
+        _currentLibrary.value=_currentLibrary.value.copy(bookStatus = bookStatus)
+    }
     private suspend fun awaitUserId(): String {
         return userPreferences.filterNotNull().first().uid
     }
