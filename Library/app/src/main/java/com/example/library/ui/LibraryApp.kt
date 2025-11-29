@@ -104,9 +104,14 @@ fun LibraryApp(
             currentPage = currentPage,
             textFieldKeyword = textFieldKeyword,
             currentBook= currentBook,
+            isSuccessLoan = libraryDetailsViewModel.isSuccessLoan,
             loanLibrary = {
                 libraryDetailsViewModel.loanLibrary(textFieldKeyword, currentPage.toString())
-            }
+            },
+            resetLoanFlag={ libraryDetailsViewModel.resetLoanFlag() },
+            getBookStatus = { libraryViewModel.getBookStatus() },
+            getCurrentBookStatus={libraryViewModel.getCurrentBookStatus(it)},
+            updateCurrentBookStatus = {libraryDetailsViewModel.updateCurrentBookStatus(it)}
         ),
         resetLibraryList={libraryViewModel.getLiked()},
         resetLiked={libraryViewModel.resetLiked()},

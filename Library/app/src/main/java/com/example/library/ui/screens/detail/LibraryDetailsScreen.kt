@@ -29,6 +29,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -46,7 +47,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
 import com.example.library.data.entity.BookInfo
-import com.example.library.data.entity.Library
+import com.example.library.data.entity.BookStatus
 import com.example.library.ui.common.BackIconButton
 import com.example.library.ui.common.BookStatusUiMapper.toStringName
 import com.example.library.ui.common.TextRadioButton
@@ -104,6 +105,18 @@ private fun DetailsScreenContent(
     detailsScreenParams: DetailsScreenParams
 ){
     val bookInfo= detailsScreenParams.currentBook.book.bookInfo
+
+    LaunchedEffect(Unit) {
+        detailsScreenParams.isSuccessLoan.collect{ success->
+            if(success){
+                detailsScreenParams.getBookStatus()
+                val status=detailsScreenParams.getCurrentBookStatus(detailsScreenParams.currentBook.book.id)
+                status?.let { detailsScreenParams.updateCurrentBookStatus(it) }
+                detailsScreenParams.resetLoanFlag()
+            }
+        }
+    }
+
     Column(
         modifier=Modifier
             .fillMaxWidth()
@@ -132,7 +145,7 @@ private fun DetailsScreenContent(
             DetailsScreenContentDescription(it)
         }
 
-        DetailsScreenLibraryInformation(detailsScreenParams.currentBook)
+        DetailsScreenLibraryInformation(detailsScreenParams)
 
         Button(
             onClick = {detailsScreenParams.loanLibrary()},
@@ -249,8 +262,10 @@ private fun DetailsScreenContentDescription(
 
 @Composable
 private fun DetailsScreenLibraryInformation(
-    library: Library
+    detailsScreenParams: DetailsScreenParams
 ){
+    val library= detailsScreenParams.currentBook
+
     Card(
         modifier=Modifier
             .fillMaxWidth()
@@ -279,12 +294,15 @@ private fun DetailsScreenLibraryInformation(
                 Text(text=stringResource(R.string.location))
                 Text(text=library.location)
             }
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Text(text=stringResource(R.string.expected_return_date))
-                Text(text="2025-00-00")
+            if(library.bookStatus is BookStatus.Borrowed){
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    Text(text=stringResource(R.string.expected_return_date))
+                    val date= library.bookStatus.dueDate.toString()
+                    Text(text= date)
+                }
             }
             Column(
                 verticalArrangement = Arrangement.Center,
