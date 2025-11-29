@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.library.data.entity.BookStatus
 import com.example.library.data.entity.LibraryLiked
 import com.example.library.data.entity.User
 import com.example.library.data.mapper.toListUiModel
@@ -56,6 +57,7 @@ class LibraryViewModel @Inject constructor(
     private val _backPressedTime= MutableStateFlow(0L)
     private val _loadComplete = MutableStateFlow(false)
     private val likeCountListeners = mutableMapOf<String, ListenerRegistration>()
+    private var bookStatusListener:ListenerRegistration? =null
 
     init {
         getInformation()
@@ -92,6 +94,8 @@ class LibraryViewModel @Inject constructor(
                         if(likedResult!=null){
                             var uiList= list.toListUiModel()
                             uiList= updateLikedList(likedResult, uiList)
+                            _loadComplete.value = true
+
                             LibraryUiState.Success(totalItemCount,uiList)
                         }else{
                             LibraryUiState.Error
@@ -103,8 +107,77 @@ class LibraryViewModel @Inject constructor(
             }catch (e: Exception){
                 LibraryUiState.Error
             }
+        }
+    }
 
-            _loadComplete.value = true
+    fun getItem(){
+        scope.launch {
+            _loadComplete.filter { it }.first()
+            getBookStatus()
+            getLikedCount()
+        }
+    }
+
+    fun getBookStatus(){
+        bookStatusListener?.remove()
+
+        if(libraryUiState is LibraryUiState.Success){
+            val state= libraryUiState as LibraryUiState.Success
+            state.list.forEach { item ->
+                val bookId = item.library.book.id
+
+                val registration = firebaseBookService.getLibraryStatus(
+                    bookId = bookId,
+                    callback = { updateBookStatus(bookId, it) }
+                )
+
+                bookStatusListener = registration
+            }
+        }else{
+            libraryUiState= LibraryUiState.Error
+        }
+    }
+
+    private fun updateBookStatus(bookId: String, status: BookStatus) {
+        libraryUiState= updateCopiedUiState(libraryUiState){
+            val updatedList = it.list.map { item ->
+                if (item.library.book.id == bookId)
+                    item.copy(library = item.library.copy(bookStatus = status))
+                else item
+            }
+            it.copy(list = updatedList)
+        }
+    }
+
+    private fun getLikedCount(){
+        likeCountListeners.values.forEach { it.remove() }
+        likeCountListeners.clear()
+
+        if(libraryUiState is LibraryUiState.Success){
+            val state= libraryUiState as LibraryUiState.Success
+            state.list.forEach { item ->
+                val bookId = item.library.book.id
+
+                val registration = firebaseBookService.getLibraryLikedCount(
+                    bookId = bookId,
+                    onUpdate = { updateCount(bookId, it) }
+                )
+
+                likeCountListeners[bookId] = registration
+            }
+        }else{
+            libraryUiState= LibraryUiState.Error
+        }
+    }
+
+    private fun updateCount(bookId: String, count: Int) {
+        libraryUiState= updateCopiedUiState(libraryUiState){
+            val updatedList = it.list.map { item ->
+                if (item.library.book.id == bookId)
+                    item.copy(count = count)
+                else item
+            }
+            it.copy(list = updatedList)
         }
     }
 
@@ -169,41 +242,22 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    fun getItem(){
-        scope.launch {
-            _loadComplete.filter { it }.first()
-            getLikedCount()
-        }
-    }
+    fun getCurrentBookStatus(bookId:String):BookStatus?{
+        return when(libraryUiState){
+            is LibraryUiState.Success -> {
+                val state= libraryUiState as LibraryUiState.Success
+                var bookStatus:BookStatus? =null
 
-    private fun getLikedCount(){
-        likeCountListeners.values.forEach { it.remove() }
-        likeCountListeners.clear()
+                state.list.forEach { item ->
+                    if(item.library.book.id==bookId){
+                        bookStatus=item.library.bookStatus
+                        return@forEach
+                    }
+                }
 
-        if(libraryUiState is LibraryUiState.Success){
-            val state= libraryUiState as LibraryUiState.Success
-            state.list.forEach { item ->
-                val bookId = item.library.book.id
-
-                val registration = firebaseBookService.getLibraryLikedCount(
-                    bookId = bookId,
-                    onUpdate = { updateCount(bookId, it) }
-                )
-                likeCountListeners[bookId] = registration
+                return bookStatus
             }
-        }else{
-            libraryUiState= LibraryUiState.Error
-        }
-    }
-
-    private fun updateCount(bookId: String, count: Int) {
-        libraryUiState= updateCopiedUiState(libraryUiState){
-            val updatedList = it.list.map { item ->
-                if (item.library.book.id == bookId)
-                    item.copy(count = count)
-                else item
-            }
-            it.copy(list = updatedList)
+            else -> null
         }
     }
 
