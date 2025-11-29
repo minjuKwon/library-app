@@ -49,13 +49,13 @@ fun BookImageEntity.toBookImage() = BookImage(
 )
 
 fun toBookStatus(libraryEntity: LibraryEntity) = when(libraryEntity.statusType){
-    "Available" -> BookStatus.Available
-    "Borrowed" -> BookStatus.Borrowed(
+    BookStatusType.AVAILABLE.name -> BookStatus.Available
+    BookStatusType.BORROWED.name -> BookStatus.Borrowed(
         libraryEntity.userEmail!!,
         Instant.ofEpochMilli(libraryEntity.borrowedAt!!),
         Instant.ofEpochMilli(libraryEntity.dueDate!!)
     )
-    "Reserved" -> BookStatus.Reserved(
+    BookStatusType.RESERVED.name -> BookStatus.Reserved(
         libraryEntity.userEmail!!,
         Instant.ofEpochMilli(libraryEntity.reservedAt!!)
     )
