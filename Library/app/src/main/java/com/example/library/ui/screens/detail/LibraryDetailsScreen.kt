@@ -52,6 +52,9 @@ import com.example.library.ui.common.BackIconButton
 import com.example.library.ui.common.BookStatusUiMapper.toStringName
 import com.example.library.ui.common.TextRadioButton
 import com.example.library.ui.common.DetailsScreenParams
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun LibraryDetailsScreen(
@@ -300,8 +303,9 @@ private fun DetailsScreenLibraryInformation(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
                     Text(text=stringResource(R.string.expected_return_date))
-                    val date= library.bookStatus.dueDate.toString()
-                    Text(text= date)
+                    val date= library.bookStatus.dueDate
+                    val formattedDate= formatDateOnly(date)
+                    Text(text= formattedDate)
                 }
             }
             Column(
@@ -313,6 +317,16 @@ private fun DetailsScreenLibraryInformation(
             }
         }
     }
+}
+
+private fun formatDateOnly(date: Instant): String  {
+    val seoulZone = ZoneId.of("Asia/Seoul")
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+    return date
+        .atZone(seoulZone)
+        .toLocalDate()
+        .format(formatter)
 }
 
 @Composable
