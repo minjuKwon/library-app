@@ -55,7 +55,7 @@ class LibraryViewModel @Inject constructor(
 
     private val _backPressedTime= MutableStateFlow(0L)
     private val _loadComplete = MutableStateFlow(false)
-    private val listeners = mutableMapOf<String, ListenerRegistration>()
+    private val likeCountListeners = mutableMapOf<String, ListenerRegistration>()
 
     init {
         getInformation()
@@ -64,7 +64,7 @@ class LibraryViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        listeners.values.forEach { it.remove() }
+        likeCountListeners.values.forEach { it.remove() }
     }
 
     fun getInformation(
@@ -177,8 +177,8 @@ class LibraryViewModel @Inject constructor(
     }
 
     private fun getLikedCount(){
-        listeners.values.forEach { it.remove() }
-        listeners.clear()
+        likeCountListeners.values.forEach { it.remove() }
+        likeCountListeners.clear()
 
         if(libraryUiState is LibraryUiState.Success){
             val state= libraryUiState as LibraryUiState.Success
@@ -189,7 +189,7 @@ class LibraryViewModel @Inject constructor(
                     bookId = bookId,
                     onUpdate = { updateCount(bookId, it) }
                 )
-                listeners[bookId] = registration
+                likeCountListeners[bookId] = registration
             }
         }else{
             libraryUiState= LibraryUiState.Error
