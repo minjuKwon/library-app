@@ -6,6 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.library.data.entity.BookStatus
+import com.example.library.data.entity.BookStatusType
+import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.LibraryLiked
 import com.example.library.data.entity.User
 import com.example.library.data.mapper.toListUiModel
@@ -25,6 +27,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.Instant
 import javax.inject.Inject
 
 @HiltViewModel
@@ -120,29 +123,55 @@ class LibraryViewModel @Inject constructor(
 
     fun getBookStatus(){
         bookStatusListener?.remove()
+        scope.launch {
+            val uid= awaitUserId()
 
-        if(libraryUiState is LibraryUiState.Success){
-            val state= libraryUiState as LibraryUiState.Success
-            state.list.forEach { item ->
-                val bookId = item.library.book.id
+            if(libraryUiState is LibraryUiState.Success){
+                val state= libraryUiState as LibraryUiState.Success
+                state.list.forEach { item ->
+                    val bookId = item.library.book.id
 
-                val registration = firebaseBookService.getLibraryStatus(
-                    bookId = bookId,
-                    callback = { updateBookStatus(bookId, it) }
-                )
+                    val registration = firebaseBookService.getLibraryStatus(
+                        bookId = bookId,
+                        callback = { updateBookStatus(uid, it) }
+                    )
 
-                bookStatusListener = registration
+                    bookStatusListener = registration
+                }
+            }else{
+                libraryUiState= LibraryUiState.Error
             }
-        }else{
-            libraryUiState= LibraryUiState.Error
         }
     }
 
-    private fun updateBookStatus(bookId: String, status: BookStatus) {
+    private fun updateBookStatus(userId:String, libraryHistory: LibraryHistory) {
         libraryUiState= updateCopiedUiState(libraryUiState){
             val updatedList = it.list.map { item ->
-                if (item.library.book.id == bookId)
-                    item.copy(library = item.library.copy(bookStatus = status))
+                if (item.library.book.id == libraryHistory.bookId){
+                    val bookStatus:BookStatus = when(libraryHistory.status){
+                        BookStatusType.AVAILABLE.name -> BookStatus.Available
+                        BookStatusType.UNAVAILABLE.name -> BookStatus.UnAvailable
+                        BookStatusType.BORROWED.name ->{
+                            if(userId == libraryHistory.userId){
+                                BookStatus.Borrowed(
+                                    userEmail = libraryHistory.userId,
+                                    borrowedAt = Instant.ofEpochMilli(libraryHistory.loanDate),
+                                    dueDate = Instant.ofEpochMilli(libraryHistory.dueDate)
+                                )
+                            } else {
+                                BookStatus.UnAvailable
+                            }
+                        }
+                        BookStatusType.RESERVED.name ->{
+                            BookStatus.Reserved(
+                                userEmail = libraryHistory.userId,
+                                reservedAt = Instant.ofEpochMilli(libraryHistory.loanDate),
+                            )
+                        }
+                        else -> BookStatus.UnAvailable
+                    }
+                    item.copy(library = item.library.copy(bookStatus = bookStatus))
+                }
                 else item
             }
             it.copy(list = updatedList)

@@ -10,12 +10,10 @@ import com.example.library.data.FireStoreField.IS_LIKED
 import com.example.library.data.FireStoreField.OFFSET
 import com.example.library.data.FireStoreField.USER_ID
 import com.example.library.data.QueryNormalizer.normalizeQuery
-import com.example.library.data.entity.BookStatus
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.LibraryLiked
 import com.example.library.data.firebase.LibraryFirebaseDto
-import com.example.library.data.mapper.toBookStatus
 import com.example.library.data.mapper.toFirebaseDto
 import com.example.library.data.mapper.toLibrary
 import com.example.library.domain.DatabaseRepository
@@ -232,7 +230,7 @@ class FirebaseBookRepository@Inject constructor(
 
     override fun getLibraryStatus(
         bookId: String,
-        callback: (BookStatus) -> Unit
+        callback: (LibraryHistory) -> Unit
     ): ListenerRegistration {
         val query = fireStore.collection(LIBRARY_HISTORY)
             .whereEqualTo(BOOK_ID,bookId)
@@ -244,7 +242,7 @@ class FirebaseBookRepository@Inject constructor(
 
             val data= snapshot.documents.firstOrNull()?.toObject(LibraryHistory::class.java)
                 ?:return@addSnapshotListener
-            callback(data.toBookStatus())
+            callback(data)
         }
     }
 

@@ -1,6 +1,5 @@
 package com.example.library.domain
 
-import com.example.library.data.entity.BookStatus
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.LibraryLiked
@@ -22,5 +21,5 @@ interface DatabaseRepository {
     fun getLibraryLikedCount(bookId: String, onUpdate: (Int) -> Unit):ListenerRegistration
     suspend fun hasLibraryLiked(id:String):Result<Boolean>
     suspend fun addLoanHistory(libraryHistory: LibraryHistory):Result<Unit>
-    fun getLibraryStatus(bookId: String, callback: (BookStatus) -> Unit):ListenerRegistration
+    fun getLibraryStatus(bookId: String, callback: (LibraryHistory) -> Unit):ListenerRegistration
 }

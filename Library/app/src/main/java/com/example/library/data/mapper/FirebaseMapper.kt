@@ -3,7 +3,6 @@ package com.example.library.data.mapper
 import com.example.library.data.entity.BookStatus
 import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.Library
-import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.firebase.LibraryFirebaseDto
 import java.time.Instant
 
@@ -41,16 +40,4 @@ fun toBookStatus(libraryFirebaseDto: LibraryFirebaseDto) = when(libraryFirebaseD
         Instant.ofEpochMilli(libraryFirebaseDto.reservedAt!!)
     )
     else -> throw IllegalArgumentException("Unknown bookStatus: ${libraryFirebaseDto.statusType}")
-}
-
-fun LibraryHistory.toBookStatus():BookStatus {
-    return when(this.status){
-        BookStatusType.AVAILABLE.name -> BookStatus.Available
-        BookStatusType.UNAVAILABLE.name -> BookStatus.UnAvailable
-        BookStatusType.BORROWED.name->
-            BookStatus.Borrowed(this.userId,Instant.ofEpochMilli(this.loanDate), Instant.ofEpochMilli(this.dueDate))
-        BookStatusType.RESERVED.name->
-            BookStatus.Reserved(this.userId, Instant.ofEpochMilli(this.loanDate))
-        else -> BookStatus.Available
-    }
 }
