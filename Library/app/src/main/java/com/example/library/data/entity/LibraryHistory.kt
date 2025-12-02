@@ -1,7 +1,7 @@
 package com.example.library.data.entity
 
 data class LibraryHistory(
-    val loanHistoryId:String="",
+    val libraryHistoryId:String="",
     val userId:String="",
     val bookId:String="",
     val status: String="",
