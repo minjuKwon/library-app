@@ -83,7 +83,7 @@ class FirebaseBookService@Inject constructor(
 
             val id="${userId}_${bookId}_${eventDate}"
 
-            val isSave= databaseRepository.updateLoanHistory(
+            val isSave= databaseRepository.updateLibraryHistory(
                 userId= userId,
                 libraryHistoryId= id,
                 libraryId=libraryId,

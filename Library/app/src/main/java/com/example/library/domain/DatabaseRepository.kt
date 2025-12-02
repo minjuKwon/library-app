@@ -15,7 +15,7 @@ interface DatabaseRepository {
     fun getLibraryLikedCount(bookId: String, onUpdate: (Int) -> Unit):ListenerRegistration
     suspend fun hasLibraryLiked(id:String):Result<Boolean>
     fun getLibraryStatus(bookId: String, callback: (LibraryHistory) -> Unit):ListenerRegistration
-    suspend fun updateLoanHistory(
+    suspend fun updateLibraryHistory(
         userId:String,
         libraryHistoryId:String,
         libraryId:String,

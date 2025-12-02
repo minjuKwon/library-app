@@ -205,7 +205,7 @@ class FirebaseBookRepository@Inject constructor(
         }
     }
 
-    override suspend fun updateLoanHistory(
+    override suspend fun updateLibraryHistory(
         userId:String,
         libraryHistoryId:String,
         libraryId:String,
