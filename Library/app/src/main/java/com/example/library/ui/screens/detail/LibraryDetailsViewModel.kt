@@ -6,21 +6,24 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.library.data.entity.BookStatus
+import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.Library
+import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.User
 import com.example.library.di.ApplicationScope
 import com.example.library.domain.SessionManager
 import com.example.library.service.FirebaseBookService
 import com.example.library.ui.screens.search.defaultLibrary
+import com.google.firebase.firestore.ListenerRegistration
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.Instant
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,8 +49,7 @@ class LibraryDetailsViewModel @Inject constructor(
     private val _currentLibrary= mutableStateOf(defaultLibrary)
     val currentLibrary= _currentLibrary
 
-    private val _isSuccessLoan = MutableStateFlow(false)
-    val isSuccessLoan: StateFlow<Boolean> = _isSuccessLoan
+    private var bookStatusListener: ListenerRegistration? =null
 
     fun updateCurrentItem(library: Library){
         uiState=LibraryDetailsUiState.Loading
@@ -59,9 +61,9 @@ class LibraryDetailsViewModel @Inject constructor(
         keyword: String,
         page: String
     ){
-        uiState=LibraryDetailsUiState.Loading
-
         scope.launch {
+            uiState=LibraryDetailsUiState.Loading
+
             val id= awaitUserId()
             uiState=try{
                 val isSave= firebaseBookService.updateLibraryHistory(
@@ -72,10 +74,7 @@ class LibraryDetailsViewModel @Inject constructor(
                     page = page
                 )
 
-                if(isSave.isSuccess){
-                    _isSuccessLoan.value=true
-                    LibraryDetailsUiState.Success
-                }
+                if(isSave.isSuccess) LibraryDetailsUiState.Success
                 else LibraryDetailsUiState.Error
             }catch(e: Exception){
                 LibraryDetailsUiState.Error
@@ -83,12 +82,49 @@ class LibraryDetailsViewModel @Inject constructor(
         }
     }
 
-    fun updateCurrentBookStatus(bookStatus: BookStatus){
-        _currentLibrary.value=_currentLibrary.value.copy(bookStatus = bookStatus)
+    fun getBookStatus(){
+        bookStatusListener?.remove()
+
+        scope.launch {
+            val uid= awaitUserId()
+
+            val registration = firebaseBookService.getLibraryStatus(
+                bookId = _currentLibrary.value.book.id,
+                callback = { updateBookStatus(uid, it) }
+            )
+
+            bookStatusListener = registration
+        }
     }
 
-    fun resetLoanFlag(){
-        _isSuccessLoan.value=false
+    private fun updateBookStatus(userId:String, libraryHistory: LibraryHistory) {
+        val bookId= _currentLibrary.value.book.id
+        if (bookId == libraryHistory.bookId){
+            val bookStatus:BookStatus = when(libraryHistory.status){
+                BookStatusType.AVAILABLE.name -> BookStatus.Available
+                BookStatusType.UNAVAILABLE.name -> BookStatus.UnAvailable
+                BookStatusType.BORROWED.name ->{
+                    if(userId == libraryHistory.userId){
+                        BookStatus.Borrowed(
+                            userEmail = libraryHistory.userId,
+                            borrowedAt = Instant.ofEpochMilli(libraryHistory.loanDate),
+                            dueDate = Instant.ofEpochMilli(libraryHistory.dueDate)
+                        )
+                    } else {
+                        BookStatus.UnAvailable
+                    }
+                }
+                BookStatusType.RESERVED.name ->{
+                    BookStatus.Reserved(
+                        userEmail = libraryHistory.userId,
+                        reservedAt = Instant.ofEpochMilli(libraryHistory.loanDate),
+                    )
+                }
+                else -> BookStatus.UnAvailable
+            }
+            _currentLibrary.value= _currentLibrary.value.copy(bookStatus= bookStatus)
+        }
+        else _currentLibrary.value
     }
 
     private suspend fun awaitUserId(): String {

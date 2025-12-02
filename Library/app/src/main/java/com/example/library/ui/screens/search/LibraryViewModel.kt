@@ -121,7 +121,7 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    fun getBookStatus(){
+    private fun getBookStatus(){
         bookStatusListener?.remove()
         scope.launch {
             val uid= awaitUserId()
@@ -268,25 +268,6 @@ class LibraryViewModel @Inject constructor(
                 }
                 it.copy(list=updatedList)
             }
-        }
-    }
-
-    fun getCurrentBookStatus(bookId:String):BookStatus?{
-        return when(libraryUiState){
-            is LibraryUiState.Success -> {
-                val state= libraryUiState as LibraryUiState.Success
-                var bookStatus:BookStatus? =null
-
-                state.list.forEach { item ->
-                    if(item.library.book.id==bookId){
-                        bookStatus=item.library.bookStatus
-                        return@forEach
-                    }
-                }
-
-                return bookStatus
-            }
-            else -> null
         }
     }
 

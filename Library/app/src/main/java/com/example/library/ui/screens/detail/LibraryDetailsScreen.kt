@@ -29,7 +29,6 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -108,17 +107,6 @@ private fun DetailsScreenContent(
     detailsScreenParams: DetailsScreenParams
 ){
     val bookInfo= detailsScreenParams.currentBook.book.bookInfo
-
-    LaunchedEffect(Unit) {
-        detailsScreenParams.isSuccessLoan.collect{ success->
-            if(success){
-                detailsScreenParams.getBookStatus()
-                val status=detailsScreenParams.getCurrentBookStatus(detailsScreenParams.currentBook.book.id)
-                status?.let { detailsScreenParams.updateCurrentBookStatus(it) }
-                detailsScreenParams.resetLoanFlag()
-            }
-        }
-    }
 
     Column(
         modifier=Modifier
@@ -329,7 +317,10 @@ private fun BookStatusButton(
     detailsScreenParams: DetailsScreenParams
 ){
     Button(
-        onClick = {detailsScreenParams.loanLibrary()},
+        onClick = {
+            detailsScreenParams.loanLibrary()
+            detailsScreenParams.getBookStatus()
+        },
         modifier=Modifier.fillMaxWidth()
     ) {
         when(detailsScreenParams.currentBook.bookStatus){
