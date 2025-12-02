@@ -15,14 +15,16 @@ interface DatabaseRepository {
     fun getLibraryLikedCount(bookId: String, onUpdate: (Int) -> Unit):ListenerRegistration
     suspend fun hasLibraryLiked(id:String):Result<Boolean>
     fun getLibraryStatus(bookId: String, callback: (LibraryHistory) -> Unit):ListenerRegistration
-    suspend fun updateLibraryHistory(
-        userId:String,
-        libraryHistoryId:String,
-        libraryId:String,
-        bookId:String,
-        keyword:String,
-        page: String,
-        eventDate:Long,
-        dueDate:Long
-    ):Result<Unit>
+    suspend fun updateLibraryHistory(historyRequest: HistoryRequest):Result<Unit>
 }
+
+data class HistoryRequest(
+    val userId:String,
+    val libraryHistoryId:String,
+    val libraryId:String,
+    val bookId:String,
+    val keyword:String,
+    val page: String,
+    val eventDate:Long,
+    val dueDate:Long
+)

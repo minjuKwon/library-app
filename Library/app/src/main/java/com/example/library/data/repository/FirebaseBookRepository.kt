@@ -21,6 +21,7 @@ import com.example.library.data.firebase.LibraryFirebaseDto
 import com.example.library.data.mapper.toFirebaseDto
 import com.example.library.data.mapper.toLibrary
 import com.example.library.domain.DatabaseRepository
+import com.example.library.domain.HistoryRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
@@ -205,47 +206,38 @@ class FirebaseBookRepository@Inject constructor(
         }
     }
 
-    override suspend fun updateLibraryHistory(
-        userId:String,
-        libraryHistoryId:String,
-        libraryId:String,
-        bookId:String,
-        keyword:String,
-        page: String,
-        eventDate:Long,
-        dueDate:Long
-    ): Result<Unit> {
+    override suspend fun updateLibraryHistory(historyRequest: HistoryRequest): Result<Unit> {
         try{
             fireStore.runTransaction { transaction ->
-                val normalizedQuery= normalizeQuery(keyword)
+                val normalizedQuery= normalizeQuery(historyRequest.keyword)
 
                 val libraryDocRef= fireStore.collection(SEARCH_RESULTS_COLLECTION)
                     .document(normalizedQuery)
                     .collection(PAGE_NUMBER_COLLECTION)
-                    .document(page)
+                    .document(historyRequest.page)
                     .collection(LIBRARY_COLLECTION)
-                    .document(libraryId)
+                    .document(historyRequest.libraryId)
                 val librarySnap= transaction.get(libraryDocRef)
                 val bookStatus= librarySnap.get(STATUS_TYPE)
 
                 if(bookStatus == BookStatusType.AVAILABLE.name){
                     val libraryHistory= LibraryHistory(
-                        libraryHistoryId,
-                        userId,
-                        bookId,
+                        historyRequest.libraryHistoryId,
+                        historyRequest.userId,
+                        historyRequest.bookId,
                         BookStatusType.BORROWED.name,
-                        eventDate,
-                        dueDate
+                        historyRequest.eventDate,
+                        historyRequest.dueDate
                     )
                     val loanDocRef= fireStore.collection(LIBRARY_HISTORY)
-                        .document(libraryHistoryId)
+                        .document(historyRequest.libraryHistoryId)
 
                     transaction.set(loanDocRef, libraryHistory)
 
                     val data= mapOf(
                         STATUS_TYPE to BookStatusType.BORROWED.name,
-                        BORROWED_AT to eventDate,
-                        DUE_DATE to dueDate
+                        BORROWED_AT to historyRequest.eventDate,
+                        DUE_DATE to historyRequest.dueDate
                     )
 
                     transaction.update(libraryDocRef, data)

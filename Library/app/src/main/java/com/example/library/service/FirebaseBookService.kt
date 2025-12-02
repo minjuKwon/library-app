@@ -9,6 +9,7 @@ import com.example.library.data.entity.LibraryLiked
 import com.example.library.data.repository.FirebaseException
 import com.example.library.domain.DatabaseRepository
 import com.example.library.domain.DatabaseService
+import com.example.library.domain.HistoryRequest
 import com.example.library.domain.LoanDateCalculator
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
@@ -83,7 +84,7 @@ class FirebaseBookService@Inject constructor(
 
             val id="${userId}_${bookId}_${eventDate}"
 
-            val isSave= databaseRepository.updateLibraryHistory(
+            val historyRequest= HistoryRequest(
                 userId= userId,
                 libraryHistoryId= id,
                 libraryId=libraryId,
@@ -93,6 +94,8 @@ class FirebaseBookService@Inject constructor(
                 eventDate= eventDate,
                 dueDate= dueDate
             )
+
+            val isSave= databaseRepository.updateLibraryHistory(historyRequest)
 
             if(isSave.isSuccess){
                 Result.success(Unit)
