@@ -12,12 +12,12 @@ interface DatabaseService {
     suspend fun updateLibraryLiked(userId:String, bookId:String, isLiked:Boolean):Result<List<LibraryLiked>>
     suspend fun getLibraryLikedList(userId:String):Result<List<LibraryLiked>>
     fun getLibraryLikedCount(bookId: String, onUpdate: (Int) -> Unit): ListenerRegistration
-    suspend fun saveLoanHistory(
+    fun getLibraryStatus(bookId: String, callback: (LibraryHistory) -> Unit):ListenerRegistration
+    suspend fun updateLoanHistory(
         userId:String,
+        libraryId:String,
+        bookId:String,
         keyword:String,
         page: String,
-        libraryId:String,
-        bookId:String
     ):Result<Unit>
-    fun getLibraryStatus(bookId: String, callback: (LibraryHistory) -> Unit):ListenerRegistration
 }

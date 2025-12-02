@@ -1,12 +1,8 @@
 package com.example.library.service
 
 import com.example.library.core.TimeProvider
-import com.example.library.data.FireStoreField.BORROWED_AT
-import com.example.library.data.FireStoreField.DUE_DATE
 import com.example.library.data.FireStoreField.IS_LIKED
-import com.example.library.data.FireStoreField.STATUS_TYPE
 import com.example.library.data.FireStoreField.TIMESTAMP
-import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.LibraryLiked
@@ -67,34 +63,38 @@ class FirebaseBookService@Inject constructor(
         return databaseRepository.getLibraryLikedCount(bookId, onUpdate)
     }
 
-    override suspend fun saveLoanHistory(
+    override fun getLibraryStatus(
+        bookId: String,
+        callback: (LibraryHistory) -> Unit
+    ): ListenerRegistration {
+        return databaseRepository.getLibraryStatus(bookId, callback)
+    }
+
+    override suspend fun updateLoanHistory(
         userId: String,
-        keyword: String,
-        page: String,
         libraryId: String,
-        bookId: String
+        bookId: String,
+        keyword: String,
+        page: String
     ): Result<Unit> {
         return try{
-            val loanDate= timeProvider.now()
-            val dueDate= loanDateCalculator.calculateDueDate(loanDate)
+            val eventDate= timeProvider.now()
+            val dueDate= loanDateCalculator.calculateDueDate(eventDate)
 
-            val id="${userId}_${bookId}_${loanDate}"
+            val id="${userId}_${bookId}_${eventDate}"
 
-            val isSave= databaseRepository.addLoanHistory(
-                LibraryHistory(id, userId, bookId, BookStatusType.BORROWED.name, loanDate, dueDate)
+            val isSave= databaseRepository.updateLoanHistory(
+                userId= userId,
+                libraryHistoryId= id,
+                libraryId=libraryId,
+                bookId= bookId,
+                keyword=keyword,
+                page=page,
+                eventDate= eventDate,
+                dueDate= dueDate
             )
 
             if(isSave.isSuccess){
-                databaseRepository.updateLibraryBook(
-                    libraryId,
-                    keyword,
-                    page,
-                    mapOf(
-                        STATUS_TYPE to BookStatusType.BORROWED.name,
-                        BORROWED_AT to loanDate,
-                        DUE_DATE to dueDate
-                    )
-                )
                 Result.success(Unit)
             }else{
                 Result.failure(isSave.exceptionOrNull()?:UpdateLibraryStatusFailedException())
@@ -104,13 +104,6 @@ class FirebaseBookService@Inject constructor(
         }catch (e:Exception){
             return Result.failure(e)
         }
-    }
-
-    override fun getLibraryStatus(
-        bookId: String,
-        callback: (LibraryHistory) -> Unit
-    ): ListenerRegistration {
-        return databaseRepository.getLibraryStatus(bookId, callback)
     }
 
 }
