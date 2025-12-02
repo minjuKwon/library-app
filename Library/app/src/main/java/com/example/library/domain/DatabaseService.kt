@@ -13,7 +13,7 @@ interface DatabaseService {
     suspend fun getLibraryLikedList(userId:String):Result<List<LibraryLiked>>
     fun getLibraryLikedCount(bookId: String, onUpdate: (Int) -> Unit): ListenerRegistration
     fun getLibraryStatus(bookId: String, callback: (LibraryHistory) -> Unit):ListenerRegistration
-    suspend fun updateLoanHistory(
+    suspend fun updateLibraryHistory(
         userId:String,
         libraryId:String,
         bookId:String,

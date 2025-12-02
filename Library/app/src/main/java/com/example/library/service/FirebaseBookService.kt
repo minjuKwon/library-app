@@ -70,7 +70,7 @@ class FirebaseBookService@Inject constructor(
         return databaseRepository.getLibraryStatus(bookId, callback)
     }
 
-    override suspend fun updateLoanHistory(
+    override suspend fun updateLibraryHistory(
         userId: String,
         libraryId: String,
         bookId: String,

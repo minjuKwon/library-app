@@ -64,7 +64,7 @@ class LibraryDetailsViewModel @Inject constructor(
         scope.launch {
             val id= awaitUserId()
             uiState=try{
-                val isSave= firebaseBookService.updateLoanHistory(
+                val isSave= firebaseBookService.updateLibraryHistory(
                     userId = id,
                     libraryId = _currentLibrary.value.libraryId,
                     bookId = _currentLibrary.value.book.id,
