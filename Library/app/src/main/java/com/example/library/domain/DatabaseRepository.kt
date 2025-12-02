@@ -7,12 +7,6 @@ import com.google.firebase.firestore.ListenerRegistration
 
 interface DatabaseRepository {
     suspend fun addLibraryBook(keyword:String, page: String, list:List<Library>):Result<Unit>
-    suspend fun updateLibraryBook(
-        libraryId:String,
-        keyword:String,
-        page: String,
-        data: Map<String, Any>
-    ):Result<Unit>
     suspend fun getLibraryBook(keyword:String, page: String):Result<List<Library>>
     suspend fun hasServerBook(keyword:String, page:String):Result<Boolean>
     suspend fun addLibraryLiked(libraryLiked: LibraryLiked):Result<Unit>
@@ -20,6 +14,15 @@ interface DatabaseRepository {
     suspend fun getLibraryLikedList(userId:String):Result<List<LibraryLiked>>
     fun getLibraryLikedCount(bookId: String, onUpdate: (Int) -> Unit):ListenerRegistration
     suspend fun hasLibraryLiked(id:String):Result<Boolean>
-    suspend fun addLoanHistory(libraryHistory: LibraryHistory):Result<Unit>
     fun getLibraryStatus(bookId: String, callback: (LibraryHistory) -> Unit):ListenerRegistration
+    suspend fun updateLoanHistory(
+        userId:String,
+        libraryHistoryId:String,
+        libraryId:String,
+        bookId:String,
+        keyword:String,
+        page: String,
+        eventDate:Long,
+        dueDate:Long
+    ):Result<Unit>
 }
