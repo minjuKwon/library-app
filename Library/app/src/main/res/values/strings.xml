@@ -19,7 +19,7 @@
     <string name="call_number">청구기호</string>
     <string name="location">위치</string>
     <string name="book_status">대출 상태</string>
-    <string name="expected_return_date">반납 예정일</string>
+    <string name="expected_return_date">예정 반납일</string>
     <string name="borrow_book">대출하기</string>
     <string name="return_book">반납하기</string>
     <string name="most_relatable">공감순</string>

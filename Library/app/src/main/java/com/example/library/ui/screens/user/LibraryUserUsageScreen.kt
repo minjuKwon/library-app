@@ -51,7 +51,7 @@ fun LoanStatusScreen(
 ){
     val textList= listOf(
         R.string.index, R.string.title, R.string.author,
-        R.string.loan_date, R.string.return_date, R.string.status
+        R.string.loan_date, R.string.expected_return_date, R.string.status
     )
     val temp= listOf(
         "1","제목제목제목제목제목제목제목제","김저자1,이저자2,박저자3",
