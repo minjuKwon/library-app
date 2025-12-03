@@ -57,6 +57,7 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun LibraryDetailsScreen(
+    isLogIn:Boolean,
     isNotFullScreen:Boolean=true,
     detailsScreenParams: DetailsScreenParams,
     onBackPressed:()->Unit,
@@ -76,7 +77,7 @@ fun LibraryDetailsScreen(
             item{
                 when(detailsScreenParams.uiState){
                     is LibraryDetailsUiState.Success->{
-                        DetailsScreenContent(detailsScreenParams)
+                        DetailsScreenContent(isLogIn, detailsScreenParams)
                     }
                     is LibraryDetailsUiState.Loading->{
                         Box(
@@ -104,6 +105,7 @@ fun LibraryDetailsScreen(
 
 @Composable
 private fun DetailsScreenContent(
+    isLogIn:Boolean,
     detailsScreenParams: DetailsScreenParams
 ){
     val bookInfo= detailsScreenParams.currentBook.book.bookInfo
@@ -138,7 +140,7 @@ private fun DetailsScreenContent(
 
         DetailsScreenLibraryInformation(detailsScreenParams)
 
-        BookStatusButton(detailsScreenParams)
+        if(isLogIn) BookStatusButton(detailsScreenParams)
 
         DetailsScreenComment()
     }

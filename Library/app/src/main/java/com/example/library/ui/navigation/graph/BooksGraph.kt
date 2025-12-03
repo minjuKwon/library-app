@@ -104,9 +104,11 @@ fun NavGraphBuilder.booksDestination(
             arguments= LibraryDestination.Details.arguments
         ){ navBackStackEntry->
             val id= navBackStackEntry.arguments?.getString(LibraryDestination.Details.BOOK_ID_ARGS)
+            val isLogIn by userViewModel.isLogIn.collectAsState()
 
             if (id != null) {
                 LibraryDetailsScreen(
+                    isLogIn= isLogIn,
                     detailsScreenParams= detailsScreenParams,
                     onBackPressed={navController.popBackStack()}
                 )

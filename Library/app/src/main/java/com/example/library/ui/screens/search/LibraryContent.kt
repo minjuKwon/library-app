@@ -332,6 +332,7 @@ fun LibraryListAndDetailContent(
 
         if(libraryUiState is LibraryUiState.Success){
             LibraryDetailsScreen(
+                isLogIn=isLogIn,
                 isNotFullScreen = false,
                 detailsScreenParams= detailsScreenParams,
                 onBackPressed= { activity.finish() },
