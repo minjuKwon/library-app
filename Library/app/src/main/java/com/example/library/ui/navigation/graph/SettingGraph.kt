@@ -31,6 +31,7 @@ fun NavGraphBuilder.settingDestination(
     userViewModel: UserViewModel,
     listContentParams: ListContentParams,
     resetLibraryList:()->Unit,
+    resetBookStatus:()->Unit,
     resetLiked:()->Unit
 ){
     navigation(
@@ -83,6 +84,7 @@ fun NavGraphBuilder.settingDestination(
                     userViewModel= userViewModel,
                     isClickEmailLink=isClickEmailLink,
                     resetLibraryList=resetLibraryList,
+                    resetBookStatus= resetBookStatus,
                     onBackPressed = {navController.popBackStack()},
                     onNavigationToSetting={
                         navController.navigateToSetting()

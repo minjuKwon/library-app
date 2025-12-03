@@ -70,6 +70,7 @@ fun LogInScreen(
     userViewModel:UserViewModel,
     isClickEmailLink:Boolean,
     resetLibraryList:()->Unit,
+    resetBookStatus:()->Unit,
     onBackPressed:()->Unit,
     onNavigationToSetting:()->Unit
 ){
@@ -94,6 +95,7 @@ fun LogInScreen(
         onSuccess = {
             isClick=true
             resetLibraryList()
+            resetBookStatus()
             userViewModel.updateLogInState(true)
             onNavigationToSetting()
         },

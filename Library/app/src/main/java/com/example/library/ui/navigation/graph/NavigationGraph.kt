@@ -22,6 +22,7 @@ fun NavigationGraph(
     detailsScreenParams: DetailsScreenParams,
     userViewModel: UserViewModel,
     resetLibraryList:()->Unit,
+    resetBookStatus:()->Unit,
     resetLiked:()->Unit,
     modifier:Modifier=Modifier
 ){
@@ -46,6 +47,7 @@ fun NavigationGraph(
             userViewModel,
             listContentParams,
             resetLibraryList,
+            resetBookStatus,
             resetLiked
         )
     }

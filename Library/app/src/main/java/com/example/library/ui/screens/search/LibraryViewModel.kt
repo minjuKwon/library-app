@@ -121,7 +121,7 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    private fun getBookStatus(){
+    fun getBookStatus(){
         bookStatusListener?.remove()
         scope.launch {
             val uid= awaitUserId()
