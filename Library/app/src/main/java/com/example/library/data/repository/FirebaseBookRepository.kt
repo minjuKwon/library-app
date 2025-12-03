@@ -10,7 +10,10 @@ import com.example.library.data.FireStoreField.BORROWED_AT
 import com.example.library.data.FireStoreField.DUE_DATE
 import com.example.library.data.FireStoreField.IS_LIKED
 import com.example.library.data.FireStoreField.OFFSET
+import com.example.library.data.FireStoreField.RETURN_DATE
+import com.example.library.data.FireStoreField.STATUS
 import com.example.library.data.FireStoreField.STATUS_TYPE
+import com.example.library.data.FireStoreField.USER_EMAIL
 import com.example.library.data.FireStoreField.USER_ID
 import com.example.library.data.QueryNormalizer.normalizeQuery
 import com.example.library.data.entity.BookStatusType
@@ -208,6 +211,15 @@ class FirebaseBookRepository@Inject constructor(
 
     override suspend fun updateLibraryHistory(historyRequest: HistoryRequest): Result<Unit> {
         try{
+            val userBookDocRef= fireStore.collection(LIBRARY_HISTORY)
+                .whereEqualTo(USER_ID, historyRequest.userId)
+                .whereEqualTo(BOOK_ID,historyRequest.bookId)
+                .get()
+                .await()
+                .documents
+                .first()
+                .reference
+
             fireStore.runTransaction { transaction ->
                 val normalizedQuery= normalizeQuery(historyRequest.keyword)
 
@@ -241,6 +253,27 @@ class FirebaseBookRepository@Inject constructor(
                     )
 
                     transaction.update(libraryDocRef, data)
+                }else if(bookStatus == BookStatusType.BORROWED.name){
+                    val userId= librarySnap.get(USER_EMAIL)
+
+                    if(userId== historyRequest.userId){
+                        val libraryData= mapOf(
+                            STATUS_TYPE to BookStatusType.AVAILABLE.name,
+                            BORROWED_AT to null,
+                            DUE_DATE to null
+                        )
+                        transaction.update(libraryDocRef, libraryData)
+
+                        val historyData= mapOf(
+                            STATUS to BookStatusType.AVAILABLE.name,
+                            RETURN_DATE to historyRequest.eventDate
+                        )
+                        transaction.update(userBookDocRef, historyData)
+                    }else{
+                        return@runTransaction
+                    }
+                }else{
+                    return@runTransaction
                 }
             }
             return Result.success(Unit)
