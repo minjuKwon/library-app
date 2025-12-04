@@ -10,6 +10,7 @@ import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.User
+import com.example.library.data.mapper.toStringType
 import com.example.library.di.ApplicationScope
 import com.example.library.domain.SessionManager
 import com.example.library.service.FirebaseBookService
@@ -70,6 +71,7 @@ class LibraryDetailsViewModel @Inject constructor(
                     userId = id,
                     libraryId = _currentLibrary.value.libraryId,
                     bookId = _currentLibrary.value.book.id,
+                    bookStatus= _currentLibrary.value.bookStatus.toStringType(),
                     keyword = keyword,
                     page = page
                 )

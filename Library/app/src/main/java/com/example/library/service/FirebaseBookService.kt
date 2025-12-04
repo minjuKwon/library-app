@@ -75,6 +75,7 @@ class FirebaseBookService@Inject constructor(
         userId: String,
         libraryId: String,
         bookId: String,
+        bookStatus:String,
         keyword: String,
         page: String
     ): Result<Unit> {
@@ -89,6 +90,7 @@ class FirebaseBookService@Inject constructor(
                 libraryHistoryId= id,
                 libraryId=libraryId,
                 bookId= bookId,
+                bookStatus= bookStatus,
                 keyword=keyword,
                 page=page,
                 eventDate= eventDate,

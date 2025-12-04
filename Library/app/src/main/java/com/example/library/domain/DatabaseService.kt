@@ -17,6 +17,7 @@ interface DatabaseService {
         userId:String,
         libraryId:String,
         bookId:String,
+        bookStatus:String,
         keyword:String,
         page: String,
     ):Result<Unit>

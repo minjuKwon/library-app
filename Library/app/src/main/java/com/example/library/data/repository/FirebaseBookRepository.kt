@@ -26,6 +26,7 @@ import com.example.library.data.mapper.toFirebaseDto
 import com.example.library.data.mapper.toLibrary
 import com.example.library.domain.DatabaseRepository
 import com.example.library.domain.HistoryRequest
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
@@ -214,15 +215,19 @@ class FirebaseBookRepository@Inject constructor(
 
     override suspend fun updateLibraryHistory(historyRequest: HistoryRequest): Result<Unit> {
         try{
-            val userBookDocRef= fireStore.collection(LIBRARY_HISTORY)
-                .whereEqualTo(USER_ID, historyRequest.userId)
-                .whereEqualTo(BOOK_ID,historyRequest.bookId)
-                .orderBy(LOAN_DATE, Query.Direction.DESCENDING)
-                .get()
-                .await()
-                .documents
-                .first()
-                .reference
+
+            var historyDocRef: DocumentReference? =null
+
+            if(historyRequest.bookStatus== BookStatusType.BORROWED.name){
+                historyDocRef= fireStore.collection(LIBRARY_HISTORY)
+                    .whereEqualTo(USER_ID, historyRequest.userId)
+                    .whereEqualTo(BOOK_ID,historyRequest.bookId)
+                    .orderBy(LOAN_DATE, Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+                    .documents
+                    .first()
+                    .reference
 
             fireStore.runTransaction { transaction ->
                 val normalizedQuery= normalizeQuery(historyRequest.keyword)
@@ -234,9 +239,8 @@ class FirebaseBookRepository@Inject constructor(
                     .collection(LIBRARY_COLLECTION)
                     .document(historyRequest.libraryId)
                 val librarySnap= transaction.get(libraryDocRef)
-                val bookStatus= librarySnap.get(STATUS_TYPE)
 
-                if(bookStatus == BookStatusType.AVAILABLE.name){
+                if(historyRequest.bookStatus == BookStatusType.AVAILABLE.name){
                     val libraryHistory= LibraryHistory(
                         historyRequest.libraryHistoryId,
                         historyRequest.userId,
@@ -258,6 +262,7 @@ class FirebaseBookRepository@Inject constructor(
 
                     transaction.update(libraryDocRef, data)
                 }else if(bookStatus == BookStatusType.BORROWED.name){
+                }else if(historyRequest.bookStatus == BookStatusType.BORROWED.name){
                     val userId= librarySnap.get(USER_EMAIL)
 
                     if(userId== historyRequest.userId){
@@ -272,7 +277,9 @@ class FirebaseBookRepository@Inject constructor(
                             STATUS to BookStatusType.AVAILABLE.name,
                             RETURN_DATE to historyRequest.eventDate
                         )
-                        transaction.update(userBookDocRef, historyData)
+                        if (historyDocRef != null) {
+                            transaction.update(historyDocRef, historyData)
+                        }
                     }else{
                         return@runTransaction
                     }
