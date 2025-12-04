@@ -22,5 +22,6 @@ enum class BookStatusType(val ko:String){
     AVAILABLE("대출 가능"),
     UNAVAILABLE("대출 불가"),
     BORROWED("대출 중"),
-    RESERVED("예약 중")
+    RESERVED("예약 중"),
+    RETURNED("반납 완료")
 }
