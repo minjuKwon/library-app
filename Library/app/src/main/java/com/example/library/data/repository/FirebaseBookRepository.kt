@@ -5,6 +5,7 @@ import com.example.library.data.FireStoreCollections.LIBRARY_HISTORY
 import com.example.library.data.FireStoreCollections.LIBRARY_LIKED
 import com.example.library.data.FireStoreCollections.PAGE_NUMBER_COLLECTION
 import com.example.library.data.FireStoreCollections.SEARCH_RESULTS_COLLECTION
+import com.example.library.data.FireStoreCollections.USER_LOAN_LIBRARY_COLLECTION
 import com.example.library.data.FireStoreField.BOOK_ID
 import com.example.library.data.FireStoreField.BORROWED_AT
 import com.example.library.data.FireStoreField.DUE_DATE
@@ -21,6 +22,7 @@ import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.LibraryLiked
+import com.example.library.data.entity.UserLoanLibrary
 import com.example.library.data.firebase.LibraryFirebaseDto
 import com.example.library.data.mapper.toFirebaseDto
 import com.example.library.data.mapper.toLibrary
@@ -217,6 +219,7 @@ class FirebaseBookRepository@Inject constructor(
         try{
 
             var historyDocRef: DocumentReference? =null
+            var userLoanBookDocRef:DocumentReference? = null
 
             if(historyRequest.bookStatus== BookStatusType.BORROWED.name){
                 historyDocRef= fireStore.collection(LIBRARY_HISTORY)
@@ -228,6 +231,17 @@ class FirebaseBookRepository@Inject constructor(
                     .documents
                     .first()
                     .reference
+
+                userLoanBookDocRef= fireStore.collection(USER_LOAN_LIBRARY_COLLECTION)
+                    .whereEqualTo(USER_ID, historyRequest.userId)
+                    .whereEqualTo(BOOK_ID,historyRequest.bookId)
+                    .orderBy(LOAN_DATE, Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+                    .documents
+                    .first()
+                    .reference
+            }
 
             fireStore.runTransaction { transaction ->
                 val normalizedQuery= normalizeQuery(historyRequest.keyword)
@@ -251,7 +265,6 @@ class FirebaseBookRepository@Inject constructor(
                     )
                     val loanDocRef= fireStore.collection(LIBRARY_HISTORY)
                         .document(historyRequest.libraryHistoryId)
-
                     transaction.set(loanDocRef, libraryHistory)
 
                     val data= mapOf(
@@ -259,9 +272,21 @@ class FirebaseBookRepository@Inject constructor(
                         BORROWED_AT to historyRequest.eventDate,
                         DUE_DATE to historyRequest.dueDate
                     )
-
                     transaction.update(libraryDocRef, data)
-                }else if(bookStatus == BookStatusType.BORROWED.name){
+
+                    val userLoanLibrary= UserLoanLibrary(
+                        userLibraryInfoId = historyRequest.libraryHistoryId,
+                        userId = historyRequest.userId,
+                        bookId = historyRequest.bookId,
+                        title = historyRequest.bookTitle,
+                        authors = historyRequest.bookAuthors,
+                        status = BookStatusType.BORROWED.name,
+                        loanDate = historyRequest.eventDate,
+                        dueDate = historyRequest.dueDate
+                    )
+                    val userLoanDocRef= fireStore.collection(USER_LOAN_LIBRARY_COLLECTION)
+                        .document(historyRequest.libraryHistoryId)
+                    transaction.set(userLoanDocRef, userLoanLibrary)
                 }else if(historyRequest.bookStatus == BookStatusType.BORROWED.name){
                     val userId= librarySnap.get(USER_EMAIL)
 
@@ -279,6 +304,14 @@ class FirebaseBookRepository@Inject constructor(
                         )
                         if (historyDocRef != null) {
                             transaction.update(historyDocRef, historyData)
+                        }
+
+                        val userLoanBookData= mapOf(
+                            STATUS to BookStatusType.RETURNED.name,
+                            RETURN_DATE to historyRequest.eventDate
+                        )
+                        if (userLoanBookDocRef != null) {
+                            transaction.update(userLoanBookDocRef, userLoanBookData)
                         }
                     }else{
                         return@runTransaction
