@@ -18,6 +18,8 @@ interface DatabaseService {
         libraryId:String,
         bookId:String,
         bookStatus:String,
+        bookTitle:String?,
+        bookAuthors:List<String>?,
         keyword:String,
         page: String,
     ):Result<Unit>

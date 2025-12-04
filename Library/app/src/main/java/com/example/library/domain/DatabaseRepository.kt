@@ -24,6 +24,8 @@ data class HistoryRequest(
     val libraryId:String,
     val bookId:String,
     val bookStatus:String,
+    val bookTitle:String?,
+    val bookAuthors:List<String>?,
     val keyword:String,
     val page: String,
     val eventDate:Long,

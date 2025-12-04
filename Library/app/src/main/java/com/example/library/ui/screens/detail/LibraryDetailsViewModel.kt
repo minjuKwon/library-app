@@ -72,6 +72,8 @@ class LibraryDetailsViewModel @Inject constructor(
                     libraryId = _currentLibrary.value.libraryId,
                     bookId = _currentLibrary.value.book.id,
                     bookStatus= _currentLibrary.value.bookStatus.toStringType(),
+                    bookTitle = _currentLibrary.value.book.bookInfo.title,
+                    bookAuthors = _currentLibrary.value.book.bookInfo.authors,
                     keyword = keyword,
                     page = page
                 )
