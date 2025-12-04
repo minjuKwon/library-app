@@ -9,6 +9,7 @@ import com.example.library.data.FireStoreField.BOOK_ID
 import com.example.library.data.FireStoreField.BORROWED_AT
 import com.example.library.data.FireStoreField.DUE_DATE
 import com.example.library.data.FireStoreField.IS_LIKED
+import com.example.library.data.FireStoreField.LOAN_DATE
 import com.example.library.data.FireStoreField.OFFSET
 import com.example.library.data.FireStoreField.RETURN_DATE
 import com.example.library.data.FireStoreField.STATUS
@@ -28,6 +29,7 @@ import com.example.library.domain.HistoryRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -197,6 +199,7 @@ class FirebaseBookRepository@Inject constructor(
     ): ListenerRegistration {
         val query = fireStore.collection(LIBRARY_HISTORY)
             .whereEqualTo(BOOK_ID,bookId)
+            .orderBy(LOAN_DATE, Query.Direction.DESCENDING)
 
         return query.addSnapshotListener { snapshot, error ->
             if (snapshot==null || error != null) {
@@ -214,6 +217,7 @@ class FirebaseBookRepository@Inject constructor(
             val userBookDocRef= fireStore.collection(LIBRARY_HISTORY)
                 .whereEqualTo(USER_ID, historyRequest.userId)
                 .whereEqualTo(BOOK_ID,historyRequest.bookId)
+                .orderBy(LOAN_DATE, Query.Direction.DESCENDING)
                 .get()
                 .await()
                 .documents
