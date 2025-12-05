@@ -269,6 +269,7 @@ class FirebaseBookRepository@Inject constructor(
                     transaction.set(loanDocRef, libraryHistory)
 
                     val data= mapOf(
+                        USER_EMAIL to historyRequest.userId,
                         STATUS_TYPE to BookStatusType.BORROWED.name,
                         BORROWED_AT to historyRequest.eventDate,
                         DUE_DATE to historyRequest.dueDate
