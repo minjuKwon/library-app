@@ -253,8 +253,9 @@ class FirebaseBookRepository@Inject constructor(
                     .collection(LIBRARY_COLLECTION)
                     .document(historyRequest.libraryId)
                 val librarySnap= transaction.get(libraryDocRef)
+                val status= librarySnap.get(STATUS_TYPE)
 
-                if(historyRequest.bookStatus == BookStatusType.AVAILABLE.name){
+                if(status == BookStatusType.AVAILABLE.name){
                     val libraryHistory= LibraryHistory(
                         historyRequest.libraryHistoryId,
                         historyRequest.userId,
@@ -287,7 +288,7 @@ class FirebaseBookRepository@Inject constructor(
                     val userLoanDocRef= fireStore.collection(USER_LOAN_LIBRARY_COLLECTION)
                         .document(historyRequest.libraryHistoryId)
                     transaction.set(userLoanDocRef, userLoanLibrary)
-                }else if(historyRequest.bookStatus == BookStatusType.BORROWED.name){
+                }else if(status == BookStatusType.BORROWED.name){
                     val userId= librarySnap.get(USER_EMAIL)
 
                     if(userId== historyRequest.userId){
