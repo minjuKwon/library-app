@@ -1,18 +1,16 @@
 package com.example.library.ui.screens.user
 
-import android.util.Log
 import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.UserLoanLibrary
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-fun List<UserLoanLibrary>.toStringList(): List<List<String>>{
+fun List<UserLoanLibrary>.toLoanStringList(): List<List<String>>{
 
-    val contentList:MutableList<List<String>> = mutableListOf()
+    val resultList:MutableList<List<String>> = mutableListOf()
 
     this.forEachIndexed { index, userLoanLibrary ->
-        Log.d("dd","lazy column index: ${userLoanLibrary.bookId} ")
         val author= userLoanLibrary.authors?.joinToString(",")?:""
         val status= when (userLoanLibrary.status) {
             BookStatusType.AVAILABLE.name -> BookStatusType.AVAILABLE.ko
@@ -31,9 +29,9 @@ fun List<UserLoanLibrary>.toStringList(): List<List<String>>{
             status
         )
 
-        contentList.add(list)
+        resultList.add(list)
     }
-    return contentList.toList()
+    return resultList.toList()
 }
 
 private fun formatDateOnly(millis: Long): String {
