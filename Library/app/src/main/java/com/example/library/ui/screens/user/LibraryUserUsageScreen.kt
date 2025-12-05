@@ -32,10 +32,7 @@ fun LoanHistoryScreen(
         R.string.index, R.string.title, R.string.author,
         R.string.loan_date, R.string.return_date, R.string.status
     )
-    val temp= listOf(
-        "1","제목제목제목제목제목제목제목제","김저자1,이저자2,박저자3",
-        "2025-\n00-00","2025-\n00-00","반납\n완료"
-    )
+    val temp=  listOf(listOf("제목제목제목제목제목제목제목제", "김저자1, 이저자2, 박저자3","2025-00-00","2025-00-00","반납\n완료"))
 
     UserUsageSection(
         screenTitle = stringResource(R.string.loan_history),
@@ -47,21 +44,18 @@ fun LoanHistoryScreen(
 
 @Composable
 fun LoanStatusScreen(
+    list:List<List<String>>,
     onBackPressed:()->Unit
 ){
     val textList= listOf(
         R.string.index, R.string.title, R.string.author,
         R.string.loan_date, R.string.expected_return_date, R.string.status
     )
-    val temp= listOf(
-        "1","제목제목제목제목제목제목제목제","김저자1,이저자2,박저자3",
-        "2025-\n00-00","2025-\n00-00","반납\n완료"
-    )
 
     UserUsageSection(
         screenTitle = stringResource(R.string.loan_status),
         titleList = textList,
-        contentList = temp,
+        contentList = list,
         onBackPressed=onBackPressed
     ){
         LoanStatusSection()
@@ -130,10 +124,7 @@ fun ReservationStatusScreen(
         R.string.index, R.string.title, R.string.author,
         R.string.reservation_date, R.string.reservation_rank, R.string.is_reserved
     )
-    val temp= listOf(
-        "1","제목제목제목제목제목제목제목제","김저자1,이저자2,박저자3",
-        "2025-00-00","1","예약중"
-    )
+    val temp= listOf(listOf("제목제목제목제목제목제목제목제", "김저자1, 이저자2, 박저자3","2025-00-00","2025-00-00","반납\n완료"))
 
     UserUsageSection(
         screenTitle=stringResource(R.string.reservation_status),
@@ -179,7 +170,7 @@ fun LikedListScreen(
 private fun UserUsageSection(
     screenTitle:String,
     titleList:List<Int>,
-    contentList:List<String>,
+    contentList:List<List<String>>,
     weightList:List<Float> =listOf(0.1f, 0.2f, 0.2f, 0.18f, 0.18f, 0.14f),
     onBackPressed:()->Unit,
     extraContent:@Composable () -> Unit ={}
@@ -203,7 +194,7 @@ private fun UserUsageSection(
 @Composable
 private fun UserUsageList(
     titleList:List<Int>,
-    contentList:List<String>,
+    contentList:List<List<String>>,
     weightList:List<Float>
 ){
     Row(
@@ -222,8 +213,8 @@ private fun UserUsageList(
     }
     Divider()
     LazyColumn {
-        items(5){
-            UserUsageListItem(contentList, weightList)
+        items(contentList.size){
+            UserUsageListItem(contentList[it], weightList)
         }
     }
 }

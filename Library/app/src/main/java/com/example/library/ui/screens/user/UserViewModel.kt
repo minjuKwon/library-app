@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.library.data.entity.User
 import com.example.library.di.ApplicationScope
 import com.example.library.domain.UserService
+import com.example.library.service.FirebaseBookService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -13,6 +14,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val firebaseUserService: UserService,
+    private val firebaseBookService: FirebaseBookService,
     @ApplicationScope externalScope:CoroutineScope?=null
 ) : ViewModel(){
 
@@ -43,6 +47,9 @@ class UserViewModel @Inject constructor(
 
     private val _event= MutableSharedFlow<UserUiState>()
     val event= _event.asSharedFlow()
+
+    private val _userLoanBookList= mutableStateOf(listOf(listOf<String>()))
+    val userLoanBookList= _userLoanBookList
 
     private val _isUserVerified= mutableStateOf(true)
     val isUserVerified= _isUserVerified
@@ -163,6 +170,24 @@ class UserViewModel @Inject constructor(
         scope.launch {
             _isUserVerified.value = firebaseUserService.isEmailVerified()
         }
+    }
+
+    fun getUserLoanBookList(){
+        scope.launch {
+            try{
+                val resultList= firebaseBookService.getUserLoanBookList(awaitUserId())
+                if(resultList.isSuccess){
+                    _userLoanBookList.value= resultList.getOrNull()?.toLoanStringList()?: emptyList()
+                    _event.emit(UserUiState.Success("getUserLoanBookList"))
+                }
+            }catch (e:Exception){
+                _event.emit(UserUiState.Failure(e.message?:"실패"))
+            }
+        }
+    }
+
+    private suspend fun awaitUserId(): String {
+        return userPreferences.filterNotNull().first().uid
     }
 
     fun updatePasswordVerifiedState(b:Boolean){

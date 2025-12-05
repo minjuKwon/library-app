@@ -128,7 +128,9 @@ fun NavGraphBuilder.settingDestination(
         }
 
         composable(route=LibraryDestination.LoanStatus.route){
+            val list by userViewModel.userLoanBookList
             LoanStatusScreen(
+                list = list,
                 onBackPressed = {navController.popBackStack()}
             )
         }

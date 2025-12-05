@@ -58,8 +58,12 @@ fun LibraryUserScreen(
     HandleUserUiState(
         event= userViewModel.event,
         onSuccess = {
-            userViewModel.updateLogInState(false)
-            onNavigationToSetting()
+            if(it.message=="getUserLoanBookList"){
+                onNavigationToLoanStatus()
+            }else{
+                userViewModel.updateLogInState(false)
+                onNavigationToSetting()
+            }
         },
         onFailure = { state:UserUiState.Failure ->
             val message= when(state.message){
@@ -108,7 +112,7 @@ fun LibraryUserScreen(
         ){
             val list=listOf(
                 R.string.loan_history to {onNavigationToLoanHistory()},
-                R.string.loan_status to {onNavigationToLoanStatus()},
+                R.string.loan_status to { userViewModel.getUserLoanBookList() },
                 R.string.reservation_status to {onNavigationToReservation()},
                 R.string.liked_list to {onNavigationToLiked()},
                 R.string.unregister to {openAlertDialog=true}
