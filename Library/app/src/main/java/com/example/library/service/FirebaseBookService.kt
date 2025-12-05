@@ -6,6 +6,7 @@ import com.example.library.data.FireStoreField.TIMESTAMP
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.LibraryLiked
+import com.example.library.data.entity.UserLoanLibrary
 import com.example.library.data.repository.FirebaseException
 import com.example.library.domain.DatabaseRepository
 import com.example.library.domain.DatabaseService
@@ -113,6 +114,12 @@ class FirebaseBookService@Inject constructor(
         }catch (e:Exception){
             return Result.failure(e)
         }
+    }
+
+    override suspend fun getUserLoanBookList(
+        userId: String
+    ): Result<List<UserLoanLibrary>> {
+        return databaseRepository.getUserLoanBookList(userId)
     }
 
 }
