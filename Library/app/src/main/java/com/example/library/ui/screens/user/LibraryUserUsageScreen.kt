@@ -58,12 +58,14 @@ fun LoanStatusScreen(
         contentList = list,
         onBackPressed=onBackPressed
     ){
-        LoanStatusSection()
+        LoanStatusSection(list.size)
     }
 }
 
 @Composable
-private fun LoanStatusSection(){
+private fun LoanStatusSection(
+    borrowedBookCnt:Int
+){
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier=Modifier
@@ -76,7 +78,7 @@ private fun LoanStatusSection(){
     ){
         LoanStatusSectionCard(
             R.string.borrowed_book,
-            "2",
+            borrowedBookCnt.toString(),
             Modifier.padding(end= dimensionResource(R.dimen.padding_md))
         )
         LoanStatusSectionCard(
