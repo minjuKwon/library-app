@@ -3,6 +3,7 @@ package com.example.library.domain
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.LibraryLiked
+import com.example.library.data.entity.UserLoanLibrary
 import com.google.firebase.firestore.ListenerRegistration
 
 interface DatabaseService {
@@ -23,4 +24,5 @@ interface DatabaseService {
         keyword:String,
         page: String,
     ):Result<Unit>
+    suspend fun getUserLoanBookList(userId: String):Result<List<UserLoanLibrary>>
 }

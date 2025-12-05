@@ -7,9 +7,9 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-fun List<UserLoanLibrary>.toStringList(): List<String>{
+fun List<UserLoanLibrary>.toStringList(): List<List<String>>{
 
-    var contentList:List<String> = emptyList()
+    val contentList:MutableList<List<String>> = mutableListOf()
 
     this.forEachIndexed { index, userLoanLibrary ->
         Log.d("dd","lazy column index: ${userLoanLibrary.bookId} ")
@@ -22,7 +22,7 @@ fun List<UserLoanLibrary>.toStringList(): List<String>{
             BookStatusType.RETURNED.name -> BookStatusType.RETURNED.ko
             else -> ""
         }
-        val a=listOf(
+        val list=listOf(
             (index+1).toString(),
             userLoanLibrary.title?:"",
             author,
@@ -30,9 +30,10 @@ fun List<UserLoanLibrary>.toStringList(): List<String>{
             formatDateOnly(userLoanLibrary.dueDate),
             status
         )
-        contentList
+
+        contentList.add(list)
     }
-    return contentList
+    return contentList.toList()
 }
 
 private fun formatDateOnly(millis: Long): String {
