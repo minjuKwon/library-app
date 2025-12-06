@@ -300,7 +300,7 @@ class FirebaseBookRepository@Inject constructor(
                         transaction.update(libraryDocRef, libraryData)
 
                         val historyData= mapOf(
-                            STATUS to BookStatusType.AVAILABLE.name,
+                            STATUS to BookStatusType.RETURNED.name,
                             RETURN_DATE to historyRequest.eventDate
                         )
                         if (historyDocRef != null) {

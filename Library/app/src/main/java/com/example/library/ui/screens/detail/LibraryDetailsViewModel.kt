@@ -105,7 +105,7 @@ class LibraryDetailsViewModel @Inject constructor(
         val bookId= _currentLibrary.value.book.id
         if (bookId == libraryHistory.bookId){
             val bookStatus:BookStatus = when(libraryHistory.status){
-                BookStatusType.AVAILABLE.name -> BookStatus.Available
+                BookStatusType.AVAILABLE.name, BookStatusType.RETURNED.name -> BookStatus.Available
                 BookStatusType.UNAVAILABLE.name -> BookStatus.UnAvailable
                 BookStatusType.BORROWED.name ->{
                     if(userId == libraryHistory.userId){
