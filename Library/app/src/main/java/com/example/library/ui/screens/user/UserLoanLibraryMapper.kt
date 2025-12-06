@@ -34,6 +34,25 @@ fun List<UserLoanLibrary>.toLoanStringList(): List<List<String>>{
     return resultList.toList()
 }
 
+fun List<UserLoanLibrary>.toUserHistoryStringList(): List<List<String>>{
+
+    val resultList:MutableList<List<String>> = mutableListOf()
+
+    this.forEachIndexed { index, userLoanLibrary ->
+        val author= userLoanLibrary.authors?.joinToString(",")?:""
+        val list=listOf(
+            (this.size-index).toString(),
+            userLoanLibrary.title?:"",
+            author,
+            formatDateOnly(userLoanLibrary.loanDate),
+            formatDateOnly(userLoanLibrary.returnDate),
+        )
+
+        resultList.add(list)
+    }
+    return resultList.toList()
+}
+
 private fun formatDateOnly(millis: Long): String {
     val seoulZone = ZoneId.of("Asia/Seoul")
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
