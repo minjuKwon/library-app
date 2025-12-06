@@ -15,7 +15,7 @@ data class LibraryEntity(
     val libraryId:String,
     val bookId:String,
     val statusType: String,
-    val userEmail: String?,
+    val userId: String?,
     val borrowedAt: Long?,
     @ColumnInfo(defaultValue = "null")
     val dueDate: Long?,

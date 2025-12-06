@@ -15,7 +15,6 @@ import com.example.library.data.FireStoreField.OFFSET
 import com.example.library.data.FireStoreField.RETURN_DATE
 import com.example.library.data.FireStoreField.STATUS
 import com.example.library.data.FireStoreField.STATUS_TYPE
-import com.example.library.data.FireStoreField.USER_EMAIL
 import com.example.library.data.FireStoreField.USER_ID
 import com.example.library.data.QueryNormalizer.normalizeQuery
 import com.example.library.data.entity.BookStatusType
@@ -269,7 +268,7 @@ class FirebaseBookRepository@Inject constructor(
                     transaction.set(loanDocRef, libraryHistory)
 
                     val data= mapOf(
-                        USER_EMAIL to historyRequest.userId,
+                        USER_ID to historyRequest.userId,
                         STATUS_TYPE to BookStatusType.BORROWED.name,
                         BORROWED_AT to historyRequest.eventDate,
                         DUE_DATE to historyRequest.dueDate
@@ -290,7 +289,7 @@ class FirebaseBookRepository@Inject constructor(
                         .document(historyRequest.libraryHistoryId)
                     transaction.set(userLoanDocRef, userLoanLibrary)
                 }else if(status == BookStatusType.BORROWED.name){
-                    val userId= librarySnap.get(USER_EMAIL)
+                    val userId= librarySnap.get(USER_ID)
 
                     if(userId== historyRequest.userId){
                         val libraryData= mapOf(

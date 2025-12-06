@@ -52,12 +52,12 @@ fun toBookStatus(libraryEntity: LibraryEntity) = when(libraryEntity.statusType){
     BookStatusType.AVAILABLE.name -> BookStatus.Available
     BookStatusType.UNAVAILABLE.name -> BookStatus.UnAvailable
     BookStatusType.BORROWED.name -> BookStatus.Borrowed(
-        libraryEntity.userEmail!!,
+        libraryEntity.userId!!,
         Instant.ofEpochMilli(libraryEntity.borrowedAt!!),
         Instant.ofEpochMilli(libraryEntity.dueDate!!)
     )
     BookStatusType.RESERVED.name -> BookStatus.Reserved(
-        libraryEntity.userEmail!!,
+        libraryEntity.userId!!,
         Instant.ofEpochMilli(libraryEntity.reservedAt!!)
     )
     else -> throw IllegalArgumentException("Unknown bookStatus: ${libraryEntity.statusType}")
@@ -82,7 +82,7 @@ fun Library.toLibraryEntity() = LibraryEntity(
     libraryId = this.libraryId,
     bookId= this.book.id,
     statusType= this.bookStatus.toStringType(),
-    userEmail= this.bookStatus.toStringEmail(),
+    userId= this.bookStatus.toStringUserId(),
     borrowedAt= this.bookStatus.toLongBorrowedAt(),
     dueDate = this.bookStatus.toLongDueDate(),
     reservedAt= this.bookStatus.toLongReservedAt(),
@@ -97,11 +97,11 @@ fun BookStatus.toStringType()  = when(this) {
     is BookStatus.Reserved -> BookStatusType.RESERVED.name
 }
 
-fun BookStatus.toStringEmail()  = when(this) {
+fun BookStatus.toStringUserId()  = when(this) {
     is BookStatus.Available -> null
     is BookStatus.UnAvailable -> null
-    is BookStatus.Borrowed -> this.userEmail
-    is BookStatus.Reserved -> this.userEmail
+    is BookStatus.Borrowed -> this.userId
+    is BookStatus.Reserved -> this.userId
 }
 
 fun BookStatus.toLongBorrowedAt()  = when(this) {

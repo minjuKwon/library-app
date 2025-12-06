@@ -14,8 +14,8 @@ data class Library(
 sealed class BookStatus {
     object Available: BookStatus()
     object UnAvailable: BookStatus()
-    data class Borrowed(val userEmail:String, val borrowedAt: Instant, val dueDate:Instant): BookStatus()
-    data class Reserved(val userEmail:String, val reservedAt: Instant): BookStatus()
+    data class Borrowed(val userId:String, val borrowedAt: Instant, val dueDate:Instant): BookStatus()
+    data class Reserved(val userId:String, val reservedAt: Instant): BookStatus()
 }
 
 enum class BookStatusType(val ko:String){

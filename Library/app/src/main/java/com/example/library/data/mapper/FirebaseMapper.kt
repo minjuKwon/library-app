@@ -10,7 +10,7 @@ fun Library.toFirebaseDto():LibraryFirebaseDto= LibraryFirebaseDto(
     libraryId= this.libraryId,
     book = this.book,
     statusType= this.bookStatus.toStringType(),
-    userEmail= this.bookStatus.toStringEmail(),
+    userId= this.bookStatus.toStringUserId(),
     borrowedAt= this.bookStatus.toLongBorrowedAt(),
     reservedAt= this.bookStatus.toLongReservedAt(),
     callNumber= this.callNumber,
@@ -31,12 +31,12 @@ fun toBookStatus(libraryFirebaseDto: LibraryFirebaseDto) = when(libraryFirebaseD
     BookStatusType.AVAILABLE.name -> BookStatus.Available
     BookStatusType.UNAVAILABLE.name -> BookStatus.UnAvailable
     BookStatusType.BORROWED.name -> BookStatus.Borrowed(
-        libraryFirebaseDto.userEmail!!,
+        libraryFirebaseDto.userId!!,
         Instant.ofEpochMilli(libraryFirebaseDto.borrowedAt!!),
         Instant.ofEpochMilli(libraryFirebaseDto.dueDate!!)
     )
     BookStatusType.RESERVED.name -> BookStatus.Reserved(
-        libraryFirebaseDto.userEmail!!,
+        libraryFirebaseDto.userId!!,
         Instant.ofEpochMilli(libraryFirebaseDto.reservedAt!!)
     )
     else -> throw IllegalArgumentException("Unknown bookStatus: ${libraryFirebaseDto.statusType}")

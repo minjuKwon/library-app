@@ -110,7 +110,7 @@ class LibraryDetailsViewModel @Inject constructor(
                 BookStatusType.BORROWED.name ->{
                     if(userId == libraryHistory.userId){
                         BookStatus.Borrowed(
-                            userEmail = libraryHistory.userId,
+                            userId = libraryHistory.userId,
                             borrowedAt = Instant.ofEpochMilli(libraryHistory.loanDate),
                             dueDate = Instant.ofEpochMilli(libraryHistory.dueDate)
                         )
@@ -120,7 +120,7 @@ class LibraryDetailsViewModel @Inject constructor(
                 }
                 BookStatusType.RESERVED.name ->{
                     BookStatus.Reserved(
-                        userEmail = libraryHistory.userId,
+                        userId = libraryHistory.userId,
                         reservedAt = Instant.ofEpochMilli(libraryHistory.loanDate),
                     )
                 }

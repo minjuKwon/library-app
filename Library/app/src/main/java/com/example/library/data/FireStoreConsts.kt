@@ -13,7 +13,6 @@ object FireStoreCollections {
 object FireStoreField{
     const val OFFSET="offset"
     const val USER_ID="userId"
-    const val USER_EMAIL="userEmail"
     const val BOOK_ID="bookId"
     const val IS_LIKED="isLiked"
     const val TIMESTAMP="timestamp"
