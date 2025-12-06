@@ -48,6 +48,9 @@ class UserViewModel @Inject constructor(
     private val _event= MutableSharedFlow<UserUiState>()
     val event= _event.asSharedFlow()
 
+    private val _userLoanHistoryList= mutableStateOf(listOf(listOf<String>()))
+    val userLoanHistoryList= _userLoanHistoryList
+
     private val _userLoanBookList= mutableStateOf(listOf(listOf<String>()))
     val userLoanBookList= _userLoanBookList
 
@@ -179,6 +182,20 @@ class UserViewModel @Inject constructor(
                 if(resultList.isSuccess){
                     _userLoanBookList.value= resultList.getOrNull()?.toLoanStringList()?: emptyList()
                     _event.emit(UserUiState.Success("getUserLoanBookList"))
+                }
+            }catch (e:Exception){
+                _event.emit(UserUiState.Failure(e.message?:"실패"))
+            }
+        }
+    }
+
+    fun getUserLoanHistoryList(){
+        scope.launch {
+            try{
+                val resultList= firebaseBookService.getUserLoanHistoryList(awaitUserId())
+                if(resultList.isSuccess){
+                    _userLoanHistoryList.value= resultList.getOrNull()?.toUserHistoryStringList()?: emptyList()
+                    _event.emit(UserUiState.Success("getUserLoanHistoryList"))
                 }
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))

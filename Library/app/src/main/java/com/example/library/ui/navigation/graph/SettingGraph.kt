@@ -122,7 +122,9 @@ fun NavGraphBuilder.settingDestination(
         }
 
         composable(route=LibraryDestination.LoanHistory.route){
+            val list by userViewModel.userLoanHistoryList
             LoanHistoryScreen(
+                list= list,
                 onBackPressed = {navController.popBackStack()}
             )
         }

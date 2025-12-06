@@ -26,18 +26,20 @@ import com.example.library.ui.common.ListContentParams
 
 @Composable
 fun LoanHistoryScreen(
+    list:List<List<String>>,
     onBackPressed:()->Unit
 ){
     val textList= listOf(
         R.string.index, R.string.title, R.string.author,
-        R.string.loan_date, R.string.return_date, R.string.status
+        R.string.loan_date, R.string.return_date
     )
-    val temp=  listOf(listOf("제목제목제목제목제목제목제목제", "김저자1, 이저자2, 박저자3","2025-00-00","2025-00-00","반납\n완료"))
+    val weightList= listOf(0.1f, 0.25f, 0.25f, 0.17f, 0.17f)
 
     UserUsageSection(
         screenTitle = stringResource(R.string.loan_history),
         titleList = textList,
-        contentList = temp,
+        contentList = list,
+        weightList= weightList,
         onBackPressed=onBackPressed
     )
 }
