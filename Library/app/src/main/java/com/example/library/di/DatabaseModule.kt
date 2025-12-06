@@ -25,7 +25,8 @@ object DatabaseModule {
     fun provideDatabase(@ApplicationContext context: Context):LibraryDatabase{
         return Room.databaseBuilder(
             context,LibraryDatabase::class.java,"library_database"
-        ).build()
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 
     @Singleton
