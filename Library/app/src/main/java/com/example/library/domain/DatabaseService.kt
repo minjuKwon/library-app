@@ -25,4 +25,5 @@ interface DatabaseService {
         page: String,
     ):Result<Unit>
     suspend fun getUserLoanBookList(userId: String):Result<List<UserLoanLibrary>>
+    suspend fun getUserLoanHistoryList(userId: String):Result<List<UserLoanLibrary>>
 }
