@@ -122,4 +122,8 @@ class FirebaseBookService@Inject constructor(
         return databaseRepository.getUserLoanBookList(userId)
     }
 
+    override suspend fun getUserLoanHistoryList(userId: String): Result<List<UserLoanLibrary>> {
+        return databaseRepository.getUserLoanHistoryList(userId)
+    }
+
 }
