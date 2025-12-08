@@ -333,8 +333,7 @@ class FirebaseBookRepository@Inject constructor(
         userId: String
     ): Result<List<UserLoanLibrary>> {
         try{
-            val snapshot= fireStore.collection(USER_LOAN_LIBRARY_COLLECTION)
-                .whereEqualTo(USER_ID, userId)
+            val snapshot= getUserLoanList(userId)
                 .whereEqualTo(STATUS, BookStatusType.BORROWED.name)
                 .get()
                 .await()
@@ -353,8 +352,7 @@ class FirebaseBookRepository@Inject constructor(
 
     override suspend fun getUserLoanHistoryList(userId: String): Result<List<UserLoanLibrary>> {
         try{
-            val snapshot= fireStore.collection(USER_LOAN_LIBRARY_COLLECTION)
-                .whereEqualTo(USER_ID, userId)
+            val snapshot= getUserLoanList(userId)
                 .whereEqualTo(STATUS, BookStatusType.RETURNED.name)
                 .orderBy(LOAN_DATE, Query.Direction.DESCENDING)
                 .get()
@@ -370,6 +368,11 @@ class FirebaseBookRepository@Inject constructor(
         }catch (e:Exception){
             return Result.failure(e)
         }
+    }
+
+    private fun getUserLoanList(userId: String): Query{
+        return fireStore.collection(USER_LOAN_LIBRARY_COLLECTION)
+            .whereEqualTo(USER_ID, userId)
     }
 
 }
