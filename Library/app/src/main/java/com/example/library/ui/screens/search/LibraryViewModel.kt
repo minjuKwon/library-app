@@ -12,6 +12,7 @@ import com.example.library.data.entity.LibraryLiked
 import com.example.library.data.entity.User
 import com.example.library.data.mapper.toListUiModel
 import com.example.library.di.ApplicationScope
+import com.example.library.domain.DueCheckResult
 import com.example.library.domain.LibrarySyncService
 import com.example.library.domain.SessionManager
 import com.example.library.service.FirebaseBookService
@@ -54,15 +55,20 @@ class LibraryViewModel @Inject constructor(
     private val _textFieldKeyword = mutableStateOf("android")
     val textFieldKeyword=_textFieldKeyword
 
+    private val _dueCheckResult = mutableStateOf(DueCheckResult())
+    val dueCheckResult=_dueCheckResult
+
     private val _currentPage = MutableStateFlow(1)
     val currentPage: StateFlow<Int> = _currentPage
 
     private val _backPressedTime= MutableStateFlow(0L)
     private val _loadCompleteInfo = MutableStateFlow(false)
+    private val _getCompleteDueStatus = MutableStateFlow(false)
     private val likeCountListeners = mutableMapOf<String, ListenerRegistration>()
     private var bookStatusListener:ListenerRegistration? =null
 
     init {
+        getLoanDueStatus()
         getInformation()
         getItem()
     }
@@ -77,6 +83,8 @@ class LibraryViewModel @Inject constructor(
         page:Int=1
     ){
         scope.launch {
+            _getCompleteDueStatus.filter { it }.first()
+
             _loadCompleteInfo.value = false
             libraryUiState= LibraryUiState.Loading
 
@@ -267,6 +275,20 @@ class LibraryViewModel @Inject constructor(
                     library.copy(isLiked = false)
                 }
                 it.copy(list=updatedList)
+            }
+        }
+    }
+
+    private fun getLoanDueStatus(){
+        scope.launch {
+            val uid= awaitUserId()
+            _getCompleteDueStatus.value = false
+            val result= firebaseBookService.getLoanDueStatus(uid)
+            if(result.isFailure){
+                LibraryUiState.Error
+            }else{
+                _dueCheckResult.value= result.getOrNull()?:DueCheckResult()
+                _getCompleteDueStatus.value = true
             }
         }
     }

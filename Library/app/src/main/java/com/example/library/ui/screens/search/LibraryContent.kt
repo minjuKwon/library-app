@@ -19,13 +19,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,8 +41,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.window.Dialog
 import com.example.library.R
 import com.example.library.core.PagingPolicy.PAGE_SIZE
+import com.example.library.domain.DueCheckResult
 import com.example.library.ui.common.LibraryListItem
 import com.example.library.ui.common.DetailsScreenParams
 import com.example.library.ui.common.LibraryUiModel
@@ -58,6 +66,9 @@ fun LibraryListOnlyContent(
     onNavigationToLogIn:()->Unit,
     modifier:Modifier= Modifier
 ){
+    var openAlertFirst by rememberSaveable { mutableStateOf(true) }
+    var openAlertDialog by rememberSaveable { mutableStateOf(false) }
+
     Column(
         modifier= modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -94,6 +105,20 @@ fun LibraryListOnlyContent(
         )
 
     }
+
+    val dueCheckResult= listContentParams.dueCheckResult
+    if(dueCheckResult.overdue.isNotEmpty()||dueCheckResult.today.isNotEmpty()){
+        openAlertDialog=true
+    }
+
+    UserLoanStatusDialog(
+        isShow = openAlertDialog&&openAlertFirst,
+        dueCheckResult = dueCheckResult,
+        onDismissRequest = {
+            openAlertDialog=false
+            openAlertFirst=false
+        },
+    )
 }
 
 @Composable
@@ -297,6 +322,46 @@ private fun PageNumberButton(
                 modifier=Modifier
                     .clickable { updatePage(startPage + pageGroupSize) }
             )
+        }
+    }
+}
+
+@Composable
+private fun UserLoanStatusDialog(
+    isShow:Boolean,
+    dueCheckResult: DueCheckResult,
+    onDismissRequest: () -> Unit
+){
+    var titleText=""
+    val contentText= StringBuilder()
+
+    if(dueCheckResult.overdue.isNotEmpty()){
+        titleText= stringResource(
+            R.string.loan_status_dialog_content_overdue,
+            dueCheckResult.overdue.size
+        )
+        dueCheckResult.overdue.forEach { contentText.append(it.title).append("\n")}
+    }else if(dueCheckResult.today.isNotEmpty()){
+        titleText= stringResource(
+            R.string.loan_status_dialog_content_today,
+            dueCheckResult.today.size
+        )
+        dueCheckResult.today.forEach { contentText.append(it.title).append("\n")}
+    }
+
+    if(isShow){
+        Dialog(onDismissRequest={onDismissRequest()}){
+            Card{
+                Column {
+                    Text(text=titleText)
+                    Text(text=contentText.toString())
+                    TextButton(
+                        onClick = { onDismissRequest() },
+                    ) {
+                        Text(stringResource(R.string.confirm))
+                    }
+                }
+            }
         }
     }
 }

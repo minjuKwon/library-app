@@ -39,6 +39,7 @@ fun LibraryApp(
         }?.navigationMenuType?: LibraryDestination.Books
 
     val textFieldKeyword by libraryViewModel.textFieldKeyword
+    val dueCheckResult by libraryViewModel.dueCheckResult
     val currentPage by libraryViewModel.currentPage.collectAsState()
 
     val currentBook by libraryDetailsViewModel.currentLibrary
@@ -87,6 +88,7 @@ fun LibraryApp(
         listContentParams = ListContentParams(
             scrollState=scrollState,
             currentPage=currentPage,
+            dueCheckResult= dueCheckResult,
             updatePage={
                 libraryViewModel.getInformation(page=it)
                 libraryViewModel.getItem()
