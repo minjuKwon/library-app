@@ -10,9 +10,11 @@ import com.example.library.data.entity.UserLoanLibrary
 import com.example.library.data.repository.FirebaseException
 import com.example.library.domain.DatabaseRepository
 import com.example.library.domain.DatabaseService
+import com.example.library.domain.DueCheckResult
 import com.example.library.domain.HistoryRequest
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
+import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 class FirebaseBookService@Inject constructor(
@@ -122,6 +124,41 @@ class FirebaseBookService@Inject constructor(
 
     override suspend fun getUserLoanHistoryList(userId: String): Result<List<UserLoanLibrary>> {
         return databaseRepository.getUserLoanHistoryList(userId)
+    }
+
+    override suspend fun getLoanDueStatus(
+        userId: String
+    ): Result<DueCheckResult> {
+
+        val list= databaseRepository.getUserLoanBookList(userId)
+
+        return if(list.isFailure)
+            Result.failure(list.exceptionOrNull()?:GetLoanDueStatusFailedException())
+        else{
+            val resultList= list.getOrNull()
+            if (resultList.isNullOrEmpty()) {
+                Result.success(DueCheckResult())
+            }else{
+                val now= timeProvider.now()
+                val today= timeProvider.getLocalDate(now)
+
+                val beforeList = mutableListOf<UserLoanLibrary>()
+                val todayList = mutableListOf<UserLoanLibrary>()
+                val overdueList = mutableListOf<UserLoanLibrary>()
+
+                for(userLoanHistory in resultList){
+                    val due = timeProvider.getLocalDate(userLoanHistory.dueDate)
+                    val diff = ChronoUnit.DAYS.between(today, due)
+
+                    when (diff) {
+                        1L -> beforeList += userLoanHistory
+                        0L -> todayList += userLoanHistory
+                        -1L  -> overdueList += userLoanHistory
+                    }
+                }
+                Result.success(DueCheckResult(beforeList, todayList, overdueList))
+            }
+        }
     }
 
 }
