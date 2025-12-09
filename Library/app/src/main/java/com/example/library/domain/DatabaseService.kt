@@ -26,4 +26,11 @@ interface DatabaseService {
     ):Result<Unit>
     suspend fun getUserLoanBookList(userId: String):Result<List<UserLoanLibrary>?>
     suspend fun getUserLoanHistoryList(userId: String):Result<List<UserLoanLibrary>>
+    suspend fun getLoanDueStatus(userId: String):Result<DueCheckResult>
 }
+
+data class DueCheckResult(
+    val before: List<UserLoanLibrary> = emptyList(),
+    val today: List<UserLoanLibrary> = emptyList(),
+    val overdue: List<UserLoanLibrary> = emptyList()
+)
