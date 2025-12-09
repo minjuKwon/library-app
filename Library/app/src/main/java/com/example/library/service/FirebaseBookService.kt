@@ -82,7 +82,7 @@ class FirebaseBookService@Inject constructor(
     ): Result<Unit> {
         return try{
             val eventDate= timeProvider.now()
-            val dueDate= loanDateCalculator.calculateDueDate(eventDate)
+            val dueDate= timeProvider.calculateDueDate(eventDate)
 
             val id="${userId}_${bookId}_${eventDate}"
 
