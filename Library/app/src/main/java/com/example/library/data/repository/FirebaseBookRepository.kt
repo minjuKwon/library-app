@@ -331,18 +331,21 @@ class FirebaseBookRepository@Inject constructor(
 
     override suspend fun getUserLoanBookList(
         userId: String
-    ): Result<List<UserLoanLibrary>> {
+    ): Result<List<UserLoanLibrary>?> {
         try{
             val snapshot= getUserLoanList(userId)
                 .whereEqualTo(STATUS, BookStatusType.BORROWED.name)
                 .get()
                 .await()
 
-            val list= snapshot.documents.map { doc ->
-                doc.toObject(UserLoanLibrary::class.java)!!
+            if(snapshot.isEmpty){
+                return Result.success(null)
+            }else{
+                val list= snapshot.documents.map { doc ->
+                    doc.toObject(UserLoanLibrary::class.java)!!
+                }
+                return Result.success(list)
             }
-
-            return Result.success(list)
         }catch (e: FirebaseFirestoreException){
             return Result.failure(FirebaseException(e.code.name))
         }catch (e:Exception){
