@@ -58,7 +58,7 @@ class LibraryViewModel @Inject constructor(
     val currentPage: StateFlow<Int> = _currentPage
 
     private val _backPressedTime= MutableStateFlow(0L)
-    private val _loadComplete = MutableStateFlow(false)
+    private val _loadCompleteInfo = MutableStateFlow(false)
     private val likeCountListeners = mutableMapOf<String, ListenerRegistration>()
     private var bookStatusListener:ListenerRegistration? =null
 
@@ -77,7 +77,7 @@ class LibraryViewModel @Inject constructor(
         page:Int=1
     ){
         scope.launch {
-            _loadComplete.value = false
+            _loadCompleteInfo.value = false
             libraryUiState= LibraryUiState.Loading
 
             libraryUiState = try{
@@ -97,7 +97,7 @@ class LibraryViewModel @Inject constructor(
                         if(likedResult!=null){
                             var uiList= list.toListUiModel()
                             uiList= updateLikedList(likedResult, uiList)
-                            _loadComplete.value = true
+                            _loadCompleteInfo.value = true
 
                             LibraryUiState.Success(totalItemCount,uiList)
                         }else{
@@ -115,7 +115,7 @@ class LibraryViewModel @Inject constructor(
 
     fun getItem(){
         scope.launch {
-            _loadComplete.filter { it }.first()
+            _loadCompleteInfo.filter { it }.first()
             getBookStatus()
             getLikedCount()
         }
