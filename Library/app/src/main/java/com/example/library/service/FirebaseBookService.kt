@@ -11,15 +11,13 @@ import com.example.library.data.repository.FirebaseException
 import com.example.library.domain.DatabaseRepository
 import com.example.library.domain.DatabaseService
 import com.example.library.domain.HistoryRequest
-import com.example.library.domain.LoanDateCalculator
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
 import javax.inject.Inject
 
 class FirebaseBookService@Inject constructor(
     private val databaseRepository: DatabaseRepository,
-    private val timeProvider: TimeProvider,
-    private val loanDateCalculator: LoanDateCalculator
+    private val timeProvider: TimeProvider
 ):DatabaseService {
 
     override suspend fun saveLibraryBooks(keyword: String, page: String, list: List<Library>): Result<Unit> {
