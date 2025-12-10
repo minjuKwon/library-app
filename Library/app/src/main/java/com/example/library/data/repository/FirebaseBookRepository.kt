@@ -7,11 +7,13 @@ import com.example.library.data.FireStoreCollections.PAGE_NUMBER_COLLECTION
 import com.example.library.data.FireStoreCollections.SEARCH_RESULTS_COLLECTION
 import com.example.library.data.FireStoreCollections.USER_LOAN_LIBRARY_COLLECTION
 import com.example.library.data.FireStoreField.BOOK_ID
+import com.example.library.data.FireStoreField.BOOK__ID
 import com.example.library.data.FireStoreField.BORROWED_AT
 import com.example.library.data.FireStoreField.DUE_DATE
 import com.example.library.data.FireStoreField.IS_LIKED
 import com.example.library.data.FireStoreField.LOAN_DATE
 import com.example.library.data.FireStoreField.OFFSET
+import com.example.library.data.FireStoreField.OVERDUE_DATE
 import com.example.library.data.FireStoreField.RETURN_DATE
 import com.example.library.data.FireStoreField.STATUS
 import com.example.library.data.FireStoreField.STATUS_TYPE
@@ -366,6 +368,78 @@ class FirebaseBookRepository@Inject constructor(
             }
 
             return Result.success(list)
+        }catch (e: FirebaseFirestoreException){
+            return Result.failure(FirebaseException(e.code.name))
+        }catch (e:Exception){
+            return Result.failure(e)
+        }
+    }
+
+    override suspend fun updateUserOverdueBook(
+        keyword: String,
+        page: String,
+        overdueDate: Long,
+        book: UserLoanLibrary
+    ): Result<Unit> {
+        try{
+            val normalizedQuery= normalizeQuery(keyword)
+            val libraryDocRef= fireStore.collection(SEARCH_RESULTS_COLLECTION)
+                .document(normalizedQuery)
+                .collection(PAGE_NUMBER_COLLECTION)
+                .document(page)
+                .collection(LIBRARY_COLLECTION)
+                .whereEqualTo(BOOK__ID, book.bookId)
+                .get()
+                .await()
+                .documents
+                .first()
+                .reference
+
+            val historyDocRef= fireStore.collection(LIBRARY_HISTORY)
+                .whereEqualTo(USER_ID, book.userId)
+                .whereEqualTo(BOOK_ID, book.bookId)
+                .whereEqualTo(STATUS, BookStatusType.BORROWED.name)
+                .get()
+                .await()
+                .documents
+                .first()
+                .reference
+
+            val userLoanBookDocRef= fireStore.collection(USER_LOAN_LIBRARY_COLLECTION)
+                .whereEqualTo(USER_ID, book.userId)
+                .whereEqualTo(BOOK_ID, book.bookId)
+                .whereEqualTo(STATUS, BookStatusType.BORROWED.name)
+                .get()
+                .await()
+                .documents
+                .first()
+                .reference
+
+            fireStore.runTransaction { transaction ->
+                val librarySnap= transaction.get(libraryDocRef)
+                val userId= librarySnap.get(USER_ID)
+
+                if(userId== book.userId){
+                    val libraryData= mapOf(
+                        STATUS_TYPE to BookStatusType.OVERDUE.name,
+                        OVERDUE_DATE to overdueDate
+                    )
+                    transaction.update(libraryDocRef, libraryData)
+
+                    val historyData= mapOf(
+                        STATUS to BookStatusType.OVERDUE.name
+                    )
+                    transaction.update(historyDocRef, historyData)
+
+                    val userLoanBookData= mapOf(
+                        STATUS to BookStatusType.OVERDUE.name
+                    )
+                    transaction.update(userLoanBookDocRef, userLoanBookData)
+                }else{
+                    return@runTransaction
+                }
+            }
+            return Result.success(Unit)
         }catch (e: FirebaseFirestoreException){
             return Result.failure(FirebaseException(e.code.name))
         }catch (e:Exception){
