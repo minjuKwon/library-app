@@ -26,7 +26,7 @@ interface DatabaseService {
     ):Result<Unit>
     suspend fun getUserLoanBookList(userId: String):Result<List<UserLoanLibrary>?>
     suspend fun getUserLoanHistoryList(userId: String):Result<List<UserLoanLibrary>>
-    suspend fun getLoanDueStatus(userId: String):Result<DueCheckResult>
+    suspend fun getLoanDueStatus(userId: String, keyword:String, page: String):Result<DueCheckResult>
 }
 
 data class DueCheckResult(
