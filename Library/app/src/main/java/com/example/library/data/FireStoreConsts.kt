@@ -14,6 +14,7 @@ object FireStoreField{
     const val OFFSET="offset"
     const val USER_ID="userId"
     const val BOOK_ID="bookId"
+    const val BOOK__ID="book.id"
     const val IS_LIKED="isLiked"
     const val TIMESTAMP="timestamp"
     const val STATUS="status"
@@ -22,4 +23,5 @@ object FireStoreField{
     const val LOAN_DATE="loanDate"
     const val DUE_DATE="dueDate"
     const val RETURN_DATE="returnDate"
+    const val OVERDUE_DATE="overdueDate"
 }
