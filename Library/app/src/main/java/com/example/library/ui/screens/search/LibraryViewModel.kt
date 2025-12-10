@@ -283,7 +283,11 @@ class LibraryViewModel @Inject constructor(
         scope.launch {
             val uid= awaitUserId()
             _getCompleteDueStatus.value = false
-            val result= firebaseBookService.getLoanDueStatus(uid)
+            val result= firebaseBookService.getLoanDueStatus(
+                uid,
+                _textFieldKeyword.value,
+                _currentPage.value.toString()
+            )
             if(result.isFailure){
                 LibraryUiState.Error
             }else{
