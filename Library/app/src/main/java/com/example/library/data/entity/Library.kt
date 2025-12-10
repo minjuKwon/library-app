@@ -16,6 +16,7 @@ sealed class BookStatus {
     object UnAvailable: BookStatus()
     data class Borrowed(val userId:String, val borrowedAt: Instant, val dueDate:Instant): BookStatus()
     data class Reserved(val userId:String, val reservedAt: Instant): BookStatus()
+    data class OverDue(val userId:String, val overdueDate: Instant): BookStatus()
 }
 
 enum class BookStatusType(val ko:String){
@@ -23,5 +24,6 @@ enum class BookStatusType(val ko:String){
     UNAVAILABLE("대출 불가"),
     BORROWED("대출 중"),
     RESERVED("예약 중"),
-    RETURNED("반납 완료")
+    RETURNED("반납 완료"),
+    OVERDUE("연체")
 }

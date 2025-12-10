@@ -19,6 +19,8 @@ data class LibraryEntity(
     val borrowedAt: Long?,
     @ColumnInfo(defaultValue = "null")
     val dueDate: Long?,
+    @ColumnInfo(defaultValue = "null")
+    val overdueDate:Long?,
     val reservedAt: Long?,
     val callNumber:String,
     val location:String

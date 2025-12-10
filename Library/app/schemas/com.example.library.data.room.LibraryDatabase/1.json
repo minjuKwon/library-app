@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d0cd24c9250784c2b67bd1dc3e489b99",
+    "identityHash": "9b63a937b550576ea26253a46071e997",
     "entities": [
       {
         "tableName": "library",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`libraryId` TEXT NOT NULL, `bookId` TEXT NOT NULL, `statusType` TEXT NOT NULL, `userId` TEXT, `borrowedAt` INTEGER, `dueDate` INTEGER DEFAULT null, `reservedAt` INTEGER, `callNumber` TEXT NOT NULL, `location` TEXT NOT NULL, PRIMARY KEY(`libraryId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`libraryId` TEXT NOT NULL, `bookId` TEXT NOT NULL, `statusType` TEXT NOT NULL, `userId` TEXT, `borrowedAt` INTEGER, `dueDate` INTEGER DEFAULT null, `overdueDate` INTEGER DEFAULT null, `reservedAt` INTEGER, `callNumber` TEXT NOT NULL, `location` TEXT NOT NULL, PRIMARY KEY(`libraryId`))",
         "fields": [
           {
             "fieldPath": "libraryId",
@@ -41,6 +41,13 @@
           {
             "fieldPath": "dueDate",
             "columnName": "dueDate",
+            "affinity": "INTEGER",
+            "notNull": false,
+            "defaultValue": "null"
+          },
+          {
+            "fieldPath": "overdueDate",
+            "columnName": "overdueDate",
             "affinity": "INTEGER",
             "notNull": false,
             "defaultValue": "null"
@@ -336,7 +343,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd0cd24c9250784c2b67bd1dc3e489b99')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9b63a937b550576ea26253a46071e997')"
     ]
   }
 }
