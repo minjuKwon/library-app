@@ -127,9 +127,10 @@ class FirebaseBookService@Inject constructor(
     }
 
     override suspend fun getLoanDueStatus(
-        userId: String
+        userId: String,
+        keyword: String,
+        page: String
     ): Result<DueCheckResult> {
-
         val list= databaseRepository.getUserLoanBookList(userId)
 
         return if(list.isFailure)
@@ -153,9 +154,18 @@ class FirebaseBookService@Inject constructor(
                     when (diff) {
                         1L -> beforeList += userLoanHistory
                         0L -> todayList += userLoanHistory
-                        -1L  -> overdueList += userLoanHistory
+                        -1L  -> {
+                            overdueList += userLoanHistory
+                            databaseRepository.updateUserOverdueBook(
+                                keyword,
+                                page,
+                                timeProvider.calculateOverDueDate(userLoanHistory.dueDate),
+                                userLoanHistory
+                            )
+                        }
                     }
                 }
+
                 Result.success(DueCheckResult(beforeList, todayList, overdueList))
             }
         }
