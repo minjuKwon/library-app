@@ -19,6 +19,12 @@ interface DatabaseRepository {
     suspend fun updateLibraryHistory(historyRequest: HistoryRequest):Result<Unit>
     suspend fun getUserLoanBookList(userId: String):Result<List<UserLoanLibrary>?>
     suspend fun getUserLoanHistoryList(userId: String):Result<List<UserLoanLibrary>>
+    suspend fun updateUserOverdueBook(
+        keyword:String,
+        page: String,
+        overdueDate:Long,
+        book:UserLoanLibrary
+    ):Result<Unit>
 }
 
 data class HistoryRequest(
