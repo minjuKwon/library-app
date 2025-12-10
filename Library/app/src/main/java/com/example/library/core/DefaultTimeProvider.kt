@@ -19,6 +19,17 @@ class DefaultTimeProvider:TimeProvider {
         return dueDateTime.toInstant().toEpochMilli()
     }
 
+    override fun calculateOverDueDate(currentMillis: Long, zoneId: String): Long {
+        val seoulZone = ZoneId.of(zoneId)
+        val loanDateTime = getLocalDate(currentMillis, zoneId)
+
+        val dueDateTime = loanDateTime
+            .plusDays(1)
+            .atStartOfDay(seoulZone)
+
+        return dueDateTime.toInstant().toEpochMilli()
+    }
+
     override fun getLocalDate(currentMillis: Long, zoneId:String):LocalDate{
         val seoulZone = ZoneId.of(zoneId)
         val loanDateTime = Instant.ofEpochMilli(currentMillis).atZone(seoulZone)
