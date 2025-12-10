@@ -60,6 +60,10 @@ fun toBookStatus(libraryEntity: LibraryEntity) = when(libraryEntity.statusType){
         libraryEntity.userId!!,
         Instant.ofEpochMilli(libraryEntity.reservedAt!!)
     )
+    BookStatusType.OVERDUE.name -> BookStatus.OverDue(
+        libraryEntity.userId!!,
+        Instant.ofEpochMilli(libraryEntity.overdueDate!!)
+    )
     else -> throw IllegalArgumentException("Unknown bookStatus: ${libraryEntity.statusType}")
 }
 
@@ -85,6 +89,7 @@ fun Library.toLibraryEntity() = LibraryEntity(
     userId= this.bookStatus.toStringUserId(),
     borrowedAt= this.bookStatus.toLongBorrowedAt(),
     dueDate = this.bookStatus.toLongDueDate(),
+    overdueDate = this.bookStatus.toLongOverdueDate(),
     reservedAt= this.bookStatus.toLongReservedAt(),
     callNumber= this.callNumber,
     location = this.location
@@ -95,6 +100,7 @@ fun BookStatus.toStringType()  = when(this) {
     is BookStatus.UnAvailable -> BookStatusType.UNAVAILABLE.name
     is BookStatus.Borrowed -> BookStatusType.BORROWED.name
     is BookStatus.Reserved -> BookStatusType.RESERVED.name
+    is BookStatus.OverDue -> BookStatusType.OVERDUE.name
 }
 
 fun BookStatus.toStringUserId()  = when(this) {
@@ -102,6 +108,7 @@ fun BookStatus.toStringUserId()  = when(this) {
     is BookStatus.UnAvailable -> null
     is BookStatus.Borrowed -> this.userId
     is BookStatus.Reserved -> this.userId
+    is BookStatus.OverDue -> this.userId
 }
 
 fun BookStatus.toLongBorrowedAt()  = when(this) {
@@ -109,6 +116,7 @@ fun BookStatus.toLongBorrowedAt()  = when(this) {
     is BookStatus.UnAvailable -> null
     is BookStatus.Borrowed -> this.borrowedAt.toEpochMilli()
     is BookStatus.Reserved -> null
+    is BookStatus.OverDue -> null
 }
 
 fun BookStatus.toLongDueDate()  = when(this) {
@@ -116,6 +124,15 @@ fun BookStatus.toLongDueDate()  = when(this) {
     is BookStatus.UnAvailable -> null
     is BookStatus.Borrowed -> this.dueDate.toEpochMilli()
     is BookStatus.Reserved -> null
+    is BookStatus.OverDue -> null
+}
+
+fun BookStatus.toLongOverdueDate()  = when(this) {
+    is BookStatus.Available -> null
+    is BookStatus.UnAvailable -> null
+    is BookStatus.Borrowed -> null
+    is BookStatus.Reserved -> null
+    is BookStatus.OverDue -> this.overdueDate.toEpochMilli()
 }
 
 fun BookStatus.toLongReservedAt()  = when(this) {
@@ -123,6 +140,7 @@ fun BookStatus.toLongReservedAt()  = when(this) {
     is BookStatus.UnAvailable -> null
     is BookStatus.Borrowed -> null
     is BookStatus.Reserved -> this.reservedAt.toEpochMilli()
+    is BookStatus.OverDue -> null
 }
 
 fun BookInfo.toBookEntity(id:String) = BookEntity(

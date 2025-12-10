@@ -18,6 +18,7 @@ fun List<UserLoanLibrary>.toLoanStringList(): List<List<String>>{
             BookStatusType.BORROWED.name -> BookStatusType.BORROWED.ko
             BookStatusType.RESERVED.name -> BookStatusType.RESERVED.ko
             BookStatusType.RETURNED.name -> BookStatusType.RETURNED.ko
+            BookStatusType.OVERDUE.name -> BookStatusType.OVERDUE.ko
             else -> ""
         }
         val list=listOf(

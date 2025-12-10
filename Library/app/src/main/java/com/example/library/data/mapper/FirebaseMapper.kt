@@ -39,5 +39,9 @@ fun toBookStatus(libraryFirebaseDto: LibraryFirebaseDto) = when(libraryFirebaseD
         libraryFirebaseDto.userId!!,
         Instant.ofEpochMilli(libraryFirebaseDto.reservedAt!!)
     )
+    BookStatusType.OVERDUE.name -> BookStatus.OverDue(
+        libraryFirebaseDto.userId!!,
+        Instant.ofEpochMilli(libraryFirebaseDto.overdueDate!!)
+    )
     else -> throw IllegalArgumentException("Unknown bookStatus: ${libraryFirebaseDto.statusType}")
 }

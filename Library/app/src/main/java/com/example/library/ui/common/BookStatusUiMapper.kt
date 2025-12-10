@@ -9,5 +9,6 @@ object BookStatusUiMapper {
         is BookStatus.UnAvailable -> BookStatusType.UNAVAILABLE.ko
         is BookStatus.Borrowed -> BookStatusType.BORROWED.ko
         is BookStatus.Reserved -> BookStatusType.RESERVED.ko
+        is BookStatus.OverDue -> BookStatusType.OVERDUE.ko
     }
 }
