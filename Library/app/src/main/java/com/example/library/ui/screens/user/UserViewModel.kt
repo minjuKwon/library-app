@@ -54,6 +54,12 @@ class UserViewModel @Inject constructor(
     private val _userLoanBookList= mutableStateOf(listOf(listOf<String>()))
     val userLoanBookList= _userLoanBookList
 
+    private val _userOverdueBookList= mutableStateOf(listOf(listOf<String>()))
+    val userOverdueBookList= _userOverdueBookList
+
+    private val _suspensionEnd= mutableStateOf("")
+    val suspensionEnd= _suspensionEnd
+
     private val _isUserVerified= mutableStateOf(true)
     val isUserVerified= _isUserVerified
 
@@ -180,7 +186,16 @@ class UserViewModel @Inject constructor(
             try{
                 val resultList= firebaseBookService.getUserLoanBookList(awaitUserId())
                 if(resultList.isSuccess){
-                    _userLoanBookList.value= resultList.getOrNull()?.toLoanStringList()?: emptyList()
+                    val userLoanBookList= resultList.getOrNull()
+                    if(userLoanBookList==null){
+                        _userLoanBookList.value= emptyList()
+                        _userOverdueBookList.value= emptyList()
+                    }else{
+                        _userLoanBookList.value= userLoanBookList.toLoanStringList()
+                        _userOverdueBookList.value= userLoanBookList.toOverdueStringList()
+                        _suspensionEnd.value= userLoanBookList.getSuspensionEndDate()
+                    }
+
                     _event.emit(UserUiState.Success("getUserLoanBookList"))
                 }
             }catch (e:Exception){

@@ -130,9 +130,14 @@ fun NavGraphBuilder.settingDestination(
         }
 
         composable(route=LibraryDestination.LoanStatus.route){
-            val list by userViewModel.userLoanBookList
+            val loanList by userViewModel.userLoanBookList
+            val overdueList by userViewModel.userOverdueBookList
+            val suspensionDate by userViewModel.suspensionEnd
+
             LoanStatusScreen(
-                list = list,
+                loanList = loanList,
+                overdueList= overdueList,
+                suspensionDate=suspensionDate,
                 onBackPressed = {navController.popBackStack()}
             )
         }

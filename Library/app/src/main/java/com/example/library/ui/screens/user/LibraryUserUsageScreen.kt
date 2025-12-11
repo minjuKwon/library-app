@@ -46,7 +46,9 @@ fun LoanHistoryScreen(
 
 @Composable
 fun LoanStatusScreen(
-    list:List<List<String>>,
+    loanList:List<List<String>>,
+    overdueList:List<List<String>>,
+    suspensionDate:String,
     onBackPressed:()->Unit
 ){
     val textList= listOf(
@@ -57,16 +59,22 @@ fun LoanStatusScreen(
     UserUsageSection(
         screenTitle = stringResource(R.string.loan_status),
         titleList = textList,
-        contentList = list,
+        contentList = loanList+overdueList,
         onBackPressed=onBackPressed
     ){
-        LoanStatusSection(list.size)
+        LoanStatusSection(
+            borrowedBookCnt = loanList.size,
+            overdueBookCnt = overdueList.size,
+            suspensionDate = suspensionDate
+        )
     }
 }
 
 @Composable
 private fun LoanStatusSection(
-    borrowedBookCnt:Int
+    borrowedBookCnt:Int,
+    overdueBookCnt:Int,
+    suspensionDate: String
 ){
     Row(
         horizontalArrangement = Arrangement.Center,
@@ -85,12 +93,12 @@ private fun LoanStatusSection(
         )
         LoanStatusSectionCard(
             R.string.number_of_overdue_book,
-            "0",
+            overdueBookCnt.toString(),
             Modifier.padding(end= dimensionResource(R.dimen.padding_md))
         )
         LoanStatusSectionCard(
             R.string.suspension_end,
-            "0"
+            suspensionDate
         )
     }
 }
