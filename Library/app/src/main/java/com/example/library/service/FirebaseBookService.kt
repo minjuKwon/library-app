@@ -150,11 +150,10 @@ class FirebaseBookService@Inject constructor(
                 for(userLoanHistory in resultList){
                     val due = timeProvider.getLocalDate(userLoanHistory.dueDate)
                     val diff = ChronoUnit.DAYS.between(today, due)
-
-                    when (diff) {
-                        1L -> beforeList += userLoanHistory
-                        0L -> todayList += userLoanHistory
-                        -1L  -> {
+                    when {
+                        diff==1L -> beforeList += userLoanHistory
+                        diff==0L -> todayList += userLoanHistory
+                        diff < 0L  -> {
                             overdueList += userLoanHistory
                             databaseRepository.updateUserOverdueBook(
                                 keyword,
