@@ -1,5 +1,8 @@
 package com.example.library.service
 
+import com.example.library.core.DateTimeConverter.calculateDueDate
+import com.example.library.core.DateTimeConverter.calculateOverDueDateLong
+import com.example.library.core.DateTimeConverter.getLocalDate
 import com.example.library.core.TimeProvider
 import com.example.library.data.FireStoreField.IS_LIKED
 import com.example.library.data.FireStoreField.TIMESTAMP
@@ -84,7 +87,7 @@ class FirebaseBookService@Inject constructor(
     ): Result<Unit> {
         return try{
             val eventDate= timeProvider.now()
-            val dueDate= timeProvider.calculateDueDate(eventDate)
+            val dueDate= calculateDueDate(eventDate)
 
             val id="${userId}_${bookId}_${eventDate}"
 
@@ -141,14 +144,14 @@ class FirebaseBookService@Inject constructor(
                 Result.success(DueCheckResult())
             }else{
                 val now= timeProvider.now()
-                val today= timeProvider.getLocalDate(now)
+                val today= getLocalDate(now)
 
                 val beforeList = mutableListOf<UserLoanLibrary>()
                 val todayList = mutableListOf<UserLoanLibrary>()
                 val overdueList = mutableListOf<UserLoanLibrary>()
 
                 for(userLoanHistory in resultList){
-                    val due = timeProvider.getLocalDate(userLoanHistory.dueDate)
+                    val due = getLocalDate(userLoanHistory.dueDate)
                     val diff = ChronoUnit.DAYS.between(today, due)
                     when {
                         diff==1L -> beforeList += userLoanHistory
@@ -158,7 +161,7 @@ class FirebaseBookService@Inject constructor(
                             databaseRepository.updateUserOverdueBook(
                                 keyword,
                                 page,
-                                timeProvider.calculateOverDueDate(userLoanHistory.dueDate),
+                                calculateOverDueDateLong(userLoanHistory.dueDate),
                                 userLoanHistory
                             )
                         }

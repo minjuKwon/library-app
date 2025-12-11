@@ -45,15 +45,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
+import com.example.library.core.DateTimeConverter.formatDateOnly
 import com.example.library.data.entity.BookInfo
 import com.example.library.data.entity.BookStatus
 import com.example.library.ui.common.BackIconButton
 import com.example.library.ui.common.BookStatusUiMapper.toStringName
 import com.example.library.ui.common.TextRadioButton
 import com.example.library.ui.common.DetailsScreenParams
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun LibraryDetailsScreen(
@@ -312,16 +310,6 @@ private fun DetailsScreenLibraryInformation(
             }
         }
     }
-}
-
-private fun formatDateOnly(date: Instant): String  {
-    val seoulZone = ZoneId.of("Asia/Seoul")
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-
-    return date
-        .atZone(seoulZone)
-        .toLocalDate()
-        .format(formatter)
 }
 
 @Composable

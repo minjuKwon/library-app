@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.library.core.DateTimeConverter.calculateOverDueDate
 import com.example.library.data.entity.BookStatus
 import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.Library
@@ -25,7 +26,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Instant
-import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
@@ -123,7 +123,7 @@ class LibraryDetailsViewModel @Inject constructor(
                     if(userId== libraryHistory.userId){
                         BookStatus.OverDue(
                             userId = libraryHistory.userId,
-                            overdueDate = getOverDueDate(libraryHistory.dueDate)
+                            overdueDate = calculateOverDueDate(libraryHistory.dueDate)
                         )
                     }else{
                         BookStatus.UnAvailable
@@ -140,17 +140,6 @@ class LibraryDetailsViewModel @Inject constructor(
             _currentLibrary.value= _currentLibrary.value.copy(bookStatus= bookStatus)
         }
         else _currentLibrary.value
-    }
-
-    private fun getOverDueDate(time:Long):Instant{
-        val seoulZone = ZoneId.of("Asia/Seoul")
-        val loanDateTime = Instant.ofEpochMilli(time).atZone(seoulZone).toLocalDate()
-
-        val dueDateTime = loanDateTime
-            .plusDays(1)
-            .atStartOfDay(seoulZone)
-
-        return dueDateTime.toInstant()
     }
 
     private suspend fun awaitUserId(): String {

@@ -1,10 +1,9 @@
 package com.example.library.ui.screens.user
 
+import com.example.library.core.DateTimeConverter.formatDateOnly
+import com.example.library.core.DateTimeConverter.getLocalDate
 import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.UserLoanLibrary
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 fun List<UserLoanLibrary>.toLoanStringList(): List<List<String>>{
@@ -63,15 +62,13 @@ fun List<UserLoanLibrary>.getSuspensionEndDate(): String{
 }
 
 private fun formatSuspensionEndDate(dueDate: Long): String {
-    val seoulZone = ZoneId.of("Asia/Seoul")
-    val dueDateTime = Instant.ofEpochMilli(dueDate).atZone(seoulZone).toLocalDate()
-    val nowTime = Instant.ofEpochMilli(System.currentTimeMillis()).atZone(seoulZone).toLocalDate()
+    val dueDateTime = getLocalDate(dueDate)
+    val nowTime = getLocalDate(System.currentTimeMillis())
 
     val diff = ChronoUnit.DAYS.between(dueDateTime, nowTime)
     val suspensionDate= nowTime.plusDays(diff)
 
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    return suspensionDate.format(formatter)
+    return formatDateOnly(suspensionDate)
 }
 
 fun List<UserLoanLibrary>.toUserHistoryStringList(): List<List<String>>{
@@ -90,14 +87,4 @@ fun List<UserLoanLibrary>.toUserHistoryStringList(): List<List<String>>{
         resultList.add(list)
     }
     return resultList.toList()
-}
-
-private fun formatDateOnly(millis: Long): String {
-    val seoulZone = ZoneId.of("Asia/Seoul")
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-
-    return Instant.ofEpochMilli(millis)
-        .atZone(seoulZone)
-        .toLocalDate()
-        .format(formatter)
 }
