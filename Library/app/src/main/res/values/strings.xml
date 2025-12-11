@@ -22,8 +22,11 @@
     <string name="location">위치</string>
     <string name="book_status">대출 상태</string>
     <string name="expected_return_date">예정 반납일</string>
+    <string name="overdue_date">연체일</string>
     <string name="borrow_book">대출하기</string>
     <string name="return_book">반납하기</string>
+    <string name="reserve_book">예약하기</string>
+    <string name="cancel_reservation_book">예약 취소하기</string>
     <string name="most_relatable">공감순</string>
     <string name="newest">최신순</string>
     <string name="comment_upload">댓글 달기</string>
