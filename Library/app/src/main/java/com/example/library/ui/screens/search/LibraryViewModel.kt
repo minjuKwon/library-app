@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Instant
+import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
@@ -170,6 +171,16 @@ class LibraryViewModel @Inject constructor(
                                 BookStatus.UnAvailable
                             }
                         }
+                        BookStatusType.OVERDUE.name -> {
+                            if(userId== libraryHistory.userId){
+                                BookStatus.OverDue(
+                                    userId = libraryHistory.userId,
+                                    overdueDate = getOverDueDate(libraryHistory.dueDate)
+                                )
+                            }else{
+                                BookStatus.UnAvailable
+                            }
+                        }
                         BookStatusType.RESERVED.name ->{
                             BookStatus.Reserved(
                                 userId = libraryHistory.userId,
@@ -184,6 +195,17 @@ class LibraryViewModel @Inject constructor(
             }
             it.copy(list = updatedList)
         }
+    }
+
+    private fun getOverDueDate(time:Long):Instant{
+        val seoulZone = ZoneId.of("Asia/Seoul")
+        val loanDateTime = Instant.ofEpochMilli(time).atZone(seoulZone).toLocalDate()
+
+        val dueDateTime = loanDateTime
+            .plusDays(1)
+            .atStartOfDay(seoulZone)
+
+        return dueDateTime.toInstant()
     }
 
     private fun getLikedCount(){
