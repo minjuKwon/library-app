@@ -28,7 +28,27 @@ fun List<UserLoanLibrary>.toLoanStringList(): List<List<String>>{
 
     return resultList.toList()
 }
+
+fun List<UserLoanLibrary>.toOverdueStringList(): List<List<String>>{
+    val resultList:MutableList<List<String>> = mutableListOf()
+
+    this.forEachIndexed { index, userLoanLibrary ->
+        if(userLoanLibrary.status==BookStatusType.OVERDUE.name){
+            val author= userLoanLibrary.authors?.joinToString(",")?:""
+            val status= BookStatusType.OVERDUE.ko
+            val list=listOf(
+                (index+1).toString(),
+                userLoanLibrary.title?:"",
+                author,
+                formatDateOnly(userLoanLibrary.loanDate),
+                formatDateOnly(userLoanLibrary.dueDate),
+                status
+            )
+
+            resultList.add(list)
+        }
     }
+
     return resultList.toList()
 }
 
