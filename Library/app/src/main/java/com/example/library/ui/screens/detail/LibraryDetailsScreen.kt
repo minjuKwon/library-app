@@ -292,6 +292,16 @@ private fun DetailsScreenLibraryInformation(
                     val formattedDate= formatDateOnly(date)
                     Text(text= formattedDate)
                 }
+            } else if(library.bookStatus is BookStatus.OverDue){
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    Text(text=stringResource(R.string.overdue_date))
+                    val date= library.bookStatus.overdueDate
+                    val formattedDate= formatDateOnly(date)
+                    Text(text= formattedDate)
+                }
             }
             Column(
                 verticalArrangement = Arrangement.Center,
