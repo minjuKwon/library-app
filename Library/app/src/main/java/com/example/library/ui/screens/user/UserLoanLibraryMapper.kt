@@ -5,6 +5,7 @@ import com.example.library.data.entity.UserLoanLibrary
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 fun List<UserLoanLibrary>.toLoanStringList(): List<List<String>>{
     val resultList:MutableList<List<String>> = mutableListOf()
@@ -52,8 +53,28 @@ fun List<UserLoanLibrary>.toOverdueStringList(): List<List<String>>{
     return resultList.toList()
 }
 
-fun List<UserLoanLibrary>.toUserHistoryStringList(): List<List<String>>{
+fun List<UserLoanLibrary>.getSuspensionEndDate(): String{
+    var minDate:Long= Long.MAX_VALUE
+    this.forEach {userLoanLibrary ->
+        minDate= minOf(minDate, userLoanLibrary.dueDate)
+    }
 
+    return formatSuspensionEndDate(minDate)
+}
+
+private fun formatSuspensionEndDate(dueDate: Long): String {
+    val seoulZone = ZoneId.of("Asia/Seoul")
+    val dueDateTime = Instant.ofEpochMilli(dueDate).atZone(seoulZone).toLocalDate()
+    val nowTime = Instant.ofEpochMilli(System.currentTimeMillis()).atZone(seoulZone).toLocalDate()
+
+    val diff = ChronoUnit.DAYS.between(dueDateTime, nowTime)
+    val suspensionDate= nowTime.plusDays(diff)
+
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    return suspensionDate.format(formatter)
+}
+
+fun List<UserLoanLibrary>.toUserHistoryStringList(): List<List<String>>{
     val resultList:MutableList<List<String>> = mutableListOf()
 
     this.forEachIndexed { index, userLoanLibrary ->
