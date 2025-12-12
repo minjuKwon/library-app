@@ -173,4 +173,8 @@ class FirebaseBookService@Inject constructor(
         }
     }
 
+    override suspend fun isOverdueBook(userId: String): Result<Boolean> {
+        return databaseRepository.hasOverdueBook(userId)
+    }
+
 }
