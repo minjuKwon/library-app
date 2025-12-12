@@ -1,5 +1,6 @@
 package com.example.library.core
 
+import com.example.library.core.LibraryPolicy.LOAN_PERIOD
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -15,7 +16,7 @@ object DateTimeConverter {
         val loanDateTime = getLocalDate(currentMillis)
 
         val dueDateTime = loanDateTime
-            .plusDays(0)
+            .plusDays(LOAN_PERIOD)
             .atTime(23, 59, 59)
             .atZone(seoulZone)
 
