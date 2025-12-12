@@ -244,6 +244,9 @@ class FirebaseBookRepository@Inject constructor(
                     .reference
             }
 
+            val hasOverdue= hasOverdueBook(historyRequest.userId)
+            val hasOverdueResult= hasOverdue.getOrNull()
+
             fireStore.runTransaction { transaction ->
                 val normalizedQuery= normalizeQuery(historyRequest.keyword)
 
@@ -256,7 +259,7 @@ class FirebaseBookRepository@Inject constructor(
                 val librarySnap= transaction.get(libraryDocRef)
                 val status= librarySnap.get(STATUS_TYPE)
 
-                if(status == BookStatusType.AVAILABLE.name){
+                if(status == BookStatusType.AVAILABLE.name&&hasOverdueResult!=null&&!hasOverdueResult){
                     val libraryHistory= LibraryHistory(
                         historyRequest.libraryHistoryId,
                         historyRequest.userId,
