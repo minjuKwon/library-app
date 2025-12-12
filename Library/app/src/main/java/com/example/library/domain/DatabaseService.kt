@@ -27,6 +27,7 @@ interface DatabaseService {
     suspend fun getUserLoanBookList(userId: String):Result<List<UserLoanLibrary>?>
     suspend fun getUserLoanHistoryList(userId: String):Result<List<UserLoanLibrary>>
     suspend fun getLoanDueStatus(userId: String, keyword:String, page: String):Result<DueCheckResult>
+    suspend fun isOverdueBook(userId: String):Result<Boolean>
 }
 
 data class DueCheckResult(
