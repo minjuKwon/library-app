@@ -447,6 +447,23 @@ class FirebaseBookRepository@Inject constructor(
         }
     }
 
+    override suspend fun hasOverdueBook(userId: String): Result<Boolean> {
+        try{
+            val snapshot= getUserLoanList(userId)
+                .whereEqualTo(STATUS, BookStatusType.OVERDUE.name)
+                .get()
+                .await()
+
+            val isExists= snapshot.documents.isNotEmpty()
+
+            return Result.success(isExists)
+        }catch (e: FirebaseFirestoreException){
+            return Result.failure(FirebaseException(e.code.name))
+        }catch (e:Exception){
+            return Result.failure(e)
+        }
+    }
+
     private fun getUserLoanList(userId: String): Query{
         return fireStore.collection(USER_LOAN_LIBRARY_COLLECTION)
             .whereEqualTo(USER_ID, userId)
