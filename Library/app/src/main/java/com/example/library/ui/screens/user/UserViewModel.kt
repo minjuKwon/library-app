@@ -85,7 +85,7 @@ class UserViewModel @Inject constructor(
         scope.launch {
             try {
                 firebaseUserService.unregister(password)
-                _event.emit(UserUiState.Success())
+                _event.emit(UserUiState.Success("unregister"))
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }

@@ -66,7 +66,7 @@ fun LibraryUserScreen(
                     userViewModel.updateLogInState(false)
                     onNavigationToSetting()
                 }
-                else -> {
+                "unregister" -> {
                     userViewModel.updateLogInState(false)
                     onNavigationToSetting()
                 }
