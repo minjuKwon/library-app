@@ -113,7 +113,7 @@ fun LibraryApp(
         ),
         resetLibraryList={libraryViewModel.getLiked()},
         resetBookStatus = {libraryViewModel.getBookStatus()},
-        resetLiked={
+        resetUserBookStatus={
             libraryViewModel.getBookStatus()
             libraryViewModel.resetLiked()
         },

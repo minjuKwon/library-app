@@ -23,7 +23,7 @@ fun NavigationGraph(
     userViewModel: UserViewModel,
     resetLibraryList:()->Unit,
     resetBookStatus:()->Unit,
-    resetLiked:()->Unit,
+    resetUserBookStatus:()->Unit,
     modifier:Modifier=Modifier
 ){
     NavHost(
@@ -48,7 +48,7 @@ fun NavigationGraph(
             listContentParams,
             resetLibraryList,
             resetBookStatus,
-            resetLiked
+            resetUserBookStatus
         )
     }
 }

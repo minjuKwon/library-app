@@ -42,7 +42,7 @@ import com.example.library.ui.common.HandleUserUiState
 fun LibraryUserScreen(
     userViewModel:UserViewModel,
     userInfo: User,
-    resetLiked:()->Unit,
+    resetUserBookStatus:()->Unit,
     onNavigationToEdit:()->Unit,
     onNavigationToSetting:()->Unit,
     onNavigationToLoanHistory:()->Unit,
@@ -62,7 +62,7 @@ fun LibraryUserScreen(
                 "getUserLoanBookList" ->  onNavigationToLoanStatus()
                 "getUserLoanHistoryList" -> onNavigationToLoanHistory()
                 "signOut" -> {
-                    resetLiked()
+                    resetUserBookStatus()
                     userViewModel.updateLogInState(false)
                     onNavigationToSetting()
                 }
