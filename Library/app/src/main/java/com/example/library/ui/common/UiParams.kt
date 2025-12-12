@@ -37,7 +37,9 @@ data class DetailsScreenParams(
     val uiState:LibraryDetailsUiState,
     val currentPage:Int,
     val textFieldKeyword:String,
+    val isShowDialog:Boolean,
     val currentBook: Library,
     val loanLibrary: () -> Unit,
-    val getBookStatus:()->Unit
+    val getBookStatus:()->Unit,
+    val updateOverdueDialog:(Boolean) -> Unit
 )

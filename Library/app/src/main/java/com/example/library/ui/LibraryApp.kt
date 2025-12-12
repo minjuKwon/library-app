@@ -42,6 +42,7 @@ fun LibraryApp(
     val dueCheckResult by libraryViewModel.dueCheckResult
     val currentPage by libraryViewModel.currentPage.collectAsState()
 
+    val isShowOverdueDialog by libraryDetailsViewModel.isShowOverdueDialog
     val currentBook by libraryDetailsViewModel.currentLibrary
 
     val navigationType:NavigationType
@@ -105,17 +106,20 @@ fun LibraryApp(
             uiState= libraryDetailsViewModel.uiState,
             currentPage = currentPage,
             textFieldKeyword = textFieldKeyword,
+            isShowDialog=isShowOverdueDialog,
             currentBook= currentBook,
             loanLibrary = {
                 libraryDetailsViewModel.loanLibrary(textFieldKeyword, currentPage.toString())
             },
-            getBookStatus = { libraryDetailsViewModel.getBookStatus() }
+            getBookStatus = { libraryDetailsViewModel.getBookStatus() },
+            updateOverdueDialog={libraryDetailsViewModel.updateOverdueDialog(it)}
         ),
         resetLibraryList={libraryViewModel.getLiked()},
         resetBookStatus = {libraryViewModel.getBookStatus()},
         resetUserBookStatus={
             libraryViewModel.getBookStatus()
             libraryViewModel.resetLiked()
+            libraryDetailsViewModel.updateOverdueDialog(false)
         },
         modifier=modifier
     )

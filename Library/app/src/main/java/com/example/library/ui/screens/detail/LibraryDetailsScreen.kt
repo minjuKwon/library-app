@@ -28,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +43,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.library.R
@@ -141,6 +143,10 @@ private fun DetailsScreenContent(
         if(isLogIn) BookStatusButton(detailsScreenParams)
 
         DetailsScreenComment()
+    }
+
+    CheckOverdueDialog(isLogIn&&detailsScreenParams.isShowDialog) {
+        detailsScreenParams.updateOverdueDialog(false)
     }
 }
 
@@ -329,6 +335,28 @@ private fun BookStatusButton(
             is BookStatus.Borrowed -> Text(stringResource(R.string.return_book))
             is BookStatus.OverDue -> Text(stringResource(R.string.return_book))
             is BookStatus.Reserved -> Text(stringResource(R.string.cancel_reservation_book))
+        }
+    }
+}
+
+@Composable
+private fun CheckOverdueDialog(
+    isShow:Boolean,
+    onDismissRequest: () -> Unit
+){
+    if(isShow){
+        Dialog(onDismissRequest={onDismissRequest()}){
+            Card{
+                Column {
+                    Text(stringResource(R.string.unavailable))
+                    Text(stringResource(R.string.overdue_dialog_content))
+                    TextButton(
+                        onClick = { onDismissRequest() },
+                    ) {
+                        Text(stringResource(R.string.confirm))
+                    }
+                }
+            }
         }
     }
 }
