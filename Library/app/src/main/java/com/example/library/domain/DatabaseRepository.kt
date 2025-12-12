@@ -25,6 +25,7 @@ interface DatabaseRepository {
         overdueDate:Long,
         book:UserLoanLibrary
     ):Result<Unit>
+    suspend fun hasOverdueBook(userId: String):Result<Boolean>
 }
 
 data class HistoryRequest(
