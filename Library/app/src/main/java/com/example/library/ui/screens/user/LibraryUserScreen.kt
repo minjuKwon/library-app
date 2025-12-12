@@ -61,6 +61,11 @@ fun LibraryUserScreen(
             when(it.message){
                 "getUserLoanBookList" ->  onNavigationToLoanStatus()
                 "getUserLoanHistoryList" -> onNavigationToLoanHistory()
+                "signOut" -> {
+                    resetLiked()
+                    userViewModel.updateLogInState(false)
+                    onNavigationToSetting()
+                }
                 else -> {
                     userViewModel.updateLogInState(false)
                     onNavigationToSetting()
@@ -101,7 +106,6 @@ fun LibraryUserScreen(
                     .padding(start= dimensionResource(R.dimen.padding_md))
                     .clickable {
                         userViewModel.signOut()
-                        resetLiked()
                     }
                     .testTag(stringResource(R.string.test_logOut))
             )

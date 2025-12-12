@@ -118,7 +118,7 @@ class UserViewModel @Inject constructor(
         scope.launch {
             try{
                 firebaseUserService.signOut()
-                _event.emit(UserUiState.Success())
+                _event.emit(UserUiState.Success("signOut"))
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))
             }
