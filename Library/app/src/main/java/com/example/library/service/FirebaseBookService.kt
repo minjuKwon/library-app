@@ -6,6 +6,7 @@ import com.example.library.core.DateTimeConverter.getLocalDate
 import com.example.library.core.TimeProvider
 import com.example.library.data.FireStoreField.IS_LIKED
 import com.example.library.data.FireStoreField.TIMESTAMP
+import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.LibraryLiked
@@ -151,19 +152,21 @@ class FirebaseBookService@Inject constructor(
                 val overdueList = mutableListOf<UserLoanLibrary>()
 
                 for(userLoanHistory in resultList){
-                    val due = getLocalDate(userLoanHistory.dueDate)
-                    val diff = ChronoUnit.DAYS.between(today, due)
-                    when {
-                        diff==1L -> beforeList += userLoanHistory
-                        diff==0L -> todayList += userLoanHistory
-                        diff < 0L  -> {
-                            overdueList += userLoanHistory
-                            databaseRepository.updateUserOverdueBook(
-                                keyword,
-                                page,
-                                calculateOverDueDateLong(userLoanHistory.dueDate),
-                                userLoanHistory
-                            )
+                    if(userLoanHistory.status== BookStatusType.BORROWED.name){
+                        val due = getLocalDate(userLoanHistory.dueDate)
+                        val diff = ChronoUnit.DAYS.between(today, due)
+                        when {
+                            diff==1L -> beforeList += userLoanHistory
+                            diff==0L -> todayList += userLoanHistory
+                            diff < 0L  -> {
+                                overdueList += userLoanHistory
+                                databaseRepository.updateUserOverdueBook(
+                                    keyword,
+                                    page,
+                                    calculateOverDueDateLong(userLoanHistory.dueDate),
+                                    userLoanHistory
+                                )
+                            }
                         }
                     }
                 }
