@@ -369,7 +369,6 @@ class FirebaseBookRepository@Inject constructor(
     ): Result<List<UserLoanLibrary>?> {
         try{
             val snapshot= getUserLoanList(userId)
-                .whereIn(STATUS, listOf(BookStatusType.BORROWED.name, BookStatusType.OVERDUE.name))
                 .get()
                 .await()
 
