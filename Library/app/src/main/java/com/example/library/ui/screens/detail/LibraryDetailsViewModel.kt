@@ -70,6 +70,11 @@ class LibraryDetailsViewModel @Inject constructor(
             uiState=LibraryDetailsUiState.Loading
 
             val id= awaitUserId()
+            val bookStatus= _currentLibrary.value.bookStatus
+
+            if(bookStatus== BookStatus.Available|| bookStatus== BookStatus.UnAvailable){
+                val isOverdue= firebaseBookService.isOverdueBook(id)
+                isOverdue.getOrNull()?.let { _isShowOverdueDialog.value=it }
             uiState=try{
                 val isSave= firebaseBookService.updateLibraryHistory(
                     userId = id,
@@ -140,8 +145,6 @@ class LibraryDetailsViewModel @Inject constructor(
                 }
                 else -> BookStatus.UnAvailable
             }
-            if(bookStatus== BookStatus.Available || bookStatus== BookStatus.UnAvailable)
-                _isShowOverdueDialog.value=true
 
             _currentLibrary.value= _currentLibrary.value.copy(bookStatus= bookStatus)
         }
