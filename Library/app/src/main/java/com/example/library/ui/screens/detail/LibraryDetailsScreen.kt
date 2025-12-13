@@ -148,6 +148,10 @@ private fun DetailsScreenContent(
     CheckOverdueDialog(isLogIn&&detailsScreenParams.isShowOverdueDialog) {
         detailsScreenParams.updateOverdueDialog(false)
     }
+
+    CheckSuspensionDateDialog(isLogIn&&detailsScreenParams.isShowSuspensionDialog) {
+        detailsScreenParams.updateSuspensionDialog(false)
+    }
 }
 
 @Composable
@@ -350,6 +354,28 @@ private fun CheckOverdueDialog(
                 Column {
                     Text(stringResource(R.string.unavailable))
                     Text(stringResource(R.string.overdue_dialog_content))
+                    TextButton(
+                        onClick = { onDismissRequest() },
+                    ) {
+                        Text(stringResource(R.string.confirm))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CheckSuspensionDateDialog(
+    isShow:Boolean,
+    onDismissRequest: () -> Unit
+){
+    if(isShow){
+        Dialog(onDismissRequest={onDismissRequest()}){
+            Card{
+                Column {
+                    Text(stringResource(R.string.unavailable))
+                    Text(stringResource(R.string.suspension_dialog_content))
                     TextButton(
                         onClick = { onDismissRequest() },
                     ) {

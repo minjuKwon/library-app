@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.library.core.DateTimeConverter.calculateOverDueDate
+import com.example.library.core.DateTimeConverter.isSuspensionOver
 import com.example.library.data.entity.BookStatus
 import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.Library
@@ -16,6 +17,7 @@ import com.example.library.di.ApplicationScope
 import com.example.library.domain.SessionManager
 import com.example.library.service.FirebaseBookService
 import com.example.library.ui.screens.search.defaultLibrary
+import com.example.library.ui.screens.user.getSuspensionEndDateToLong
 import com.google.firebase.firestore.ListenerRegistration
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -54,6 +56,9 @@ class LibraryDetailsViewModel @Inject constructor(
     private val _isShowOverdueDialog= mutableStateOf(false)
     val isShowOverdueDialog= _isShowOverdueDialog
 
+    private val _isShowSuspensionDateDialog= mutableStateOf(false)
+    val isShowSuspensionDateDialog= _isShowSuspensionDateDialog
+
     private var bookStatusListener: ListenerRegistration? =null
 
     fun updateCurrentItem(library: Library){
@@ -75,6 +80,17 @@ class LibraryDetailsViewModel @Inject constructor(
             if(bookStatus== BookStatus.Available|| bookStatus== BookStatus.UnAvailable){
                 val isOverdue= firebaseBookService.isOverdueBook(id)
                 isOverdue.getOrNull()?.let { _isShowOverdueDialog.value=it }
+
+                val overdueList= firebaseBookService.getUserLoanBookList(id)
+                if(overdueList.isSuccess){
+                    val resultList= overdueList.getOrNull()
+                    if(resultList!=null){
+                        val suspensionEndDate= resultList.getSuspensionEndDateToLong()
+                        _isShowSuspensionDateDialog.value= isSuspensionOver(suspensionEndDate)
+                    }
+                }
+            }
+
             uiState=try{
                 val isSave= firebaseBookService.updateLibraryHistory(
                     userId = id,
@@ -153,6 +169,10 @@ class LibraryDetailsViewModel @Inject constructor(
 
     fun updateOverdueDialog(b:Boolean){
         _isShowOverdueDialog.value=b
+    }
+
+    fun updateSuspensionDialog(b:Boolean){
+        _isShowSuspensionDateDialog.value=b
     }
 
     private suspend fun awaitUserId(): String {

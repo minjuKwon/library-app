@@ -38,8 +38,10 @@ data class DetailsScreenParams(
     val currentPage:Int,
     val textFieldKeyword:String,
     val isShowOverdueDialog:Boolean,
+    val isShowSuspensionDialog:Boolean,
     val currentBook: Library,
     val loanLibrary: () -> Unit,
     val getBookStatus:()->Unit,
-    val updateOverdueDialog:(Boolean) -> Unit
+    val updateOverdueDialog:(Boolean) -> Unit,
+    val updateSuspensionDialog:(Boolean) -> Unit
 )
