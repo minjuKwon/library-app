@@ -37,6 +37,10 @@ object DateTimeConverter {
         return dueDateTime.toInstant()
     }
 
+    fun LocalDate.toLong():Long{
+        return this.atStartOfDay(seoulZone).toInstant().toEpochMilli()
+    }
+
     fun formatDateOnly(millis: Long): String {
         return Instant.ofEpochMilli(millis)
             .atZone(seoulZone)
