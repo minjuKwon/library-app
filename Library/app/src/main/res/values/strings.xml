@@ -9,6 +9,7 @@
     <string name="unavailable">대출 불가</string>
     <string name="liked">좋아요</string>
     <string name="liked_dialog_content">좋아요는 로그인 후 이용할 수 있습니다</string>
+    <string name="loan_status_dialog_content_before">내일까지 반납해야 할 도서가 %d권 있습니다</string>
     <string name="loan_status_dialog_content_today">오늘까지 반납해야 할 도서가 %d권 있습니다</string>
     <string name="loan_status_dialog_content_overdue">연체된 도서가 %d권 있습니다</string>
     <string name="previous_page">&lt;</string>

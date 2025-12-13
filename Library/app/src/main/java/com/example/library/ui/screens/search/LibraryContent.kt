@@ -107,7 +107,7 @@ fun LibraryListOnlyContent(
     }
 
     val dueCheckResult= listContentParams.dueCheckResult
-    if(dueCheckResult.overdue.isNotEmpty()||dueCheckResult.today.isNotEmpty()){
+    if(dueCheckResult.before.isNotEmpty()||dueCheckResult.today.isNotEmpty()||dueCheckResult.overdue.isNotEmpty()){
         openAlertDialog=true
     }
 
@@ -341,6 +341,12 @@ private fun UserLoanStatusDialog(
             dueCheckResult.overdue.size
         )
         dueCheckResult.overdue.forEach { contentText.append(it.title).append("\n")}
+    }else if(dueCheckResult.before.isNotEmpty()){
+        titleText= stringResource(
+            R.string.loan_status_dialog_content_before,
+            dueCheckResult.before.size
+        )
+        dueCheckResult.before.forEach { contentText.append(it.title).append("\n")}
     }else if(dueCheckResult.today.isNotEmpty()){
         titleText= stringResource(
             R.string.loan_status_dialog_content_today,
