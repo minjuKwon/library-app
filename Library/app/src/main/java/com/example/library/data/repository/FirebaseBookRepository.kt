@@ -29,6 +29,7 @@ import com.example.library.data.mapper.toFirebaseDto
 import com.example.library.data.mapper.toLibrary
 import com.example.library.domain.DatabaseRepository
 import com.example.library.domain.HistoryRequest
+import com.example.library.ui.screens.user.getSuspensionEndDateToLong
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -248,6 +249,9 @@ class FirebaseBookRepository@Inject constructor(
             val hasOverdue= hasOverdueBook(historyRequest.userId)
             val hasOverdueResult= hasOverdue.getOrNull()
 
+            val userLoanList= getUserLoanHistoryList(historyRequest.userId)
+            val userLoanListResult= userLoanList.getOrNull()
+
             fireStore.runTransaction { transaction ->
                 val normalizedQuery= normalizeQuery(historyRequest.keyword)
 
@@ -262,7 +266,9 @@ class FirebaseBookRepository@Inject constructor(
                 val status= librarySnap.get(STATUS_TYPE)
                 val userId= librarySnap.get(USER_ID)
 
-                if(status == BookStatusType.AVAILABLE.name&&hasOverdueResult!=null&&!hasOverdueResult){
+                val suspensionDate= userLoanListResult?.getSuspensionEndDateToLong()
+                if(status == BookStatusType.AVAILABLE.name&&((hasOverdueResult!=null &&!hasOverdueResult)
+                            &&(suspensionDate!=null&&historyRequest.eventDate>=suspensionDate))){
                     val libraryHistory= LibraryHistory(
                         historyRequest.libraryHistoryId,
                         historyRequest.userId,
