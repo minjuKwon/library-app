@@ -106,7 +106,7 @@ fun LibraryApp(
             uiState= libraryDetailsViewModel.uiState,
             currentPage = currentPage,
             textFieldKeyword = textFieldKeyword,
-            isShowDialog=isShowOverdueDialog,
+            isShowOverdueDialog=isShowOverdueDialog,
             currentBook= currentBook,
             loanLibrary = {
                 libraryDetailsViewModel.loanLibrary(textFieldKeyword, currentPage.toString())

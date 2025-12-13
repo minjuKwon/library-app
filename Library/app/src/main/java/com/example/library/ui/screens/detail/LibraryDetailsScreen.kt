@@ -145,7 +145,7 @@ private fun DetailsScreenContent(
         DetailsScreenComment()
     }
 
-    CheckOverdueDialog(isLogIn&&detailsScreenParams.isShowDialog) {
+    CheckOverdueDialog(isLogIn&&detailsScreenParams.isShowOverdueDialog) {
         detailsScreenParams.updateOverdueDialog(false)
     }
 }
