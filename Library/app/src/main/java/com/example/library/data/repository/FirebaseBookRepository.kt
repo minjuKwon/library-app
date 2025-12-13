@@ -222,7 +222,8 @@ class FirebaseBookRepository@Inject constructor(
             var historyDocRef: DocumentReference? =null
             var userLoanBookDocRef:DocumentReference? = null
 
-            if(historyRequest.bookStatus== BookStatusType.BORROWED.name){
+            if(historyRequest.bookStatus== BookStatusType.BORROWED.name||
+                historyRequest.bookStatus== BookStatusType.OVERDUE.name){
                 historyDocRef= fireStore.collection(LIBRARY_HISTORY)
                     .whereEqualTo(USER_ID, historyRequest.userId)
                     .whereEqualTo(BOOK_ID,historyRequest.bookId)
@@ -257,7 +258,9 @@ class FirebaseBookRepository@Inject constructor(
                     .collection(LIBRARY_COLLECTION)
                     .document(historyRequest.libraryId)
                 val librarySnap= transaction.get(libraryDocRef)
+
                 val status= librarySnap.get(STATUS_TYPE)
+                val userId= librarySnap.get(USER_ID)
 
                 if(status == BookStatusType.AVAILABLE.name&&hasOverdueResult!=null&&!hasOverdueResult){
                     val libraryHistory= LibraryHistory(
@@ -294,8 +297,6 @@ class FirebaseBookRepository@Inject constructor(
                         .document(historyRequest.libraryHistoryId)
                     transaction.set(userLoanDocRef, userLoanLibrary)
                 }else if(status == BookStatusType.BORROWED.name){
-                    val userId= librarySnap.get(USER_ID)
-
                     if(userId== historyRequest.userId){
                         val libraryData= mapOf(
                             STATUS_TYPE to BookStatusType.AVAILABLE.name,
@@ -322,7 +323,36 @@ class FirebaseBookRepository@Inject constructor(
                     }else{
                         return@runTransaction
                     }
-                }else{
+                }else if(status == BookStatusType.OVERDUE.name){
+                    if(userId== historyRequest.userId){
+                        val libraryData= mapOf(
+                            STATUS_TYPE to BookStatusType.AVAILABLE.name,
+                            BORROWED_AT to null,
+                            DUE_DATE to null,
+                            OVERDUE_DATE to null
+                        )
+                        transaction.update(libraryDocRef, libraryData)
+
+                        val historyData= mapOf(
+                            STATUS to BookStatusType.RETURNED.name,
+                            RETURN_DATE to historyRequest.eventDate
+                        )
+                        if (historyDocRef != null) {
+                            transaction.update(historyDocRef, historyData)
+                        }
+
+                        val userLoanBookData= mapOf(
+                            STATUS to BookStatusType.RETURNED.name,
+                            RETURN_DATE to historyRequest.eventDate
+                        )
+                        if (userLoanBookDocRef != null) {
+                            transaction.update(userLoanBookDocRef, userLoanBookData)
+                        }
+                    }else{
+                        return@runTransaction
+                    }
+                }
+                else{
                     return@runTransaction
                 }
             }
