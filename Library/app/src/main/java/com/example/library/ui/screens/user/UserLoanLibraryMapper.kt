@@ -2,6 +2,7 @@ package com.example.library.ui.screens.user
 
 import com.example.library.core.DateTimeConverter.formatDateOnly
 import com.example.library.core.DateTimeConverter.getLocalDate
+import com.example.library.core.DateTimeConverter.toLong
 import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.UserLoanLibrary
 import java.time.temporal.ChronoUnit
@@ -71,6 +72,27 @@ private fun formatSuspensionEndDate(dueDate: Long): String {
     val suspensionDate= nowTime.plusDays(diff)
 
     return formatDateOnly(suspensionDate)
+}
+
+fun List<UserLoanLibrary>.getSuspensionEndDateToLong(): Long{
+    var minDate:Long= Long.MAX_VALUE
+    this.forEach {userLoanLibrary ->
+        if(userLoanLibrary.returnDate>userLoanLibrary.dueDate){
+            minDate= minOf(minDate, userLoanLibrary.dueDate)
+        }
+    }
+
+    return getSuspensionEndDate(minDate)
+}
+
+private fun getSuspensionEndDate(dueDate: Long): Long {
+    val dueDateTime = getLocalDate(dueDate)
+    val nowTime = getLocalDate(System.currentTimeMillis())
+
+    val diff = ChronoUnit.DAYS.between(dueDateTime, nowTime)
+    val suspensionDate= nowTime.plusDays(diff)
+
+    return suspensionDate.toLong()
 }
 
 fun List<UserLoanLibrary>.toUserHistoryStringList(): List<List<String>>{
