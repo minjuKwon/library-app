@@ -1,5 +1,6 @@
 package com.example.library.core
 
+import com.example.library.core.DateTimeConverter.toLong
 import com.example.library.core.LibraryPolicy.LOAN_PERIOD
 import java.time.Instant
 import java.time.LocalDate
@@ -35,6 +36,10 @@ object DateTimeConverter {
             .atStartOfDay(seoulZone)
 
         return dueDateTime.toInstant()
+    }
+
+    fun isSuspensionOver(date:Long):Boolean{
+        return System.currentTimeMillis()<date
     }
 
     fun LocalDate.toLong():Long{
