@@ -153,12 +153,7 @@ class LibraryDetailsViewModel @Inject constructor(
                         BookStatus.UnAvailable
                     }
                 }
-                BookStatusType.RESERVED.name ->{
-                    BookStatus.Reserved(
-                        userId = libraryHistory.userId,
-                        reservedAt = Instant.ofEpochMilli(libraryHistory.loanDate),
-                    )
-                }
+                BookStatusType.RESERVED.name ->  BookStatus.Reserved
                 else -> BookStatus.UnAvailable
             }
 

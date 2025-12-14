@@ -12,7 +12,6 @@ fun Library.toFirebaseDto():LibraryFirebaseDto= LibraryFirebaseDto(
     statusType= this.bookStatus.toStringType(),
     userId= this.bookStatus.toStringUserId(),
     borrowedAt= this.bookStatus.toLongBorrowedAt(),
-    reservedAt= this.bookStatus.toLongReservedAt(),
     callNumber= this.callNumber,
     location = this.location,
     offset = this.offset
@@ -35,10 +34,7 @@ fun toBookStatus(libraryFirebaseDto: LibraryFirebaseDto) = when(libraryFirebaseD
         Instant.ofEpochMilli(libraryFirebaseDto.borrowedAt!!),
         Instant.ofEpochMilli(libraryFirebaseDto.dueDate!!)
     )
-    BookStatusType.RESERVED.name -> BookStatus.Reserved(
-        libraryFirebaseDto.userId!!,
-        Instant.ofEpochMilli(libraryFirebaseDto.reservedAt!!)
-    )
+    BookStatusType.RESERVED.name -> BookStatus.Reserved
     BookStatusType.OVERDUE.name -> BookStatus.OverDue(
         libraryFirebaseDto.userId!!,
         Instant.ofEpochMilli(libraryFirebaseDto.overdueDate!!)

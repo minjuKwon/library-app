@@ -21,7 +21,6 @@ data class LibraryEntity(
     val dueDate: Long?,
     @ColumnInfo(defaultValue = "null")
     val overdueDate:Long?,
-    val reservedAt: Long?,
     val callNumber:String,
     val location:String
 )

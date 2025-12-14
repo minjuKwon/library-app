@@ -14,8 +14,8 @@ data class Library(
 sealed class BookStatus {
     object Available: BookStatus()
     object UnAvailable: BookStatus()
+    object Reserved: BookStatus()
     data class Borrowed(val userId:String, val borrowedAt: Instant, val dueDate:Instant): BookStatus()
-    data class Reserved(val userId:String, val reservedAt: Instant): BookStatus()
     data class OverDue(val userId:String, val overdueDate: Instant): BookStatus()
 }
 
