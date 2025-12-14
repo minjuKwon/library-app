@@ -3,6 +3,7 @@ package com.example.library.data.repository
 import com.example.library.data.FireStoreCollections.LIBRARY_COLLECTION
 import com.example.library.data.FireStoreCollections.LIBRARY_HISTORY
 import com.example.library.data.FireStoreCollections.LIBRARY_LIKED
+import com.example.library.data.FireStoreCollections.LIBRARY_RESERVATION_COLLECTION
 import com.example.library.data.FireStoreCollections.PAGE_NUMBER_COLLECTION
 import com.example.library.data.FireStoreCollections.SEARCH_RESULTS_COLLECTION
 import com.example.library.data.FireStoreCollections.USER_LOAN_LIBRARY_COLLECTION
@@ -23,6 +24,8 @@ import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.LibraryLiked
+import com.example.library.data.entity.LibraryReservation
+import com.example.library.data.entity.ReservationStatusType
 import com.example.library.data.entity.UserLoanLibrary
 import com.example.library.data.firebase.LibraryFirebaseDto
 import com.example.library.data.mapper.toFirebaseDto
@@ -62,7 +65,7 @@ class FirebaseBookRepository@Inject constructor(
 
             return Result.success(Unit)
         }catch (e: FirebaseFirestoreException){
-            return Result.failure(FirebaseException(e.code.name))
+            return Result.failure (FirebaseException(e.code.name))
         }catch (e:Exception){
             return Result.failure(e)
         }
@@ -357,6 +360,22 @@ class FirebaseBookRepository@Inject constructor(
                     }else{
                         return@runTransaction
                     }
+                }else if(status==BookStatusType.UNAVAILABLE.name){
+                    val libraryData = mapOf(
+                        STATUS_TYPE to BookStatusType.RESERVED.name
+                    )
+                    transaction.update(libraryDocRef, libraryData)
+
+                    val libraryReservation= LibraryReservation(
+                        historyRequest.libraryHistoryId,
+                        historyRequest.userId,
+                        historyRequest.bookId,
+                        historyRequest.eventDate,
+                        ReservationStatusType.WAITING.name
+                    )
+                    val reservationDocRef= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
+                        .document(historyRequest.libraryHistoryId)
+                    transaction.set(reservationDocRef, libraryReservation)
                 }
                 else{
                     return@runTransaction
