@@ -8,6 +8,7 @@ object FireStoreCollections {
     const val LIBRARY_COLLECTION= "library"
     const val LIBRARY_LIKED="library_liked"
     const val LIBRARY_HISTORY="library_history"
+    const val LIBRARY_RESERVATION_COLLECTION="library_reservation"
 }
 
 object FireStoreField{
