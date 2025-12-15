@@ -515,6 +515,25 @@ class FirebaseBookRepository@Inject constructor(
         }
     }
 
+    override suspend fun getLibraryReservationCount(bookId: String): Result<Int> {
+        try{
+            val snapshot= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
+                .whereEqualTo(BOOK_ID, bookId)
+                .get()
+                .await()
+
+            return if(snapshot.isEmpty){
+                Result.success(0)
+            }else{
+                Result.success(snapshot.documents.count())
+            }
+        }catch (e: FirebaseFirestoreException){
+            return Result.failure(FirebaseException(e.code.name))
+        }catch (e:Exception){
+            return Result.failure(e)
+        }
+    }
+
     private fun getUserLoanList(userId: String): Query{
         return fireStore.collection(USER_LOAN_LIBRARY_COLLECTION)
             .whereEqualTo(USER_ID, userId)
