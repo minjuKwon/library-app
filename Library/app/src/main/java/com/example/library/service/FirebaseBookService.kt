@@ -180,4 +180,8 @@ class FirebaseBookService@Inject constructor(
         return databaseRepository.hasOverdueBook(userId)
     }
 
+    override suspend fun getLibraryReservationCount(bookId: String): Result<Int> {
+        return databaseRepository.getLibraryReservationCount(bookId)
+    }
+
 }
