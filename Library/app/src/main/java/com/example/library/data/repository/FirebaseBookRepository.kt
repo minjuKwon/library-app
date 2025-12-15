@@ -330,7 +330,18 @@ class FirebaseBookRepository@Inject constructor(
                             transaction.update(userLoanBookDocRef, userLoanBookData)
                         }
                     }else{
-                        return@runTransaction
+                        //BORROWED 상태에서 userId가 다르면 예약 로직
+                        val libraryReservation= LibraryReservation(
+                            historyRequest.libraryHistoryId,
+                            historyRequest.userId,
+                            historyRequest.bookId,
+                            historyRequest.bookTitle?:"",
+                            historyRequest.eventDate,
+                            ReservationStatusType.WAITING.name
+                        )
+                        val reservationDocRef= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
+                            .document(historyRequest.libraryHistoryId)
+                        transaction.set(reservationDocRef, libraryReservation)
                     }
                 }else if(status == BookStatusType.OVERDUE.name){
                     if(userId== historyRequest.userId){
@@ -360,24 +371,7 @@ class FirebaseBookRepository@Inject constructor(
                     }else{
                         return@runTransaction
                     }
-                }else if(status==BookStatusType.UNAVAILABLE.name){
-                    val libraryData = mapOf(
-                        STATUS_TYPE to BookStatusType.RESERVED.name
-                    )
-                    transaction.update(libraryDocRef, libraryData)
-
-                    val libraryReservation= LibraryReservation(
-                        historyRequest.libraryHistoryId,
-                        historyRequest.userId,
-                        historyRequest.bookId,
-                        historyRequest.eventDate,
-                        ReservationStatusType.WAITING.name
-                    )
-                    val reservationDocRef= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
-                        .document(historyRequest.libraryHistoryId)
-                    transaction.set(reservationDocRef, libraryReservation)
-                }
-                else{
+                }else{
                     return@runTransaction
                 }
             }
