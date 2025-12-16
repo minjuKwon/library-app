@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant
 import javax.inject.Inject
@@ -62,9 +63,12 @@ class LibraryViewModel @Inject constructor(
     private val _currentPage = MutableStateFlow(1)
     val currentPage: StateFlow<Int> = _currentPage
 
+    private val _reservationCount= MutableStateFlow<Map<String, Int>>(emptyMap())
+
     private val _backPressedTime= MutableStateFlow(0L)
     private val _loadCompleteInfo = MutableStateFlow(false)
     private val _getCompleteDueStatus = MutableStateFlow(false)
+    private val _loadCompleteLoadForCnt = MutableStateFlow(false)
     private val likeCountListeners = mutableMapOf<String, ListenerRegistration>()
     private var bookStatusListener:ListenerRegistration? =null
 
@@ -125,6 +129,7 @@ class LibraryViewModel @Inject constructor(
     fun getItem(){
         scope.launch {
             _loadCompleteInfo.filter { it }.first()
+            getReservationCount()
             getBookStatus()
             getLikedCount()
         }
@@ -135,6 +140,7 @@ class LibraryViewModel @Inject constructor(
         scope.launch {
             val uid= awaitUserId()
 
+            _loadCompleteLoadForCnt.filter { it }.first()
             if(libraryUiState is LibraryUiState.Success){
                 val state= libraryUiState as LibraryUiState.Success
                 state.list.forEach { item ->
@@ -167,8 +173,14 @@ class LibraryViewModel @Inject constructor(
                                     borrowedAt = Instant.ofEpochMilli(libraryHistory.loanDate),
                                     dueDate = Instant.ofEpochMilli(libraryHistory.dueDate)
                                 )
-                            } else {
-                                BookStatus.UnAvailable
+                            } else{
+                                if(_reservationCount.value.contains(item.library.book.id)){
+                                    val count= _reservationCount.value[item.library.book.id]
+                                    if(count!=null&&count>0) BookStatus.Reserved
+                                    else BookStatus.UnAvailable
+                                }else{
+                                    BookStatus.UnAvailable
+                                }
                             }
                         }
                         BookStatusType.OVERDUE.name -> {
@@ -189,6 +201,25 @@ class LibraryViewModel @Inject constructor(
                 else item
             }
             it.copy(list = updatedList)
+        }
+    }
+
+    fun getReservationCount(){
+        scope.launch {
+            _loadCompleteLoadForCnt.value=false
+            if(libraryUiState is LibraryUiState.Success){
+                val state= libraryUiState as LibraryUiState.Success
+                state.list.forEach { item ->
+                    val bookId = item.library.book.id
+
+                    val count=firebaseBookService.getLibraryReservationCount(bookId)
+                    val countResult= count.getOrNull()
+                    if(countResult!=null){
+                        _reservationCount.update { it+(bookId to countResult) }
+                    }
+               }
+            }
+            _loadCompleteLoadForCnt.value=true
         }
     }
 

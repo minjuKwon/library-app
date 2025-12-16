@@ -99,6 +99,10 @@ fun LibraryApp(
             },
             updateBackPressedTime = {libraryViewModel.updateBackPressedTime(it)},
             isBackPressedDouble={libraryViewModel.isBackPressedDouble()},
+            getBookStatus = {
+                libraryViewModel.getReservationCount()
+                libraryViewModel.getBookStatus()
+            },
             onLikedPressed={ id, isLiked ->
                 libraryViewModel.toggleLike(id, isLiked)
             },
