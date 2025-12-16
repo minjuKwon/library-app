@@ -374,7 +374,7 @@ class FirebaseBookRepository@Inject constructor(
                 }else{
                     return@runTransaction
                 }
-            }
+            }.await()
             return Result.success(Unit)
         }catch (e: FirebaseFirestoreException){
             return Result.failure(FirebaseException(e.code.name))
