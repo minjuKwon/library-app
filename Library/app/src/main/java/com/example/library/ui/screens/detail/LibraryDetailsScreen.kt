@@ -152,6 +152,17 @@ private fun DetailsScreenContent(
     CheckSuspensionDateDialog(isLogIn&&detailsScreenParams.isShowSuspensionDialog) {
         detailsScreenParams.updateSuspensionDialog(false)
     }
+
+    CheckReservationDialog(
+        isShow = isLogIn&&detailsScreenParams.isShowReservationDialog,
+        count = detailsScreenParams.reservationCount[detailsScreenParams.currentBook.book.id],
+        onConfirmRequest = {
+            detailsScreenParams.loanLibrary()
+            detailsScreenParams.getReservationCount(false)
+            detailsScreenParams.getBookStatus(false)
+        },
+        onDismissRequest = {detailsScreenParams.updateReservationDialog(false)}
+    )
 }
 
 @Composable
@@ -328,8 +339,12 @@ private fun BookStatusButton(
 ){
     Button(
         onClick = {
-            detailsScreenParams.loanLibrary()
-            detailsScreenParams.getBookStatus()
+            if(detailsScreenParams.currentBook.bookStatus== BookStatus.UnAvailable){
+                detailsScreenParams.getReservationCount(true)
+            }else{
+                detailsScreenParams.loanLibrary()
+                detailsScreenParams.getBookStatus(true)
+            }
         },
         modifier=Modifier.fillMaxWidth()
     ) {
@@ -380,6 +395,35 @@ private fun CheckSuspensionDateDialog(
                         onClick = { onDismissRequest() },
                     ) {
                         Text(stringResource(R.string.confirm))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CheckReservationDialog(
+    isShow:Boolean,
+    count:Int?,
+    onConfirmRequest:()->Unit,
+    onDismissRequest: () -> Unit
+){
+    if(isShow){
+        Dialog(onDismissRequest={onDismissRequest()}){
+            Card{
+                Column {
+                    Text(stringResource(R.string.reservation_dialog_content1, count?:-1))
+                    Text(stringResource(R.string.reservation_dialog_content2))
+                    TextButton(
+                        onClick = { onConfirmRequest() },
+                    ) {
+                        Text(stringResource(R.string.reserve_book))
+                    }
+                    TextButton(
+                        onClick = { onDismissRequest() },
+                    ) {
+                        Text(stringResource(R.string.cancel))
                     }
                 }
             }

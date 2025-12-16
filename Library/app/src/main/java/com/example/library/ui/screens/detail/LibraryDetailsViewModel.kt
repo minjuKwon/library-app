@@ -21,11 +21,14 @@ import com.example.library.ui.screens.user.getSuspensionEndDateToLong
 import com.google.firebase.firestore.ListenerRegistration
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant
 import javax.inject.Inject
@@ -59,6 +62,15 @@ class LibraryDetailsViewModel @Inject constructor(
     private val _isShowSuspensionDateDialog= mutableStateOf(false)
     val isShowSuspensionDateDialog= _isShowSuspensionDateDialog
 
+    private val _isShowReservationDialog= mutableStateOf(false)
+    val isShowReservationDialog= _isShowReservationDialog
+
+    private val _reservationCount= MutableStateFlow<Map<String, Int>>(emptyMap())
+    val reservationCount= _reservationCount
+
+    private val _loadCompleteLoad = MutableStateFlow(false)
+    private val _loadCompleteLoadForCnt = MutableStateFlow(false)
+
     private var bookStatusListener: ListenerRegistration? =null
 
     fun updateCurrentItem(library: Library){
@@ -72,6 +84,7 @@ class LibraryDetailsViewModel @Inject constructor(
         page: String
     ){
         scope.launch {
+            _loadCompleteLoad.value=false
             uiState=LibraryDetailsUiState.Loading
 
             val id= awaitUserId()
@@ -103,7 +116,10 @@ class LibraryDetailsViewModel @Inject constructor(
                     page = page
                 )
 
-                if(isSave.isSuccess) LibraryDetailsUiState.Success
+                if(isSave.isSuccess) {
+                    _loadCompleteLoad.value=true
+                    LibraryDetailsUiState.Success
+                }
                 else LibraryDetailsUiState.Error
             }catch(e: Exception){
                 LibraryDetailsUiState.Error
@@ -111,10 +127,15 @@ class LibraryDetailsViewModel @Inject constructor(
         }
     }
 
-    fun getBookStatus(){
+    //_loadCompleteLoad 필터링 없이
+    //getBookStatus() 단독 사용을 위해 매개변수로 타이밍 조절
+    fun getBookStatus(b:Boolean){
         bookStatusListener?.remove()
 
         scope.launch {
+            _loadCompleteLoadForCnt.value=b
+            _loadCompleteLoad.filter { it }.first()
+            _loadCompleteLoadForCnt.filter { it }.first()
             val uid= awaitUserId()
 
             val registration = firebaseBookService.getLibraryStatus(
@@ -123,6 +144,7 @@ class LibraryDetailsViewModel @Inject constructor(
             )
 
             bookStatusListener = registration
+            _loadCompleteLoadForCnt.value=false
         }
     }
 
@@ -139,8 +161,19 @@ class LibraryDetailsViewModel @Inject constructor(
                             borrowedAt = Instant.ofEpochMilli(libraryHistory.loanDate),
                             dueDate = Instant.ofEpochMilli(libraryHistory.dueDate)
                         )
-                    } else {
-                        BookStatus.UnAvailable
+                    }else {
+                        updateReservationDialog(false)
+                        if(_reservationCount.value.contains(bookId)){
+                            val count= _reservationCount.value[bookId]
+                            if(count!=null&&count>0){
+                                BookStatus.Reserved
+                            }
+                            else{
+                                BookStatus.UnAvailable
+                            }
+                        }else{
+                            BookStatus.UnAvailable
+                        }
                     }
                 }
                 BookStatusType.OVERDUE.name -> {
@@ -162,12 +195,33 @@ class LibraryDetailsViewModel @Inject constructor(
         else _currentLibrary.value
     }
 
+    //_loadCompleteLoad 필터링 없이
+    //getReservationCount() 단독 사용을 위해 매개변수로 타이밍 조절
+    fun getReservationCount(b:Boolean){
+        scope.launch {
+            _loadCompleteLoad.value=b
+            _loadCompleteLoadForCnt.value=false
+            _loadCompleteLoad.filter { it }.first()
+            val count=firebaseBookService.getLibraryReservationCount(_currentLibrary.value.book.id)
+            val countResult= count.getOrNull()
+            if(countResult!=null){
+                _reservationCount.update { it+(_currentLibrary.value.book.id to countResult) }
+                updateReservationDialog(true)
+                _loadCompleteLoadForCnt.value=true
+            }
+        }
+    }
+
     fun updateOverdueDialog(b:Boolean){
         _isShowOverdueDialog.value=b
     }
 
     fun updateSuspensionDialog(b:Boolean){
         _isShowSuspensionDateDialog.value=b
+    }
+
+    fun updateReservationDialog(b:Boolean){
+        _isShowReservationDialog.value=b
     }
 
     private suspend fun awaitUserId(): String {

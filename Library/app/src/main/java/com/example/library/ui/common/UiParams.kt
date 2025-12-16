@@ -39,9 +39,13 @@ data class DetailsScreenParams(
     val textFieldKeyword:String,
     val isShowOverdueDialog:Boolean,
     val isShowSuspensionDialog:Boolean,
+    val isShowReservationDialog:Boolean,
     val currentBook: Library,
+    val reservationCount:Map<String, Int>,
     val loanLibrary: () -> Unit,
-    val getBookStatus:()->Unit,
+    val getBookStatus:(Boolean)->Unit,
+    val getReservationCount:(Boolean)->Unit,
     val updateOverdueDialog:(Boolean) -> Unit,
-    val updateSuspensionDialog:(Boolean) -> Unit
+    val updateSuspensionDialog:(Boolean) -> Unit,
+    val updateReservationDialog:(Boolean) -> Unit
 )

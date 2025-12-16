@@ -29,6 +29,8 @@
     <string name="reserve_book">예약하기</string>
     <string name="overdue_dialog_content">연체된 도서가 있습니다. 반납 후 이용해 주시길 바랍니다</string>
     <string name="suspension_dialog_content">연체 만기일 이후에 대출이 가능합니다</string>
+    <string name="reservation_dialog_content1">예약자 %d명이 대기하고 있습니다</string>
+    <string name="reservation_dialog_content2">정말 예약하시겠습니까?</string>
     <string name="cancel_reservation_book">예약 취소하기</string>
     <string name="most_relatable">공감순</string>
     <string name="newest">최신순</string>

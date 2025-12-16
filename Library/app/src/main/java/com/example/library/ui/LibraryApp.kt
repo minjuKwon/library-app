@@ -44,7 +44,9 @@ fun LibraryApp(
 
     val isShowOverdueDialog by libraryDetailsViewModel.isShowOverdueDialog
     val isShowSuspensionDialog by libraryDetailsViewModel.isShowSuspensionDateDialog
+    val isShowReservationDialog by libraryDetailsViewModel.isShowReservationDialog
     val currentBook by libraryDetailsViewModel.currentLibrary
+    val reservationCount by libraryDetailsViewModel.reservationCount.collectAsState()
 
     val navigationType:NavigationType
     val contentType:ContentType
@@ -106,16 +108,20 @@ fun LibraryApp(
         detailsScreenParams = DetailsScreenParams(
             uiState= libraryDetailsViewModel.uiState,
             currentPage = currentPage,
+            reservationCount = reservationCount,
             textFieldKeyword = textFieldKeyword,
             isShowOverdueDialog=isShowOverdueDialog,
             isShowSuspensionDialog=isShowSuspensionDialog,
+            isShowReservationDialog = isShowReservationDialog,
             currentBook= currentBook,
             loanLibrary = {
                 libraryDetailsViewModel.loanLibrary(textFieldKeyword, currentPage.toString())
             },
-            getBookStatus = { libraryDetailsViewModel.getBookStatus() },
+            getBookStatus = { libraryDetailsViewModel.getBookStatus(it) },
+            getReservationCount = {libraryDetailsViewModel.getReservationCount(it)},
             updateOverdueDialog={libraryDetailsViewModel.updateOverdueDialog(it)},
-            updateSuspensionDialog={libraryDetailsViewModel.updateSuspensionDialog(it)}
+            updateSuspensionDialog={libraryDetailsViewModel.updateSuspensionDialog(it)},
+            updateReservationDialog = {libraryDetailsViewModel.updateReservationDialog(it)}
         ),
         resetLibraryList={libraryViewModel.getLiked()},
         resetBookStatus = {libraryViewModel.getBookStatus()},
@@ -124,6 +130,7 @@ fun LibraryApp(
             libraryViewModel.resetLiked()
             libraryDetailsViewModel.updateOverdueDialog(false)
             libraryDetailsViewModel.updateSuspensionDialog(false)
+            libraryDetailsViewModel.updateReservationDialog(false)
         },
         modifier=modifier
     )
