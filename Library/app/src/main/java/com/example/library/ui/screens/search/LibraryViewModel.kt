@@ -138,9 +138,12 @@ class LibraryViewModel @Inject constructor(
     fun getBookStatus(){
         bookStatusListener?.remove()
         scope.launch {
-            val uid= awaitUserId()
-
             _loadCompleteLoadForCnt.filter { it }.first()
+
+            val uid= awaitUserId()
+            val isReserved=firebaseBookService.isReservedBook(uid)
+            val isReservedResult= isReserved.getOrNull()
+
             if(libraryUiState is LibraryUiState.Success){
                 val state= libraryUiState as LibraryUiState.Success
                 state.list.forEach { item ->
@@ -148,7 +151,7 @@ class LibraryViewModel @Inject constructor(
 
                     val registration = firebaseBookService.getLibraryStatus(
                         bookId = bookId,
-                        callback = { updateBookStatus(uid, it) }
+                        callback = { updateBookStatus(uid,isReservedResult, it) }
                     )
 
                     bookStatusListener = registration
@@ -159,7 +162,7 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    private fun updateBookStatus(userId:String, libraryHistory: LibraryHistory) {
+    private fun updateBookStatus(userId:String, isReserved:Boolean?, libraryHistory: LibraryHistory) {
         libraryUiState= updateCopiedUiState(libraryUiState){
             val updatedList = it.list.map { item ->
                 if (item.library.book.id == libraryHistory.bookId){
@@ -176,7 +179,15 @@ class LibraryViewModel @Inject constructor(
                             } else{
                                 if(_reservationCount.value.contains(item.library.book.id)){
                                     val count= _reservationCount.value[item.library.book.id]
-                                    if(count!=null&&count>0) BookStatus.Reserved
+                                    if(count!=null&&count>0){
+                                        //예약 취소
+                                        if(isReserved!=null&&!isReserved){
+                                            BookStatus.UnAvailable
+                                        }else{
+                                            //예약
+                                            BookStatus.Reserved
+                                        }
+                                    }
                                     else BookStatus.UnAvailable
                                 }else{
                                     BookStatus.UnAvailable
