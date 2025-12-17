@@ -138,7 +138,7 @@ class LibraryDetailsViewModel @Inject constructor(
             _loadCompleteLoadForCnt.filter { it }.first()
 
             val uid= awaitUserId()
-            val isReserved=firebaseBookService.isReservedBook(uid)
+            val isReserved=firebaseBookService.isUserReservedBook(uid)
             val isReservedResult= isReserved.getOrNull()
 
             val registration = firebaseBookService.getLibraryStatus(
