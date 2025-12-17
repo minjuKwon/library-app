@@ -227,8 +227,8 @@ class FirebaseBookRepository@Inject constructor(
 
             var historyDocRef: DocumentReference? =null
             var userLoanBookDocRef:DocumentReference? = null
-            var reservationDocRef:DocumentReference?= null
-            var reservationSnap:DocumentSnapshot?=null
+            var reservationUserDocRef:DocumentReference?= null
+            var reservationUserSnap:DocumentSnapshot?=null
 
             if(historyRequest.bookStatus== BookStatusType.BORROWED.name||
                 historyRequest.bookStatus== BookStatusType.OVERDUE.name){
@@ -252,7 +252,7 @@ class FirebaseBookRepository@Inject constructor(
                     .first()
                     .reference
             }else if(historyRequest.bookStatus== BookStatusType.RESERVED.name){
-                reservationDocRef= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
+                reservationUserDocRef= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
                     .whereEqualTo(USER_ID, historyRequest.userId)
                     .orderBy(RESERVED_AT, Query.Direction.DESCENDING)
                     .get()
@@ -260,7 +260,7 @@ class FirebaseBookRepository@Inject constructor(
                     .documents
                     .first()
                     .reference
-                reservationSnap= reservationDocRef.get().await()
+                reservationUserSnap= reservationUserDocRef.get().await()
             }
 
             val hasOverdue= hasOverdueBook(historyRequest.userId)
@@ -345,13 +345,13 @@ class FirebaseBookRepository@Inject constructor(
                         }
                     }else{
                         //BORROWED 상태에서 userId가 다르면 예약 로직
-                        if(reservationDocRef!=null){
+                        if(reservationUserDocRef!=null){
                             //예약 취소
-                            if(reservationSnap?.exists() == true){
-                                if(reservationSnap.get(STATUS) ==ReservationStatusType.WAITING.name){
+                            if(reservationUserSnap?.exists() == true){
+                                if(reservationUserSnap.get(STATUS) ==ReservationStatusType.WAITING.name){
                                     val reservationData=
                                         mapOf(STATUS to ReservationStatusType.CANCELLED.name)
-                                    transaction.update(reservationDocRef, reservationData)
+                                    transaction.update(reservationUserDocRef, reservationData)
                                 }
                             }
                         }else{
