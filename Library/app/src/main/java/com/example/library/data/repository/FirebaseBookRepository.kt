@@ -40,6 +40,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -229,6 +230,8 @@ class FirebaseBookRepository@Inject constructor(
             var userLoanBookDocRef:DocumentReference? = null
             var reservationUserDocRef:DocumentReference?= null
             var reservationUserSnap:DocumentSnapshot?=null
+            var reservationBookSnap: QuerySnapshot?= null
+            var reservationBookDocRef:DocumentReference?= null
 
             if(historyRequest.bookStatus== BookStatusType.BORROWED.name||
                 historyRequest.bookStatus== BookStatusType.OVERDUE.name){
@@ -251,6 +254,16 @@ class FirebaseBookRepository@Inject constructor(
                     .documents
                     .first()
                     .reference
+
+                reservationBookSnap= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
+                    .whereEqualTo(BOOK_ID,historyRequest.bookId)
+                    .whereEqualTo(STATUS, ReservationStatusType.WAITING.name)
+                    .orderBy(RESERVED_AT, Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+                if(!reservationBookSnap.isEmpty){
+                    reservationBookDocRef= reservationBookSnap.documents.first().reference
+                }
             }else if(historyRequest.bookStatus== BookStatusType.RESERVED.name){
                 reservationUserDocRef= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
                     .whereEqualTo(USER_ID, historyRequest.userId)
@@ -320,14 +333,32 @@ class FirebaseBookRepository@Inject constructor(
                         .document(historyRequest.libraryHistoryId)
                     transaction.set(userLoanDocRef, userLoanLibrary)
                 }else if(status == BookStatusType.BORROWED.name){
+                    //반납하기
                     if(userId== historyRequest.userId){
-                        val libraryData= mapOf(
-                            STATUS_TYPE to BookStatusType.AVAILABLE.name,
-                            BORROWED_AT to null,
-                            DUE_DATE to null
-                        )
-                        transaction.update(libraryDocRef, libraryData)
+                        //다음 예약자가 있을 경우
+                        if(reservationBookSnap?.isEmpty==false){
+                            if (reservationBookDocRef != null) {
+                                transaction.update(
+                                    reservationBookDocRef,
+                                    mapOf(STATUS to ReservationStatusType.NOTIFIED.name)
+                                )
 
+                                val libraryData= mapOf(
+                                    STATUS_TYPE to BookStatusType.UNAVAILABLE.name,
+                                    BORROWED_AT to null,
+                                    DUE_DATE to null
+                                )
+                                transaction.update(libraryDocRef, libraryData)
+                            }
+                        }else{
+                            //별도의 예약자가 없는 경우
+                            val libraryData= mapOf(
+                                STATUS_TYPE to BookStatusType.AVAILABLE.name,
+                                BORROWED_AT to null,
+                                DUE_DATE to null
+                            )
+                            transaction.update(libraryDocRef, libraryData)
+                        }
                         val historyData= mapOf(
                             STATUS to BookStatusType.RETURNED.name,
                             RETURN_DATE to historyRequest.eventDate
