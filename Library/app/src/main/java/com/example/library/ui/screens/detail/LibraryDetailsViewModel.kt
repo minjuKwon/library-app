@@ -136,11 +136,14 @@ class LibraryDetailsViewModel @Inject constructor(
             _loadCompleteLoadForCnt.value=b
             _loadCompleteLoad.filter { it }.first()
             _loadCompleteLoadForCnt.filter { it }.first()
+
             val uid= awaitUserId()
+            val isReserved=firebaseBookService.isReservedBook(uid)
+            val isReservedResult= isReserved.getOrNull()
 
             val registration = firebaseBookService.getLibraryStatus(
                 bookId = _currentLibrary.value.book.id,
-                callback = { updateBookStatus(uid, it) }
+                callback = { updateBookStatus(uid, isReservedResult, it) }
             )
 
             bookStatusListener = registration
@@ -148,7 +151,7 @@ class LibraryDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun updateBookStatus(userId:String, libraryHistory: LibraryHistory) {
+    private fun updateBookStatus(userId:String, isReserved:Boolean?, libraryHistory: LibraryHistory) {
         val bookId= _currentLibrary.value.book.id
         if (bookId == libraryHistory.bookId){
             val bookStatus:BookStatus = when(libraryHistory.status){
@@ -166,7 +169,13 @@ class LibraryDetailsViewModel @Inject constructor(
                         if(_reservationCount.value.contains(bookId)){
                             val count= _reservationCount.value[bookId]
                             if(count!=null&&count>0){
-                                BookStatus.Reserved
+                                //예약 취소
+                                if(isReserved!=null&&!isReserved){
+                                    BookStatus.UnAvailable
+                                }else{
+                                    //예약
+                                    BookStatus.Reserved
+                                }
                             }
                             else{
                                 BookStatus.UnAvailable
