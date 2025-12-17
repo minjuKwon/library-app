@@ -21,6 +21,7 @@ object FireStoreField{
     const val STATUS="status"
     const val STATUS_TYPE="statusType"
     const val BORROWED_AT="borrowedAt"
+    const val RESERVED_AT="reservedAt"
     const val LOAN_DATE="loanDate"
     const val DUE_DATE="dueDate"
     const val RETURN_DATE="returnDate"
