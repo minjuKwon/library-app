@@ -15,6 +15,7 @@ import com.example.library.data.FireStoreField.IS_LIKED
 import com.example.library.data.FireStoreField.LOAN_DATE
 import com.example.library.data.FireStoreField.OFFSET
 import com.example.library.data.FireStoreField.OVERDUE_DATE
+import com.example.library.data.FireStoreField.RESERVED_AT
 import com.example.library.data.FireStoreField.RETURN_DATE
 import com.example.library.data.FireStoreField.STATUS
 import com.example.library.data.FireStoreField.STATUS_TYPE
@@ -34,6 +35,7 @@ import com.example.library.domain.DatabaseRepository
 import com.example.library.domain.HistoryRequest
 import com.example.library.ui.screens.user.getSuspensionEndDateToLong
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
@@ -225,6 +227,8 @@ class FirebaseBookRepository@Inject constructor(
 
             var historyDocRef: DocumentReference? =null
             var userLoanBookDocRef:DocumentReference? = null
+            var reservationDocRef:DocumentReference?= null
+            var reservationSnap:DocumentSnapshot?=null
 
             if(historyRequest.bookStatus== BookStatusType.BORROWED.name||
                 historyRequest.bookStatus== BookStatusType.OVERDUE.name){
@@ -247,6 +251,16 @@ class FirebaseBookRepository@Inject constructor(
                     .documents
                     .first()
                     .reference
+            }else if(historyRequest.bookStatus== BookStatusType.RESERVED.name){
+                reservationDocRef= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
+                    .whereEqualTo(USER_ID, historyRequest.userId)
+                    .orderBy(RESERVED_AT, Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+                    .documents
+                    .first()
+                    .reference
+                reservationSnap= reservationDocRef.get().await()
             }
 
             val hasOverdue= hasOverdueBook(historyRequest.userId)
@@ -331,17 +345,29 @@ class FirebaseBookRepository@Inject constructor(
                         }
                     }else{
                         //BORROWED 상태에서 userId가 다르면 예약 로직
-                        val libraryReservation= LibraryReservation(
-                            historyRequest.libraryHistoryId,
-                            historyRequest.userId,
-                            historyRequest.bookId,
-                            historyRequest.bookTitle?:"",
-                            historyRequest.eventDate,
-                            ReservationStatusType.WAITING.name
-                        )
-                        val reservationDocRef= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
-                            .document(historyRequest.libraryHistoryId)
-                        transaction.set(reservationDocRef, libraryReservation)
+                        if(reservationDocRef!=null){
+                            //예약 취소
+                            if(reservationSnap?.exists() == true){
+                                if(reservationSnap.get(STATUS) ==ReservationStatusType.WAITING.name){
+                                    val reservationData=
+                                        mapOf(STATUS to ReservationStatusType.CANCELLED.name)
+                                    transaction.update(reservationDocRef, reservationData)
+                                }
+                            }
+                        }else{
+                            //예약 생성
+                            val libraryReservation= LibraryReservation(
+                                historyRequest.libraryHistoryId,
+                                historyRequest.userId,
+                                historyRequest.bookId,
+                                historyRequest.bookTitle?:"",
+                                historyRequest.eventDate,
+                                ReservationStatusType.WAITING.name
+                            )
+                            val reservationNewDocRef= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
+                                .document(historyRequest.libraryHistoryId)
+                            transaction.set(reservationNewDocRef, libraryReservation)
+                        }
                     }
                 }else if(status == BookStatusType.OVERDUE.name){
                     if(userId== historyRequest.userId){
