@@ -26,6 +26,7 @@ interface DatabaseRepository {
         book:UserLoanLibrary
     ):Result<Unit>
     suspend fun hasOverdueBook(userId: String):Result<Boolean>
+    suspend fun hasReservedBook(bookId: String):Result<Boolean>
     suspend fun hasUserReservedBook(userId: String):Result<Boolean>
     suspend fun getLibraryReservationCount(bookId:String):Result<Int>
 }
