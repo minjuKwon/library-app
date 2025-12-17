@@ -141,8 +141,8 @@ class LibraryViewModel @Inject constructor(
             _loadCompleteLoadForCnt.filter { it }.first()
 
             val uid= awaitUserId()
-            val isReserved=firebaseBookService.isUserReservedBook(uid)
-            val isReservedResult= isReserved.getOrNull()
+            val isUserReserved=firebaseBookService.isUserReservedBook(uid)
+            val isUserReservedResult= isUserReserved.getOrNull()
 
             if(libraryUiState is LibraryUiState.Success){
                 val state= libraryUiState as LibraryUiState.Success
@@ -151,7 +151,7 @@ class LibraryViewModel @Inject constructor(
 
                     val registration = firebaseBookService.getLibraryStatus(
                         bookId = bookId,
-                        callback = { updateBookStatus(uid,isReservedResult, it) }
+                        callback = { updateBookStatus(uid,isUserReservedResult,it) }
                     )
 
                     bookStatusListener = registration
@@ -162,7 +162,7 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    private fun updateBookStatus(userId:String, isReserved:Boolean?, libraryHistory: LibraryHistory) {
+    private fun updateBookStatus(userId:String, isUserReserved:Boolean?, libraryHistory: LibraryHistory) {
         libraryUiState= updateCopiedUiState(libraryUiState){
             val updatedList = it.list.map { item ->
                 if (item.library.book.id == libraryHistory.bookId){
@@ -181,7 +181,7 @@ class LibraryViewModel @Inject constructor(
                                     val count= _reservationCount.value[item.library.book.id]
                                     if(count!=null&&count>0){
                                         //예약 취소
-                                        if(isReserved!=null&&!isReserved){
+                                        if(isUserReserved!=null&&!isUserReserved){
                                             BookStatus.UnAvailable
                                         }else{
                                             //예약
