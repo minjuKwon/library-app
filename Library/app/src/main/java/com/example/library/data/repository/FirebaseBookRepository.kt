@@ -541,7 +541,7 @@ class FirebaseBookRepository@Inject constructor(
         }
     }
 
-    override suspend fun hasReservationBook(userId: String): Result<Boolean> {
+    override suspend fun hasUserReservedBook(userId: String): Result<Boolean> {
         try{
             val snapshot= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
                 .whereEqualTo(USER_ID, userId)

@@ -181,7 +181,7 @@ class FirebaseBookService@Inject constructor(
     }
 
     override suspend fun isReservedBook(userId: String): Result<Boolean> {
-        return databaseRepository.hasReservationBook(userId)
+        return databaseRepository.hasUserReservedBook(userId)
     }
 
     override suspend fun getLibraryReservationCount(bookId: String): Result<Int> {
