@@ -148,10 +148,19 @@ class LibraryViewModel @Inject constructor(
                 val state= libraryUiState as LibraryUiState.Success
                 state.list.forEach { item ->
                     val bookId = item.library.book.id
+                    val isReservedBook= firebaseBookService.isReservedBook(bookId)
+                    val isReservedBookResult= isReservedBook.getOrNull()
 
                     val registration = firebaseBookService.getLibraryStatus(
                         bookId = bookId,
-                        callback = { updateBookStatus(uid,isUserReservedResult,it) }
+                        callback = {
+                            updateBookStatus(
+                                uid,
+                                isUserReservedResult,
+                                isReservedBookResult,
+                                it
+                            )
+                        }
                     )
 
                     bookStatusListener = registration
@@ -162,12 +171,24 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    private fun updateBookStatus(userId:String, isUserReserved:Boolean?, libraryHistory: LibraryHistory) {
+    private fun updateBookStatus(
+        userId:String,
+        isUserReserved:Boolean?,
+        isReservedBook:Boolean?,
+        libraryHistory: LibraryHistory
+    ) {
         libraryUiState= updateCopiedUiState(libraryUiState){
             val updatedList = it.list.map { item ->
                 if (item.library.book.id == libraryHistory.bookId){
                     val bookStatus:BookStatus = when(libraryHistory.status){
-                        BookStatusType.AVAILABLE.name, BookStatusType.RETURNED.name -> BookStatus.Available
+                        BookStatusType.AVAILABLE.name-> BookStatus.Available
+                        BookStatusType.RETURNED.name ->{
+                            if(isReservedBook!=null&&isReservedBook){
+                                BookStatus.UnAvailable
+                            }else{
+                                BookStatus.Available
+                            }
+                        }
                         BookStatusType.UNAVAILABLE.name -> BookStatus.UnAvailable
                         BookStatusType.BORROWED.name ->{
                             if(userId == libraryHistory.userId){
