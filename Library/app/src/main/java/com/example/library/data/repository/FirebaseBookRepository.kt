@@ -572,6 +572,24 @@ class FirebaseBookRepository@Inject constructor(
         }
     }
 
+    override suspend fun hasReservedBook(bookId: String): Result<Boolean> {
+        try{
+            val snapshot= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
+                .whereEqualTo(BOOK_ID, bookId)
+                .whereEqualTo(STATUS, ReservationStatusType.WAITING.name)
+                .get()
+                .await()
+
+            val isExists= snapshot.documents.isNotEmpty()
+
+            return Result.success(isExists)
+        }catch (e: FirebaseFirestoreException){
+            return Result.failure(FirebaseException(e.code.name))
+        }catch (e:Exception){
+            return Result.failure(e)
+        }
+    }
+
     override suspend fun hasUserReservedBook(userId: String): Result<Boolean> {
         try{
             val snapshot= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
