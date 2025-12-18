@@ -140,6 +140,8 @@ class LibraryDetailsViewModel @Inject constructor(
             val uid= awaitUserId()
             val isUserReserved=firebaseBookService.isUserReservedBook(uid)
             val isUserReservedResult= isUserReserved.getOrNull()
+            val isReservedBook= firebaseBookService.isReservedBook(_currentLibrary.value.book.id)
+            val isReservedBookResult= isReservedBook.getOrNull()
 
             val registration = firebaseBookService.getLibraryStatus(
                 bookId = _currentLibrary.value.book.id,
@@ -147,6 +149,7 @@ class LibraryDetailsViewModel @Inject constructor(
                     updateBookStatus(
                         uid,
                         isUserReservedResult,
+                        isReservedBookResult,
                         it
                     )
                 }
@@ -160,12 +163,20 @@ class LibraryDetailsViewModel @Inject constructor(
     private fun updateBookStatus(
         userId:String,
         isUserReserved:Boolean?,
+        isReservedBook:Boolean?,
         libraryHistory: LibraryHistory
     ) {
         val bookId= _currentLibrary.value.book.id
         if (bookId == libraryHistory.bookId){
             val bookStatus:BookStatus = when(libraryHistory.status){
-                BookStatusType.AVAILABLE.name, BookStatusType.RETURNED.name -> BookStatus.Available
+                BookStatusType.AVAILABLE.name-> BookStatus.Available
+                BookStatusType.RETURNED.name -> {
+                    if(isReservedBook!=null&&isReservedBook){
+                        BookStatus.UnAvailable
+                    }else{
+                        BookStatus.Available
+                    }
+                }
                 BookStatusType.UNAVAILABLE.name -> BookStatus.UnAvailable
                 BookStatusType.BORROWED.name ->{
                     if(userId == libraryHistory.userId){
