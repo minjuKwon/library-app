@@ -61,7 +61,8 @@ fun List<UserLoanLibrary>.getSuspensionEndDate(): String{
         }
     }
 
-    return formatSuspensionEndDate(minDate)
+    return if(minDate==Long.MAX_VALUE) "-"
+    else formatSuspensionEndDate(minDate)
 }
 
 private fun formatSuspensionEndDate(dueDate: Long): String {
