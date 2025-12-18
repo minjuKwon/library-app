@@ -627,6 +627,29 @@ class FirebaseBookRepository@Inject constructor(
         }
     }
 
+    override suspend fun isMyReservationTurn(userId: String): Result<List<LibraryReservation>> {
+        try{
+            val snapshot= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
+                .whereEqualTo(USER_ID, userId)
+                .whereEqualTo(STATUS, ReservationStatusType.NOTIFIED.name)
+                .get()
+                .await()
+
+            if(snapshot.isEmpty){
+                return Result.success(emptyList())
+            }else{
+                val list= snapshot.documents.map { doc ->
+                    doc.toObject(LibraryReservation::class.java)?:LibraryReservation()
+                }
+                return Result.success(list)
+            }
+        }catch (e: FirebaseFirestoreException){
+            return Result.failure(FirebaseException(e.code.name))
+        }catch (e:Exception){
+            return Result.failure(e)
+        }
+    }
+
     private fun getUserLoanList(userId: String): Query{
         return fireStore.collection(USER_LOAN_LIBRARY_COLLECTION)
             .whereEqualTo(USER_ID, userId)
