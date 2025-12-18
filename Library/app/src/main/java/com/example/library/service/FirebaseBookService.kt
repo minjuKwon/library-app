@@ -10,6 +10,7 @@ import com.example.library.data.entity.BookStatusType
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.LibraryLiked
+import com.example.library.data.entity.LibraryReservation
 import com.example.library.data.entity.UserLoanLibrary
 import com.example.library.data.repository.FirebaseException
 import com.example.library.domain.DatabaseRepository
@@ -190,6 +191,10 @@ class FirebaseBookService@Inject constructor(
 
     override suspend fun getLibraryReservationCount(bookId: String): Result<Int> {
         return databaseRepository.getLibraryReservationCount(bookId)
+    }
+
+    override suspend fun checkMyReservationTurn(userId: String): Result<List<LibraryReservation>> {
+        return databaseRepository.isMyReservationTurn(userId)
     }
 
 }
