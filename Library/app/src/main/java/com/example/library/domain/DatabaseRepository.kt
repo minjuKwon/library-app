@@ -3,6 +3,7 @@ package com.example.library.domain
 import com.example.library.data.entity.Library
 import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.LibraryLiked
+import com.example.library.data.entity.LibraryReservation
 import com.example.library.data.entity.UserLoanLibrary
 import com.google.firebase.firestore.ListenerRegistration
 
@@ -29,6 +30,7 @@ interface DatabaseRepository {
     suspend fun hasReservedBook(bookId: String):Result<Boolean>
     suspend fun hasUserReservedBook(userId: String):Result<Boolean>
     suspend fun getLibraryReservationCount(bookId:String):Result<Int>
+    suspend fun isMyReservationTurn(userId: String):Result<List<LibraryReservation>>
 }
 
 data class HistoryRequest(
