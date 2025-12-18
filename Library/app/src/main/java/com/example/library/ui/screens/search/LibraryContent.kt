@@ -70,8 +70,8 @@ fun LibraryListOnlyContent(
     onNavigationToLogIn:()->Unit,
     modifier:Modifier= Modifier
 ){
-    var openAlertFirst by rememberSaveable { mutableStateOf(true) }
-    var openAlertDialog by rememberSaveable { mutableStateOf(false) }
+    var openAlertLoanFirst by rememberSaveable { mutableStateOf(true) }
+    var openAlertLoanDialog by rememberSaveable { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(lifecycleOwner) {
@@ -119,15 +119,15 @@ fun LibraryListOnlyContent(
 
     val dueCheckResult= listContentParams.dueCheckResult
     if(dueCheckResult.before.isNotEmpty()||dueCheckResult.today.isNotEmpty()||dueCheckResult.overdue.isNotEmpty()){
-        openAlertDialog=true
+        openAlertLoanDialog=true
     }
 
     UserLoanStatusDialog(
-        isShow = openAlertDialog&&openAlertFirst,
+        isShow = openAlertLoanDialog&&openAlertLoanFirst,
         dueCheckResult = dueCheckResult,
         onDismissRequest = {
-            openAlertDialog=false
-            openAlertFirst=false
+            openAlertLoanDialog=false
+            openAlertLoanFirst=false
         },
     )
 }
