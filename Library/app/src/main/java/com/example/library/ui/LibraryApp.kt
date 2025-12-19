@@ -47,7 +47,9 @@ fun LibraryApp(
     val isShowSuspensionDialog by libraryDetailsViewModel.isShowSuspensionDateDialog
     val isShowReservationDialog by libraryDetailsViewModel.isShowReservationDialog
     val currentBook by libraryDetailsViewModel.currentLibrary
+    val reservationStatus by libraryDetailsViewModel.reservationStatus
     val reservationCount by libraryDetailsViewModel.reservationCount.collectAsState()
+    val userPreferences by libraryDetailsViewModel.userPreferences.collectAsState()
 
     val navigationType:NavigationType
     val contentType:ContentType
@@ -114,8 +116,10 @@ fun LibraryApp(
         detailsScreenParams = DetailsScreenParams(
             uiState= libraryDetailsViewModel.uiState,
             currentPage = currentPage,
+            userId = userPreferences?.uid?:"",
             reservationCount = reservationCount,
             textFieldKeyword = textFieldKeyword,
+            reservationStatus=reservationStatus,
             isShowOverdueDialog=isShowOverdueDialog,
             isShowSuspensionDialog=isShowSuspensionDialog,
             isShowReservationDialog = isShowReservationDialog,
@@ -123,6 +127,7 @@ fun LibraryApp(
             loanLibrary = {
                 libraryDetailsViewModel.loanLibrary(textFieldKeyword, currentPage.toString())
             },
+            getReservedStatus = {libraryDetailsViewModel.getReservedStatus()},
             getBookStatus = { libraryDetailsViewModel.getBookStatus(it) },
             getReservationCount = {libraryDetailsViewModel.getReservationCount(it)},
             updateOverdueDialog={libraryDetailsViewModel.updateOverdueDialog(it)},

@@ -56,6 +56,9 @@ class LibraryDetailsViewModel @Inject constructor(
     private val _currentLibrary= mutableStateOf(defaultLibrary)
     val currentLibrary= _currentLibrary
 
+    private val _reservationStatus= mutableStateOf("")
+    val reservationStatus= _reservationStatus
+
     private val _isShowOverdueDialog= mutableStateOf(false)
     val isShowOverdueDialog= _isShowOverdueDialog
 
@@ -238,6 +241,17 @@ class LibraryDetailsViewModel @Inject constructor(
                 _reservationCount.update { it+(_currentLibrary.value.book.id to countResult) }
                 updateReservationDialog(true)
                 _loadCompleteLoadForCnt.value=true
+            }
+        }
+    }
+
+    fun getReservedStatus(){
+        scope.launch {
+            val uid= awaitUserId()
+            val status= firebaseBookService.getReservedStatus(uid, _currentLibrary.value.book.id)
+            val statusResult= status.getOrNull()
+            if(statusResult!=null){
+                _reservationStatus.value= statusResult
             }
         }
     }

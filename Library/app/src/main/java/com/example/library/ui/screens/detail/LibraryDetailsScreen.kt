@@ -30,6 +30,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -50,6 +51,7 @@ import com.example.library.R
 import com.example.library.core.DateTimeConverter.formatDateOnly
 import com.example.library.data.entity.BookInfo
 import com.example.library.data.entity.BookStatus
+import com.example.library.data.entity.ReservationStatusType
 import com.example.library.ui.common.BackIconButton
 import com.example.library.ui.common.BookStatusUiMapper.toStringName
 import com.example.library.ui.common.TextRadioButton
@@ -65,6 +67,9 @@ fun LibraryDetailsScreen(
 ){
     BackHandler {
         onBackPressed()
+    }
+    LaunchedEffect(detailsScreenParams.userId, detailsScreenParams.currentBook.book.id) {
+        detailsScreenParams.getReservedStatus()
     }
     Column(modifier=modifier) {
         if(isNotFullScreen){
@@ -348,12 +353,20 @@ private fun BookStatusButton(
         },
         modifier=Modifier.fillMaxWidth()
     ) {
+        val status= detailsScreenParams.reservationStatus
         when(detailsScreenParams.currentBook.bookStatus){
             is BookStatus.Available -> Text(stringResource(R.string.borrow_book))
             is BookStatus.UnAvailable -> Text(stringResource(R.string.reserve_book))
             is BookStatus.Borrowed -> Text(stringResource(R.string.return_book))
             is BookStatus.OverDue -> Text(stringResource(R.string.return_book))
-            is BookStatus.Reserved -> Text(stringResource(R.string.cancel_reservation_book))
+            is BookStatus.Reserved ->{
+                if(status== ReservationStatusType.NOTIFIED.name)
+                    Text(stringResource(R.string.borrow_book))
+                else if(status== ReservationStatusType.WAITING.name)
+                    Text(stringResource(R.string.cancel_reservation_book))
+                else
+                    Text(stringResource(R.string.reserve_book))
+            }
         }
     }
 }
