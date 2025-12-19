@@ -32,6 +32,7 @@ interface DatabaseRepository {
     suspend fun getLibraryReservationCount(bookId:String):Result<Int>
     suspend fun getReservedStatus(userId: String, bookId: String):Result<String>
     suspend fun isMyReservationTurn(userId: String):Result<List<LibraryReservation>>
+    suspend fun getReservationsByUser(userId: String):Result<List<LibraryReservation>>
 }
 
 data class HistoryRequest(
