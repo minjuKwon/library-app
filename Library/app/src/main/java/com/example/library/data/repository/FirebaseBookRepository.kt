@@ -628,6 +628,26 @@ class FirebaseBookRepository@Inject constructor(
         }
     }
 
+    override suspend fun getReservedStatus(userId: String, bookId: String): Result<String> {
+        try{
+            val snapshot= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
+                .whereEqualTo(USER_ID, userId)
+                .whereEqualTo(BOOK_ID, bookId)
+                .orderBy(RESERVED_AT, Query.Direction.DESCENDING)
+                .get()
+                .await()
+                .documents
+                .first()
+
+                val status=snapshot.getString(STATUS)
+            return Result.success(status?:"")
+        }catch (e: FirebaseFirestoreException){
+            return Result.failure(FirebaseException(e.code.name))
+        }catch (e:Exception){
+            return Result.failure(e)
+        }
+    }
+
     override suspend fun isMyReservationTurn(userId: String): Result<List<LibraryReservation>> {
         try{
             val snapshot= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
