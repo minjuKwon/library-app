@@ -172,7 +172,7 @@ class LibraryDetailsViewModel @Inject constructor(
                 BookStatusType.AVAILABLE.name-> BookStatus.Available
                 BookStatusType.RETURNED.name -> {
                     if(isReservedBook!=null&&isReservedBook){
-                        BookStatus.UnAvailable
+                        BookStatus.Reserved
                     }else{
                         BookStatus.Available
                     }

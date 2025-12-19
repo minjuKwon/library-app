@@ -344,7 +344,7 @@ class FirebaseBookRepository@Inject constructor(
                                 )
 
                                 val libraryData= mapOf(
-                                    STATUS_TYPE to BookStatusType.UNAVAILABLE.name,
+                                    STATUS_TYPE to BookStatusType.RESERVED.name,
                                     BORROWED_AT to null,
                                     DUE_DATE to null
                                 )
@@ -574,9 +574,10 @@ class FirebaseBookRepository@Inject constructor(
 
     override suspend fun hasReservedBook(bookId: String): Result<Boolean> {
         try{
+            val conditionList= listOf(ReservationStatusType.WAITING.name, ReservationStatusType.NOTIFIED.name)
             val snapshot= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
                 .whereEqualTo(BOOK_ID, bookId)
-                .whereEqualTo(STATUS, ReservationStatusType.WAITING.name)
+                .whereIn(STATUS, conditionList)
                 .get()
                 .await()
 
