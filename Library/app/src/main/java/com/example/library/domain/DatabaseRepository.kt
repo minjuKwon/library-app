@@ -30,6 +30,7 @@ interface DatabaseRepository {
     suspend fun hasReservedBook(bookId: String):Result<Boolean>
     suspend fun hasUserReservedBook(userId: String):Result<Boolean>
     suspend fun getLibraryReservationCount(bookId:String):Result<Int>
+    suspend fun getReservedStatus(userId: String, bookId: String):Result<String>
     suspend fun isMyReservationTurn(userId: String):Result<List<LibraryReservation>>
 }
 
