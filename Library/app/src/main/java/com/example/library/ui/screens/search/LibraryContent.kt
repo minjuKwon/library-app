@@ -72,6 +72,8 @@ fun LibraryListOnlyContent(
 ){
     var openAlertLoanFirst by rememberSaveable { mutableStateOf(true) }
     var openAlertLoanDialog by rememberSaveable { mutableStateOf(false) }
+    var openAlertReservationFirst by rememberSaveable { mutableStateOf(true) }
+    var openAlertReservationDialog by rememberSaveable { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(lifecycleOwner) {
@@ -122,6 +124,9 @@ fun LibraryListOnlyContent(
         openAlertLoanDialog=true
     }
 
+    val reversedList= listContentParams.reservedBookList
+    if(reversedList.isNotEmpty()) openAlertReservationDialog=true
+
     UserLoanStatusDialog(
         isShow = openAlertLoanDialog&&openAlertLoanFirst,
         dueCheckResult = dueCheckResult,
@@ -129,6 +134,15 @@ fun LibraryListOnlyContent(
             openAlertLoanDialog=false
             openAlertLoanFirst=false
         },
+    )
+
+    CheckReservationDialog(
+        isShow = openAlertReservationDialog&&openAlertReservationFirst,
+        content = reversedList,
+        onDismissRequest = {
+            openAlertReservationDialog=false
+            openAlertReservationFirst=false
+        }
     )
 }
 
@@ -372,6 +386,29 @@ private fun UserLoanStatusDialog(
                 Column {
                     Text(text=titleText)
                     Text(text=contentText.toString())
+                    TextButton(
+                        onClick = { onDismissRequest() },
+                    ) {
+                        Text(stringResource(R.string.confirm))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CheckReservationDialog(
+    isShow:Boolean,
+    content:List<String>,
+    onDismissRequest: () -> Unit
+){
+    if(isShow){
+        Dialog(onDismissRequest={onDismissRequest()}){
+            Card{
+                Column {
+                    Text(text= stringResource(R.string.reservation_turn_dialog_content))
+                    Text(content.joinToString(separator = "\n"))
                     TextButton(
                         onClick = { onDismissRequest() },
                     ) {

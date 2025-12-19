@@ -40,6 +40,7 @@ fun LibraryApp(
 
     val textFieldKeyword by libraryViewModel.textFieldKeyword
     val dueCheckResult by libraryViewModel.dueCheckResult
+    val reservedBookList by libraryViewModel.reservedBookList.collectAsState()
     val currentPage by libraryViewModel.currentPage.collectAsState()
 
     val isShowOverdueDialog by libraryDetailsViewModel.isShowOverdueDialog
@@ -93,6 +94,7 @@ fun LibraryApp(
             scrollState=scrollState,
             currentPage=currentPage,
             dueCheckResult= dueCheckResult,
+            reservedBookList=reservedBookList,
             updatePage={
                 libraryViewModel.getInformation(page=it)
                 libraryViewModel.getItem()

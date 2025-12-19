@@ -63,6 +63,9 @@ class LibraryViewModel @Inject constructor(
     private val _currentPage = MutableStateFlow(1)
     val currentPage: StateFlow<Int> = _currentPage
 
+    private val _reservedBookList = MutableStateFlow<List<String>>(emptyList())
+    val reservedBookList = _reservedBookList
+
     private val _reservationCount= MutableStateFlow<Map<String, Int>>(emptyMap())
 
     private val _backPressedTime= MutableStateFlow(0L)
@@ -73,6 +76,7 @@ class LibraryViewModel @Inject constructor(
     private var bookStatusListener:ListenerRegistration? =null
 
     init {
+        checkMyReservationTurn()
         getLoanDueStatus()
         getInformation()
         getItem()
@@ -362,6 +366,18 @@ class LibraryViewModel @Inject constructor(
             }else{
                 _dueCheckResult.value= result.getOrNull()?:DueCheckResult()
                 _getCompleteDueStatus.value = true
+            }
+        }
+    }
+
+    private fun checkMyReservationTurn(){
+        scope.launch {
+            val uid= awaitUserId()
+            val list= firebaseBookService.checkMyReservationTurn(uid)
+            if(list.isFailure){
+                LibraryUiState.Error
+            }else{
+                _reservedBookList.value= list.getOrNull()?.map { it.bookTitle }?: emptyList()
             }
         }
     }

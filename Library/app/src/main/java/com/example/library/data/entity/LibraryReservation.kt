@@ -4,6 +4,7 @@ data class LibraryReservation(
     val libraryReservationId:String="",
     val userId:String="",
     val bookId:String="",
+    val bookTitle:String="",
     val reservedAt:Long=0,
     val status:String=""
 )
