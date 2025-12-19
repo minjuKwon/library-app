@@ -13,4 +13,5 @@ enum class ReservationStatusType(val ko:String){
     WAITING("예약 대기 중"),
     NOTIFIED("예약 안내 완료"),
     CANCELLED("예약 취소"),
+    BORROWED("예약 완료")
 }
