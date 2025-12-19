@@ -32,6 +32,7 @@ interface DatabaseService {
     suspend fun isReservedBook(bookId: String):Result<Boolean>
     suspend fun isUserReservedBook(userId: String):Result<Boolean>
     suspend fun getLibraryReservationCount(bookId:String):Result<Int>
+    suspend fun getReservedStatus(userId: String, bookId: String):Result<String>
     suspend fun checkMyReservationTurn(userId: String):Result<List<LibraryReservation>>
 }
 
