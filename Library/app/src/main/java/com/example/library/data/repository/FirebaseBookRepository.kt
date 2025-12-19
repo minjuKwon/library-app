@@ -613,6 +613,7 @@ class FirebaseBookRepository@Inject constructor(
         try{
             val snapshot= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
                 .whereEqualTo(BOOK_ID, bookId)
+                .whereEqualTo(STATUS, ReservationStatusType.WAITING.name)
                 .get()
                 .await()
 
