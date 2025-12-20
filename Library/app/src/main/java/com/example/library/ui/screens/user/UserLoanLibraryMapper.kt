@@ -4,7 +4,9 @@ import com.example.library.core.DateTimeConverter.formatDateOnly
 import com.example.library.core.DateTimeConverter.getLocalDate
 import com.example.library.core.DateTimeConverter.toLong
 import com.example.library.data.entity.BookStatusType
+import com.example.library.data.entity.LibraryReservation
 import com.example.library.data.entity.UserLoanLibrary
+import com.example.library.ui.common.ReservationStatusUiMapper.toStringName
 import java.time.temporal.ChronoUnit
 
 fun List<UserLoanLibrary>.toLoanStringList(): List<List<String>>{
@@ -114,4 +116,19 @@ fun List<UserLoanLibrary>.toUserHistoryStringList(): List<List<String>>{
         }
     }
     return resultList.toList()
+}
+
+fun MutableList<List<String>>.toUserReservationList(
+    reservation: LibraryReservation,
+    order:Int
+):MutableList<List<String>>{
+    val list=listOf(
+        (this.size+1).toString(),
+        reservation.bookTitle,
+        formatDateOnly(reservation.reservedAt),
+        order.toString(),
+        reservation.status.toStringName(),
+    )
+    this.add(list)
+    return this
 }
