@@ -89,7 +89,7 @@ class UserViewModelTest {
         viewModel.unregister("")
         testScheduler.advanceUntilIdle()
 
-        Assert.assertEquals(UserUiState.Success(), emittedStates.last())
+        Assert.assertEquals(UserUiState.Success("unregister"), emittedStates.last())
 
         job.cancel()
     }
@@ -197,7 +197,7 @@ class UserViewModelTest {
         viewModel.signOut()
         testScheduler.advanceUntilIdle()
 
-        Assert.assertEquals(UserUiState.Success(), emittedStates.last())
+        Assert.assertEquals(UserUiState.Success("signOut"), emittedStates.last())
 
         job.cancel()
     }
