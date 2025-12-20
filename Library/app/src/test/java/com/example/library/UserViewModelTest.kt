@@ -17,7 +17,7 @@ import org.junit.Test
 
 class UserViewModelTest {
 
-    private lateinit var fakeService: FakeUserService
+    private lateinit var fakeUserService: FakeUserService
     private lateinit var viewModel:UserViewModel
     private lateinit var testScope:CoroutineScope
 
@@ -26,9 +26,9 @@ class UserViewModelTest {
 
     @Before
     fun setUpt(){
-        fakeService = FakeUserService()
+        fakeUserService = FakeUserService()
         testScope = CoroutineScope(testDispatcherRule.testDispatcher)
-        viewModel = UserViewModel(fakeService, testScope)
+        viewModel = UserViewModel(fakeUserService, testScope)
     }
 
     @After
@@ -38,7 +38,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_register_verifyUserUiStateSuccess()= runTest {
-        fakeService.isThrowException= false
+        fakeUserService.isThrowException= false
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -56,7 +56,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_register_verifyUserUiStateFailure()= runTest {
-        fakeService.isThrowException= true
+        fakeUserService.isThrowException= true
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -74,7 +74,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_unregister_verifyUserUiStateSuccess()= runTest {
-        fakeService.isThrowException= false
+        fakeUserService.isThrowException= false
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -92,7 +92,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_unregister_verifyUserUiStateFailure()= runTest {
-        fakeService.isThrowException= true
+        fakeUserService.isThrowException= true
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -110,7 +110,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_changeUserInfo_verifyUserUiStateSuccess()= runTest {
-        fakeService.isThrowException= false
+        fakeUserService.isThrowException= false
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -128,7 +128,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_changeUserInfo_verifyUserUiStateFailure()= runTest {
-        fakeService.isThrowException= true
+        fakeUserService.isThrowException= true
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -146,7 +146,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_signIn_verifyUserUiStateSuccess()= runTest {
-        fakeService.isThrowException= false
+        fakeUserService.isThrowException= false
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -164,7 +164,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_signIn_verifyUserUiStateFailure()= runTest {
-        fakeService.isThrowException= true
+        fakeUserService.isThrowException= true
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -182,7 +182,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_signOut_verifyUserUiStateSuccess()= runTest {
-        fakeService.isThrowException= false
+        fakeUserService.isThrowException= false
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -200,7 +200,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_signOut_verifyUserUiStateFailure()= runTest {
-        fakeService.isThrowException= true
+        fakeUserService.isThrowException= true
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -218,7 +218,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_sendVerificationEmail_verifyUserUiStateSuccess()= runTest {
-        fakeService.isThrowException= false
+        fakeUserService.isThrowException= false
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -236,7 +236,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_sendVerificationEmail_verifyUserUiStateFailure()= runTest {
-        fakeService.isThrowException= true
+        fakeUserService.isThrowException= true
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -254,7 +254,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_verifyCurrentPassword_verifyUserUiStateSuccess()= runTest {
-        fakeService.isThrowException= false
+        fakeUserService.isThrowException= false
 
         viewModel.verifyCurrentPassword("")
         testScheduler.advanceUntilIdle()
@@ -264,7 +264,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_verifyCurrentPassword_verifyUserUiStateFailure()= runTest {
-        fakeService.isThrowException= true
+        fakeUserService.isThrowException= true
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -282,7 +282,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_changePassword_verifyUserUiStateSuccess()= runTest {
-        fakeService.isThrowException= false
+        fakeUserService.isThrowException= false
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -302,7 +302,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_changePassword_verifyUserUiStateFailure()= runTest {
-        fakeService.isThrowException= true
+        fakeUserService.isThrowException= true
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -320,7 +320,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_findPassword_verifyUserUiStateSuccess()= runTest {
-        fakeService.isThrowException= false
+        fakeUserService.isThrowException= false
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
@@ -338,7 +338,7 @@ class UserViewModelTest {
 
     @Test
     fun userViewModel_findPassword_verifyUserUiStateFailure()= runTest {
-        fakeService.isThrowException= true
+        fakeUserService.isThrowException= true
         val emittedStates = mutableListOf<UserUiState>()
         val job = launch {
             viewModel.event.collect {
