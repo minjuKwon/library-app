@@ -143,7 +143,9 @@ fun NavGraphBuilder.settingDestination(
         }
 
         composable(route=LibraryDestination.ReservationStatus.route){
+            val reservationList by userViewModel.userReservationList
             ReservationStatusScreen(
+                reservationList=reservationList,
                 onBackPressed = {navController.popBackStack()}
             )
         }

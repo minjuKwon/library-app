@@ -57,6 +57,9 @@ class UserViewModel @Inject constructor(
     private val _userOverdueBookList= mutableStateOf(listOf(listOf<String>()))
     val userOverdueBookList= _userOverdueBookList
 
+    private val _userReservationList= mutableStateOf(listOf(listOf<String>()))
+    val userReservationList= _userReservationList
+
     private val _suspensionEnd= mutableStateOf("")
     val suspensionEnd= _suspensionEnd
 
@@ -211,6 +214,20 @@ class UserViewModel @Inject constructor(
                 if(resultList.isSuccess){
                     _userLoanHistoryList.value= resultList.getOrNull()?.toUserHistoryStringList()?: emptyList()
                     _event.emit(UserUiState.Success("getUserLoanHistoryList"))
+                }
+            }catch (e:Exception){
+                _event.emit(UserUiState.Failure(e.message?:"실패"))
+            }
+        }
+    }
+
+    fun getReservationList(){
+        scope.launch {
+            try{
+                val resultList= firebaseBookService.getReservationList(awaitUserId())
+                if(resultList.isSuccess){
+                    _userReservationList.value= resultList.getOrNull()?: emptyList()
+                    _event.emit(UserUiState.Success("getReservationList"))
                 }
             }catch (e:Exception){
                 _event.emit(UserUiState.Failure(e.message?:"실패"))

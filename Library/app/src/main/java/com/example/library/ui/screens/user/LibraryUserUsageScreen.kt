@@ -130,18 +130,21 @@ private fun LoanStatusSectionCard(
 
 @Composable
 fun ReservationStatusScreen(
+    reservationList:List<List<String>>,
     onBackPressed:()->Unit
 ){
     val textList= listOf(
-        R.string.index, R.string.title, R.string.author,
-        R.string.reservation_date, R.string.reservation_rank, R.string.is_reserved
+        R.string.index, R.string.title, R.string.reservation_date,
+        R.string.reservation_rank, R.string.is_reserved
     )
-    val temp= listOf(listOf("제목제목제목제목제목제목제목제", "김저자1, 이저자2, 박저자3","2025-00-00","2025-00-00","반납\n완료"))
+
+    val weightList= listOf(0.1f, 0.3f, 0.16f, 0.2f, 0.2f)
 
     UserUsageSection(
         screenTitle=stringResource(R.string.reservation_status),
         titleList=textList,
-        contentList=temp,
+        contentList=reservationList,
+        weightList=weightList,
         onBackPressed=onBackPressed
     )
 }

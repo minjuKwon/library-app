@@ -61,6 +61,7 @@ fun LibraryUserScreen(
             when(it.message){
                 "getUserLoanBookList" ->  onNavigationToLoanStatus()
                 "getUserLoanHistoryList" -> onNavigationToLoanHistory()
+                "getReservationList" -> onNavigationToReservation()
                 "signOut" -> {
                     resetUserBookStatus()
                     userViewModel.updateLogInState(false)
@@ -119,7 +120,7 @@ fun LibraryUserScreen(
             val list=listOf(
                 R.string.loan_history to {userViewModel.getUserLoanHistoryList()},
                 R.string.loan_status to { userViewModel.getUserLoanBookList() },
-                R.string.reservation_status to {onNavigationToReservation()},
+                R.string.reservation_status to {userViewModel.getReservationList()},
                 R.string.liked_list to {onNavigationToLiked()},
                 R.string.unregister to {openAlertDialog=true}
             )
