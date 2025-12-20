@@ -34,6 +34,7 @@ interface DatabaseService {
     suspend fun getLibraryReservationCount(bookId:String):Result<Int>
     suspend fun getReservedStatus(userId: String, bookId: String):Result<String>
     suspend fun checkMyReservationTurn(userId: String):Result<List<LibraryReservation>>
+    suspend fun getReservationList(userId: String):Result<List<List<String>>>
 }
 
 data class DueCheckResult(
