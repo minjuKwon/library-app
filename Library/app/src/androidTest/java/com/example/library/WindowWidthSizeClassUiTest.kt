@@ -48,14 +48,15 @@ class WindowWidthSizeClassUiTest {
         val scope = CoroutineScope(dispatcher)
 
         val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
+        val fakeSessionManager= FakeSessionManager()
         val dummyLibraryViewModel = LibraryViewModel(
             librarySyncService = FakeLibrarySyncService(),
             firebaseBookService = fakeFirebaseBookService,
-            defaultSessionManager = FakeSessionManager(),
+            defaultSessionManager = fakeSessionManager,
             externalScope = scope
         )
-        val dummyDetailsViewModel= LibraryDetailsViewModel()
-        val dummyUserViewModel= UserViewModel(FakeUserService(), scope)
+        val dummyDetailsViewModel= LibraryDetailsViewModel(fakeFirebaseBookService,fakeSessionManager,scope)
+        val dummyUserViewModel= UserViewModel(FakeUserService(), fakeFirebaseBookService, scope)
 
         composeTestRule.setContent {
             LibraryApp(
