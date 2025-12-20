@@ -1,8 +1,11 @@
 package com.example.library
 
 import com.example.library.data.entity.User
+import com.example.library.fake.FakeTimeProvider
+import com.example.library.fake.repository.FakeBookRepository
 import com.example.library.fake.service.FakeUserService
 import com.example.library.rules.TestDispatcherRule
+import com.example.library.service.FirebaseBookService
 import com.example.library.ui.screens.user.UserUiState
 import com.example.library.ui.screens.user.UserViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -26,9 +29,10 @@ class UserViewModelTest {
 
     @Before
     fun setUpt(){
+        val dummyFirebaseBookService= FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
         fakeUserService = FakeUserService()
         testScope = CoroutineScope(testDispatcherRule.testDispatcher)
-        viewModel = UserViewModel(fakeUserService, testScope)
+        viewModel = UserViewModel(fakeUserService, dummyFirebaseBookService, testScope)
     }
 
     @After
