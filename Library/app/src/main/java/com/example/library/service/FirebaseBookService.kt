@@ -201,4 +201,27 @@ class FirebaseBookService@Inject constructor(
         return databaseRepository.isMyReservationTurn(userId)
     }
 
+    override suspend fun getReservationList(userId: String):Result<List<List<String>>> {
+        val userList= databaseRepository.getReservationsByUser(userId)
+        if(userList.isSuccess){
+            val userListResult= userList.getOrNull()
+            val resultList:MutableList<List<String>> = mutableListOf()
+            userListResult?.forEach { reservation ->
+                val bookList= databaseRepository.getReservationsByBook(reservation.bookId)
+                if(bookList.isSuccess){
+                    val bookListResult= bookList.getOrNull()
+                    val idx= bookListResult?.indexOfFirst { it.userId==userId }?:-1
+                    val order= if(idx>=0) idx+1 else -1
+
+                    resultList.toUserReservationList(reservation, order)
+                    return Result.success(resultList)
+                }else{
+                    return Result.failure(bookList.exceptionOrNull()?:GetReservationsByBookFailedException())
+                }
+            }
+            return Result.success(emptyList())
+        }else{
+            return Result.failure(userList.exceptionOrNull()?:GetReservationsByUserFailedException())
+        }
+    }
 }
