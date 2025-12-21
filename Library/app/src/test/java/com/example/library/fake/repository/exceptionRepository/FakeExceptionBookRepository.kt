@@ -1,9 +1,13 @@
-package com.example.library.fake.repository
+package com.example.library.fake.repository.exceptionRepository
 
 import com.example.library.data.QueryNormalizer.normalizeQuery
 import com.example.library.data.entity.Library
+import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.LibraryLiked
+import com.example.library.data.entity.LibraryReservation
+import com.example.library.data.entity.UserLoanLibrary
 import com.example.library.domain.DatabaseRepository
+import com.example.library.domain.HistoryRequest
 import com.example.library.service.CheckLibraryLikeFailedException
 import com.google.firebase.firestore.ListenerRegistration
 
@@ -104,6 +108,66 @@ class FakeExceptionBookRepository:DatabaseRepository {
 
     override suspend fun hasLibraryLiked(id: String): Result<Boolean> {
         throw CheckLibraryLikeFailedException()
+    }
+
+    override fun getLibraryStatus(
+        bookId: String,
+        callback: (LibraryHistory) -> Unit
+    ): ListenerRegistration {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateLibraryHistory(historyRequest: HistoryRequest): Result<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getUserLoanBookList(userId: String): Result<List<UserLoanLibrary>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getUserLoanHistoryList(userId: String): Result<List<UserLoanLibrary>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateUserOverdueBook(
+        keyword: String,
+        page: String,
+        overdueDate: Long,
+        book: UserLoanLibrary
+    ): Result<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun hasOverdueBook(userId: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun hasReservedBook(bookId: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun hasUserReservedBook(userId: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getLibraryReservationCount(bookId: String): Result<Int> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getReservedStatus(userId: String, bookId: String): Result<String> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun isMyReservationTurn(userId: String): Result<List<LibraryReservation>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getReservationsByUser(userId: String): Result<List<LibraryReservation>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getReservationsByBook(bookId: String): Result<List<LibraryReservation>> {
+        TODO("Not yet implemented")
     }
 
 }
