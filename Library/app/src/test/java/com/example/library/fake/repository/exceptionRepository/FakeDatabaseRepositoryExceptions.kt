@@ -1,0 +1,3 @@
+package com.example.library.fake.repository.exceptionRepository
+
+class FakeLikedDatabaseRepositoryFailedException:Exception("LikedExceptionBookRepository 테스트 실패")
