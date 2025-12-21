@@ -55,19 +55,19 @@ class LikedExceptionBookRepository:DatabaseRepository {
         bookId: String,
         callback: (LibraryHistory) -> Unit
     ): ListenerRegistration {
-        TODO("Not yet implemented")
+        throw FakeLikedDatabaseRepositoryFailedException()
     }
 
     override suspend fun updateLibraryHistory(historyRequest: HistoryRequest): Result<Unit> {
-        TODO("Not yet implemented")
+        throw FakeLikedDatabaseRepositoryFailedException()
     }
 
     override suspend fun getUserLoanBookList(userId: String): Result<List<UserLoanLibrary>> {
-        TODO("Not yet implemented")
+        throw FakeLikedDatabaseRepositoryFailedException()
     }
 
     override suspend fun getUserLoanHistoryList(userId: String): Result<List<UserLoanLibrary>> {
-        TODO("Not yet implemented")
+        throw FakeLikedDatabaseRepositoryFailedException()
     }
 
     override suspend fun updateUserOverdueBook(
@@ -76,39 +76,39 @@ class LikedExceptionBookRepository:DatabaseRepository {
         overdueDate: Long,
         book: UserLoanLibrary
     ): Result<Unit> {
-        TODO("Not yet implemented")
+        throw FakeLikedDatabaseRepositoryFailedException()
     }
 
     override suspend fun hasOverdueBook(userId: String): Result<Boolean> {
-        TODO("Not yet implemented")
+        throw FakeLikedDatabaseRepositoryFailedException()
     }
 
     override suspend fun hasReservedBook(bookId: String): Result<Boolean> {
-        TODO("Not yet implemented")
+        throw FakeLikedDatabaseRepositoryFailedException()
     }
 
     override suspend fun hasUserReservedBook(userId: String): Result<Boolean> {
-        TODO("Not yet implemented")
+        throw FakeLikedDatabaseRepositoryFailedException()
     }
 
     override suspend fun getLibraryReservationCount(bookId: String): Result<Int> {
-        TODO("Not yet implemented")
+        throw FakeLikedDatabaseRepositoryFailedException()
     }
 
     override suspend fun getReservedStatus(userId: String, bookId: String): Result<String> {
-        TODO("Not yet implemented")
+        throw FakeLikedDatabaseRepositoryFailedException()
     }
 
     override suspend fun isMyReservationTurn(userId: String): Result<List<LibraryReservation>> {
-        TODO("Not yet implemented")
+        throw FakeLikedDatabaseRepositoryFailedException()
     }
 
     override suspend fun getReservationsByUser(userId: String): Result<List<LibraryReservation>> {
-        TODO("Not yet implemented")
+        throw FakeLikedDatabaseRepositoryFailedException()
     }
 
     override suspend fun getReservationsByBook(bookId: String): Result<List<LibraryReservation>> {
-        TODO("Not yet implemented")
+        throw FakeLikedDatabaseRepositoryFailedException()
     }
 
 }
