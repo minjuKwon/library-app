@@ -11,7 +11,7 @@ import com.example.library.domain.HistoryRequest
 import com.example.library.service.CheckLibraryLikeFailedException
 import com.google.firebase.firestore.ListenerRegistration
 
-class FakeExceptionBookRepository:DatabaseRepository {
+class LikedExceptionBookRepository:DatabaseRepository {
 
     private data class DatabaseItem(
         val query:String,

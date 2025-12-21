@@ -2,7 +2,7 @@ package com.example.library
 
 import com.example.library.fake.FakeTimeProvider
 import com.example.library.fake.repository.FakeBookRepository
-import com.example.library.fake.repository.FakeExceptionBookRepository
+import com.example.library.fake.repository.exceptionRepository.LikedExceptionBookRepository
 import com.example.library.rules.TestDispatcherRule
 import com.example.library.service.CheckLibraryLikeFailedException
 import com.example.library.service.FirebaseBookService
@@ -50,7 +50,7 @@ class FirebaseBookServiceTest {
 
     @Test
     fun firebaseBookService_updateLibraryLiked_verifyFailure_hasLibraryLiked()= runTest{
-        val fakeFirebaseBookService= FirebaseBookService(FakeExceptionBookRepository(), FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(LikedExceptionBookRepository(), FakeTimeProvider())
 
         assertFailsWith<CheckLibraryLikeFailedException>{
             fakeFirebaseBookService.updateLibraryLiked("", "",true)
