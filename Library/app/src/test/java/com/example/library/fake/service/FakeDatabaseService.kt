@@ -22,7 +22,7 @@ class FakeSaveDatabaseService:DatabaseService {
     }
 
     override suspend fun getLibraryBooks(keyword: String, page: String): Result<List<Library>> {
-        return Result.success(listOf())
+        throw FakeSaveDatabaseServiceFailedException()
     }
 
     override suspend fun isSavedBook(keyword: String, page: String): Result<Boolean> {
@@ -34,18 +34,18 @@ class FakeSaveDatabaseService:DatabaseService {
         bookId: String,
         isLiked: Boolean
     ): Result<List<LibraryLiked>> {
-        return Result.success(listOf())
+        throw FakeSaveDatabaseServiceFailedException()
     }
 
     override suspend fun getLibraryLikedList(userId: String): Result<List<LibraryLiked>> {
-        return Result.success(listOf())
+        throw FakeSaveDatabaseServiceFailedException()
     }
 
     override fun getLibraryLikedCount(
         bookId: String,
         onUpdate: (Int) -> Unit
     ): ListenerRegistration {
-        return ListenerRegistration { }
+        throw FakeSaveDatabaseServiceFailedException()
     }
 
     override fun getLibraryStatus(
@@ -120,7 +120,7 @@ class FakeGetDatabaseService:DatabaseService {
         page: String,
         list: List<Library>
     ): Result<Unit> {
-        return Result.success(Unit)
+        throw FakeGetDatabaseServiceFailedException()
     }
 
     override suspend fun getLibraryBooks(keyword: String, page: String): Result<List<Library>> {
@@ -136,18 +136,19 @@ class FakeGetDatabaseService:DatabaseService {
         bookId: String,
         isLiked: Boolean
     ): Result<List<LibraryLiked>> {
-        return Result.success(listOf())
+        throw FakeGetDatabaseServiceFailedException()
     }
 
     override suspend fun getLibraryLikedList(userId: String): Result<List<LibraryLiked>> {
-        return Result.success(listOf())
+        throw FakeGetDatabaseServiceFailedException()
     }
 
     override fun getLibraryLikedCount(
         bookId: String,
         onUpdate: (Int) -> Unit
     ): ListenerRegistration {
-        return ListenerRegistration { }
+        throw FakeGetDatabaseServiceFailedException()
+    }
 
     override fun getLibraryStatus(
         bookId: String,
@@ -221,11 +222,11 @@ class FakeCheckDatabaseService:DatabaseService {
         page: String,
         list: List<Library>
     ): Result<Unit> {
-        return Result.success(Unit)
+        throw FakeCheckDatabaseServiceFailedException()
     }
 
     override suspend fun getLibraryBooks(keyword: String, page: String): Result<List<Library>> {
-        return Result.success(listOf())
+        throw FakeCheckDatabaseServiceFailedException()
     }
 
     override suspend fun isSavedBook(keyword: String, page: String): Result<Boolean> {
@@ -237,18 +238,19 @@ class FakeCheckDatabaseService:DatabaseService {
         bookId: String,
         isLiked: Boolean
     ): Result<List<LibraryLiked>> {
-        return Result.success(listOf())
+        throw FakeCheckDatabaseServiceFailedException()
     }
 
     override suspend fun getLibraryLikedList(userId: String): Result<List<LibraryLiked>> {
-        return Result.success(emptyList())
+        throw FakeCheckDatabaseServiceFailedException()
     }
 
     override fun getLibraryLikedCount(
         bookId: String,
         onUpdate: (Int) -> Unit
     ): ListenerRegistration {
-        return ListenerRegistration { }
+        throw FakeCheckDatabaseServiceFailedException()
+    }
 
     override fun getLibraryStatus(
         bookId: String,
