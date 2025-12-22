@@ -9,6 +9,7 @@ import com.google.firebase.firestore.ListenerRegistration
 class FakeBookRepository:DatabaseRepository {
 
     private data class DatabaseItem(
+        val userId: String="",
         val query:String,
         val page:String,
         val library: Library
@@ -25,7 +26,7 @@ class FakeBookRepository:DatabaseRepository {
         return try {
             val normalizedQuery= normalizeQuery(keyword)
             list.forEach { item ->
-                val data= DatabaseItem(normalizedQuery, page, item)
+                val data= DatabaseItem("",normalizedQuery, page, item)
                 itemList.add(data)
             }
 
