@@ -20,18 +20,18 @@ import java.time.Instant
 
 class FakeBookRepository:DatabaseRepository {
 
-    private data class DatabaseItem(
+    data class DatabaseItem(
         val userId: String="",
         val query:String,
         val page:String,
         val library: Library
     )
 
-    private val itemList= mutableListOf<DatabaseItem>()
+    val itemList= mutableListOf<DatabaseItem>()
     private val likeList= mutableListOf<LibraryLiked>()
-    private val historyList= mutableListOf<LibraryHistory>()
-    private val userLoanLibraryList= mutableListOf<UserLoanLibrary>()
-    private val reservationList= mutableListOf<LibraryReservation>()
+    val historyList= mutableListOf<LibraryHistory>()
+    val userLoanLibraryList= mutableListOf<UserLoanLibrary>()
+    val reservationList= mutableListOf<LibraryReservation>()
 
     override suspend fun addLibraryBook(
         keyword: String,
@@ -553,6 +553,22 @@ class FakeBookRepository:DatabaseRepository {
         }catch (e:Exception){
             return Result.failure(e)
         }
+    }
+
+    fun addItemList(databaseItem: DatabaseItem){
+        itemList.add(databaseItem)
+    }
+
+    fun addHistoryList(libraryHistory: LibraryHistory){
+        historyList.add(libraryHistory)
+    }
+
+    fun addUserLoanBookList(userLoanLibrary: UserLoanLibrary){
+        userLoanLibraryList.add(userLoanLibrary)
+    }
+
+    fun addReservationList(libraryReservation: LibraryReservation){
+        reservationList.add(libraryReservation)
     }
 
 }
