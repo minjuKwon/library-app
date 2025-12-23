@@ -215,12 +215,11 @@ class FirebaseBookService@Inject constructor(
                     val order= if(idx>=0) idx+1 else -1
 
                     resultList.toUserReservationList(reservation, order)
-                    return Result.success(resultList)
                 }else{
                     return Result.failure(bookList.exceptionOrNull()?:GetReservationsByBookFailedException())
                 }
             }
-            return Result.success(emptyList())
+            return Result.success(resultList)
         }else{
             return Result.failure(userList.exceptionOrNull()?:GetReservationsByUserFailedException())
         }
