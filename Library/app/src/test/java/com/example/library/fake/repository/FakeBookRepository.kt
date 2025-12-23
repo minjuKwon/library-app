@@ -131,9 +131,11 @@ class FakeBookRepository:DatabaseRepository {
         bookId: String,
         callback: (LibraryHistory) -> Unit
     ): ListenerRegistration {
-        val status= historyList.filter { it.bookId==bookId }
-            .sortedByDescending  { it.loanDate }
-        callback(status.first())
+        if(historyList.isNotEmpty()){
+            val status= historyList.filter { it.bookId==bookId }
+                .sortedByDescending  { it.loanDate }
+            callback(status.first())
+        }
 
         return ListenerRegistration { }
     }
