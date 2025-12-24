@@ -46,7 +46,9 @@ import com.example.library.data.entity.Book
 import com.example.library.data.entity.Library
 import com.example.library.ui.common.BookStatusUiMapper.toStringName
 import com.example.library.ui.screens.user.UserUiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.withContext
 
 @Composable
 fun LibraryListItem(
@@ -317,10 +319,10 @@ fun HandleUserUiState(
         event.collect{
             when(it){
                 is UserUiState.Success->{
-                    onSuccess(it)
+                    withContext(Dispatchers.Main) { onSuccess(it) }
                 }
                 is UserUiState.Failure -> {
-                    onFailure(it)
+                    withContext(Dispatchers.Main) { onFailure(it) }
                 }
             }
         }
