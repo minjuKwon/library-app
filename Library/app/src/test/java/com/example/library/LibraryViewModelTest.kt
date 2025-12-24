@@ -1,5 +1,7 @@
 package com.example.library
 
+import com.example.library.data.entity.LibraryReservation
+import com.example.library.data.entity.ReservationStatusType
 import com.example.library.fake.repository.FakeBookRepository
 import com.example.library.fake.repository.FakeCacheBookRepository
 import com.example.library.fake.repository.FakeNetworkBookRepository
@@ -19,6 +21,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
+import kotlin.test.assertEquals
 
 class LibraryViewModelTest {
 
@@ -234,6 +237,36 @@ class LibraryViewModelTest {
             Assert.assertFalse(libraryUiModel.isLiked)
         }
 
+    }
+
+    @Test
+    fun libraryViewModel_checkMyReservationTurn_verifyCorrectValue()= runTest {
+        val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
+        val fakeBookRepository= FakeBookRepository()
+        fakeBookRepository.addReservationList(
+            LibraryReservation(
+                userId = "user1",
+                bookTitle = "book1",
+                status = ReservationStatusType.NOTIFIED.name
+            )
+        )
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+
+        val fakeLibrarySyncService= DefaultLibrarySyncService(
+            FakeNetworkBookRepository(),
+            CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
+            fakeFirebaseBookService
+        )
+        val libraryViewModel = LibraryViewModel(
+            librarySyncService = fakeLibrarySyncService,
+            firebaseBookService = fakeFirebaseBookService,
+            defaultSessionManager = FakeSessionManager(),
+            externalScope = testScope
+        )
+
+        testScheduler.advanceUntilIdle()
+
+        assertEquals("book1", libraryViewModel.reservedBookList.value[0])
     }
 
 }
