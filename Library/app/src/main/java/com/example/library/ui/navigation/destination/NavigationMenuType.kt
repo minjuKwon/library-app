@@ -20,11 +20,11 @@ val navigationItemContentList = listOf(
         icon= Icons.Filled.Book,
         textId= R.string.book
     ),
-    NavigationItemContent(
-        navigationMenuType= LibraryDestination.Ranking,
-        icon= Icons.Filled.Leaderboard,
-        textId= R.string.ranking
-    ),
+//    NavigationItemContent(
+//        navigationMenuType= LibraryDestination.Ranking,
+//        icon= Icons.Filled.Leaderboard,
+//        textId= R.string.ranking
+//    ),
     NavigationItemContent(
         navigationMenuType= LibraryDestination.Setting,
         icon= Icons.Filled.AccountBox,

@@ -40,7 +40,7 @@ fun NavigationGraph(
             listContentParams,
             detailsScreenParams
         )
-        rankingDestination(listContentParams)
+        //rankingDestination(listContentParams)
         settingDestination(
             libraryUiState,
             navController,
