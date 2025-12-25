@@ -146,8 +146,6 @@ private fun DetailsScreenContent(
         DetailsScreenLibraryInformation(detailsScreenParams)
 
         if(isLogIn) BookStatusButton(detailsScreenParams)
-
-        DetailsScreenComment()
     }
 
     CheckOverdueDialog(isLogIn&&detailsScreenParams.isShowOverdueDialog) {
