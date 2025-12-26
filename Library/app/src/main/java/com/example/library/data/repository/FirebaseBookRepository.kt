@@ -106,10 +106,11 @@ class FirebaseBookRepository@Inject constructor(
                 .document(normalizedQuery)
                 .collection(PAGE_NUMBER_COLLECTION)
                 .document(page)
+                .collection(LIBRARY_COLLECTION)
                 .get()
                 .await()
 
-            val isExists= snapshot.exists()
+            val isExists= snapshot.documents.isNotEmpty()
 
             return Result.success(isExists)
         }catch (e: FirebaseFirestoreException){
