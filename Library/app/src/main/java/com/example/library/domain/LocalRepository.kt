@@ -8,4 +8,5 @@ interface LocalRepository {
     suspend fun searchTotalCount(query: String): Int?
     suspend fun cacheTotalCount(query:String, count:Int)
     suspend fun hasCachedKeyword(keyword: String, page: Int):Boolean
+    suspend fun updateAccessTime(libraryId:String, page:Int, now:Long)
 }
