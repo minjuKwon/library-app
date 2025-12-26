@@ -61,4 +61,9 @@ class FakeCacheBookRepository: LocalRepository {
 
         return isSave
     }
+
+    override suspend fun updateAccessTime(libraryId: String, page: Int, now: Long) {
+        val idx= itemList.indexOfFirst { it.library.libraryId==libraryId }
+        itemList[idx]= itemList[idx].copy(accessedAt = now)
+    }
 }
