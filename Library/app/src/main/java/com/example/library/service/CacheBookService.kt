@@ -10,8 +10,17 @@ class CacheBookService @Inject constructor(
     private val timeProvider: TimeProvider
 ){
 
-    suspend fun getLibraryBooks(query: String, page: Int): List<Library>
-        = cacheBookRepository.searchResultData(query, page)
+    suspend fun getLibraryBooks(
+        query: String,
+        page: Int,
+        now:Long
+    ): List<Library>{
+        val list= cacheBookRepository.searchResultData(query, page)
+
+        list.forEach { cacheBookRepository.updateAccessTime(it.libraryId, page, now) }
+
+        return list
+    }
 
     suspend fun saveLibraryBooks(
         library: Library,

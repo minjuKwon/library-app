@@ -21,7 +21,7 @@ class DefaultLibrarySyncService @Inject constructor(
 
         //캐시된 데이터가 있으면 가져오기
         if(isCached){
-            return cacheBookService.getLibraryBooks(keyword, pageNumber)
+            return cacheBookService.getLibraryBooks(keyword, pageNumber, System.currentTimeMillis())
         }else{
             val isSavedFirebase= firebaseBookService.isSavedBook(keyword, strPage)
             if(isSavedFirebase.isFailure) throw isSavedFirebase.exceptionOrNull()?:CheckLibraryInfoFailedException()
