@@ -40,6 +40,9 @@ interface BookCacheDao {
     @Query("SELECT * FROM search_result WHERE `query` = :keyword AND page = :page ORDER BY `offset` ASC")
     suspend fun getBooks(keyword:String, page:Int): List<SearchResultWithLibrary>
 
+    @Query("UPDATE search_result SET accessedAt=:now WHERE libraryId = :libraryId AND page = :page")
+    suspend fun updateLastAccess(libraryId:String, page:Int, now:Long)
+
     @Query("SELECT count FROM SEARCH_TOTAL_COUNT WHERE `query` = :keyword")
     suspend fun getSearchTotalCount(keyword: String): Int?
 
