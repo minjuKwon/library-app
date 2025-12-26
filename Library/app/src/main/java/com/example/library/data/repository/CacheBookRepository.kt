@@ -55,4 +55,8 @@ class CacheBookRepository @Inject constructor(
         return bookCacheDao.hasBooksForKeyword(normalizeQuery, page)
     }
 
+    override suspend fun updateAccessTime(libraryId: String, page: Int, now: Long) {
+        bookCacheDao.updateLastAccess(libraryId, page, now)
+    }
+
 }
