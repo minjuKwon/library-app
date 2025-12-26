@@ -82,6 +82,36 @@ class CacheBookRepositoryTest {
     }
 
     @Test
+    fun cacheBookRepository_insertAndDeleteItem_verifyWorkCorrectly() = runTest{
+        list.forEach {
+            cacheBookRepository.cacheLibraryBooks(it,"title",1,0,0)
+        }
+
+        dao.deleteExpiredBooks(10,10)
+
+        val result= cacheBookRepository.searchResultData("title",1)
+
+        assertEquals(0, result.size)
+    }
+
+    @Test
+    fun cacheBookRepository_insertAndUpdateItem_verifyWorkCorrectly() = runTest{
+        list.forEach {
+            cacheBookRepository.cacheLibraryBooks(it,"title",1,0,0)
+        }
+
+        list.forEach {
+            cacheBookRepository.updateAccessTime(it.libraryId,1, 10)
+        }
+
+        val result= dao.getBooks("title",1)
+
+        result.forEach {
+            assertEquals(10, it.searchResultEntity.accessedAt)
+        }
+    }
+
+    @Test
     fun cacheBookRepository_insertAndGetCount_verifyWorkCorrectly()= runTest{
         cacheBookRepository.cacheTotalCount("title", 3)
 
