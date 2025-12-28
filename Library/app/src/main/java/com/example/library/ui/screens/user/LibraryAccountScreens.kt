@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.DoNotDisturbOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -42,6 +43,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -244,6 +246,13 @@ private fun FindPasswordDialog(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
+                        text= stringResource(R.string.find_password_dialog_title),
+                        textAlign= TextAlign.Center,
+                        style= MaterialTheme.typography.titleLarge,
+                        modifier= Modifier
+                            .padding(dimensionResource(R.dimen.padding_lg))
+                    )
+                    Text(
                         text= stringResource(R.string.find_password_dialog_content),
                         textAlign= TextAlign.Center,
                         modifier= Modifier
@@ -333,6 +342,7 @@ fun NotVerificationScreen(
     ) {
         Icon(
             imageVector =  Icons.Default.DoNotDisturbOn,
+            tint = colorResource(R.color.warming_icon),
             contentDescription = null,
             modifier=Modifier.size(dimensionResource(R.dimen.not_verification_image_size))
         )

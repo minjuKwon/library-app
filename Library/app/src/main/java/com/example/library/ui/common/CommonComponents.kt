@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -196,6 +197,7 @@ fun ItemLibraryDescription(
                     Icons.Default.Favorite}
                 else {
                     Icons.Default.FavoriteBorder},
+                tint = if(libraryUiModel.isLiked) colorResource(R.color.like_icon) else Color.Unspecified,
                 contentDescription = stringResource(R.string.liked),
                 modifier=Modifier.testTag("${library.book.bookInfo.title}${libraryUiModel.isLiked}")
             )
@@ -260,6 +262,7 @@ fun BackIconButton(
             Icon(
                 imageVector= Icons.AutoMirrored.Default.ArrowBack,
                 contentDescription = stringResource(R.string.back),
+                tint = colorResource(R.color.main_color),
                 modifier= Modifier
                     .fillMaxWidth()
                     .align(Alignment.Start)
@@ -269,6 +272,7 @@ fun BackIconButton(
         text?.let {
             Text(
                 text= text,
+                style= MaterialTheme.typography.titleLarge,
                 modifier=Modifier.padding(
                     horizontal = dimensionResource(R.dimen.padding_xxl)
                 )

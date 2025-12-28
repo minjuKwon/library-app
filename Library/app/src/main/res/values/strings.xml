@@ -120,7 +120,8 @@
     <string name="id">아이디 : %s</string>
     <string name="cancel">취소</string>
 
-    <string name="find_password_dialog_content">비밀번호 재설정\n 가입했던 이메일을 입력하시면
+    <string name="find_password_dialog_title">비밀번호 재설정</string>
+    <string name="find_password_dialog_content">가입했던 이메일을 입력하시면
         재설정 할 수 있는 링크를 보내드립니다</string>
 
     <string name="navigation_drawer">Navigation Drawer</string>

@@ -8,5 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="main_color">#FF6D5E0F</color>
+    <color name="warming_icon">#FF93000A</color>
+    <color name="like_icon">#FFCF2C27</color>
+
     <color name="light_gray">#FFE0E0E0</color>
 </resources>
