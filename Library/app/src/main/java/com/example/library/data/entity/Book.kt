@@ -16,8 +16,7 @@ data class BookInfo(
     val publisher:String?=null,
     val publishedDate:String?=null,
     val description:String?=null,
-    val img: BookImage?=null,
-    var isBookmarked:Boolean=false
+    val img: BookImage?=null
 )
 
 data class BookImage(
