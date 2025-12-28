@@ -1,8 +1,8 @@
 package com.example.library.data.repository
 
 import com.example.library.data.FireStoreCollections.LIBRARY_COLLECTION
-import com.example.library.data.FireStoreCollections.LIBRARY_HISTORY
-import com.example.library.data.FireStoreCollections.LIBRARY_LIKED
+import com.example.library.data.FireStoreCollections.LIBRARY_HISTORY_COLLECTION
+import com.example.library.data.FireStoreCollections.LIBRARY_LIKED_COLLECTION
 import com.example.library.data.FireStoreCollections.LIBRARY_RESERVATION_COLLECTION
 import com.example.library.data.FireStoreCollections.PAGE_NUMBER_COLLECTION
 import com.example.library.data.FireStoreCollections.SEARCH_RESULTS_COLLECTION
@@ -122,7 +122,7 @@ class FirebaseBookRepository@Inject constructor(
 
     override suspend fun addLibraryLiked(libraryLiked: LibraryLiked): Result<Unit> {
         try{
-            fireStore.collection(LIBRARY_LIKED)
+            fireStore.collection(LIBRARY_LIKED_COLLECTION)
                 .document(libraryLiked.likedId)
                 .set(libraryLiked)
                 .await()
@@ -137,7 +137,7 @@ class FirebaseBookRepository@Inject constructor(
 
     override suspend fun updateLibraryLiked(id: String, data: Map<String, Any>): Result<Unit> {
         try{
-            fireStore.collection(LIBRARY_LIKED)
+            fireStore.collection(LIBRARY_LIKED_COLLECTION)
                 .document(id)
                 .update(data)
                 .await()
@@ -153,7 +153,7 @@ class FirebaseBookRepository@Inject constructor(
 
     override suspend fun getLibraryLikedList(userId: String): Result<List<LibraryLiked>> {
         try{
-            val snapshot= fireStore.collection(LIBRARY_LIKED)
+            val snapshot= fireStore.collection(LIBRARY_LIKED_COLLECTION)
                 .whereEqualTo(USER_ID, userId)
                 .get()
                 .await()
@@ -174,7 +174,7 @@ class FirebaseBookRepository@Inject constructor(
         bookId: String,
         onUpdate: (Int) -> Unit
     ): ListenerRegistration {
-        val query = fireStore.collection(LIBRARY_LIKED)
+        val query = fireStore.collection(LIBRARY_LIKED_COLLECTION)
             .whereEqualTo(BOOK_ID,bookId)
             .whereEqualTo(IS_LIKED,true)
 
@@ -190,7 +190,7 @@ class FirebaseBookRepository@Inject constructor(
 
     override suspend fun hasLibraryLiked(id: String): Result<Boolean> {
         try{
-            val snapshot = fireStore.collection(LIBRARY_LIKED)
+            val snapshot = fireStore.collection(LIBRARY_LIKED_COLLECTION)
                 .document(id)
                 .get()
                 .await()
@@ -209,7 +209,7 @@ class FirebaseBookRepository@Inject constructor(
         bookId: String,
         callback: (LibraryHistory) -> Unit
     ): ListenerRegistration {
-        val query = fireStore.collection(LIBRARY_HISTORY)
+        val query = fireStore.collection(LIBRARY_HISTORY_COLLECTION)
             .whereEqualTo(BOOK_ID,bookId)
             .orderBy(LOAN_DATE, Query.Direction.DESCENDING)
 
@@ -238,7 +238,7 @@ class FirebaseBookRepository@Inject constructor(
 
             if(historyRequest.bookStatus== BookStatusType.BORROWED.name||
                 historyRequest.bookStatus== BookStatusType.OVERDUE.name){
-                historyDocRef= fireStore.collection(LIBRARY_HISTORY)
+                historyDocRef= fireStore.collection(LIBRARY_HISTORY_COLLECTION)
                     .whereEqualTo(USER_ID, historyRequest.userId)
                     .whereEqualTo(BOOK_ID,historyRequest.bookId)
                     .orderBy(LOAN_DATE, Query.Direction.DESCENDING)
@@ -312,7 +312,7 @@ class FirebaseBookRepository@Inject constructor(
                         historyRequest.eventDate,
                         historyRequest.dueDate
                     )
-                    val loanDocRef= fireStore.collection(LIBRARY_HISTORY)
+                    val loanDocRef= fireStore.collection(LIBRARY_HISTORY_COLLECTION)
                         .document(historyRequest.libraryHistoryId)
                     transaction.set(loanDocRef, libraryHistory)
 
@@ -444,7 +444,7 @@ class FirebaseBookRepository@Inject constructor(
                             historyRequest.eventDate,
                             historyRequest.dueDate
                         )
-                        val loanDocRef= fireStore.collection(LIBRARY_HISTORY)
+                        val loanDocRef= fireStore.collection(LIBRARY_HISTORY_COLLECTION)
                             .document(historyRequest.libraryHistoryId)
                         transaction.set(loanDocRef, libraryHistory)
 
@@ -553,7 +553,7 @@ class FirebaseBookRepository@Inject constructor(
                 .first()
                 .reference
 
-            val historyDocRef= fireStore.collection(LIBRARY_HISTORY)
+            val historyDocRef= fireStore.collection(LIBRARY_HISTORY_COLLECTION)
                 .whereEqualTo(USER_ID, book.userId)
                 .whereEqualTo(BOOK_ID, book.bookId)
                 .whereEqualTo(STATUS, BookStatusType.BORROWED.name)
