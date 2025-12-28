@@ -13,7 +13,7 @@ class FakeUserService:UserService {
     override val userPreferences: Flow<User> = fakeSessionManager.userPreferences
     override val logInPreferences: Flow<Boolean> = fakeSessionManager.logInPreferences
 
-    var isThrowException= false
+    private var isThrowException= false
 
     override suspend fun register(user: User, password: String) {
         when{

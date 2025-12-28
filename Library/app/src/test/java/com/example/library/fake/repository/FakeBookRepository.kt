@@ -31,7 +31,7 @@ class FakeBookRepository:DatabaseRepository {
     private val likeList= mutableListOf<LibraryLiked>()
     val historyList= mutableListOf<LibraryHistory>()
     val userLoanLibraryList= mutableListOf<UserLoanLibrary>()
-    val reservationList= mutableListOf<LibraryReservation>()
+    private val reservationList= mutableListOf<LibraryReservation>()
 
     override suspend fun addLibraryBook(
         keyword: String,

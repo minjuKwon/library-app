@@ -9,7 +9,7 @@ class FakeExternalUser(
     private var authList:MutableList<AuthUser> = mutableListOf()
 ) : ExternalUser {
 
-    var isUserEmailVerified= isEmailVerified
+    private var isUserEmailVerified= isEmailVerified
 
     override suspend fun delete() {
         authList.removeIf{it.uid==uid}
