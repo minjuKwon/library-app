@@ -53,7 +53,7 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_register_button, useUnmergedTree=true)
             .performClick()
-        composeTestRule.waitForToast(R.string.blank_email)
+        waitForToast(R.string.blank_email)
 
         //회원 가입 시 잘못된 이메일 형식 검사
         composeTestRule
@@ -62,19 +62,19 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_register_button, useUnmergedTree=true)
             .performClick()
-        composeTestRule.waitForToast(R.string.loading_register)
-        composeTestRule.waitForToast(R.string.invalid_email)
+        waitForToast(R.string.loading_register)
+        waitForToast(R.string.invalid_email)
     }
 
     @Test
     fun registerScreen_inputEmailInUse_showCorrectToast(){
         //회원 가입
         register(composeTestRule,testDispatcher)
-        composeTestRule.waitForToast(R.string.loading_register)
-        composeTestRule.waitForToast(R.string.success_register)
+        waitForToast(R.string.loading_register)
+        waitForToast(R.string.success_register)
         logIn(composeTestRule,testDispatcher,false)
-        composeTestRule.waitForToast(R.string.send_email)
-        composeTestRule.waitForToast(R.string.loading_signIn)
+        waitForToast(R.string.send_email)
+        waitForToast(R.string.loading_signIn)
         logOut(composeTestRule,testDispatcher)
 
         composeTestRule
@@ -95,15 +95,15 @@ class FirebaseUserToastTest {
         composeTestRule.runOnIdle {
             testDispatcher.scheduler.advanceUntilIdle()
         }
-        composeTestRule.waitForToast(R.string.loading_register)
-        composeTestRule.waitForToast(R.string.already_email)
+        waitForToast(R.string.loading_register)
+        waitForToast(R.string.already_email)
 
         //이전 가입한 이메일 탈퇴
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_back, useUnmergedTree=true)
             .performClick()
         logIn(composeTestRule,testDispatcher,true)
-        composeTestRule.waitForToast(R.string.loading_signIn)
+        waitForToast(R.string.loading_signIn)
         unregister(composeTestRule,testDispatcher)
     }
 
@@ -118,7 +118,7 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_register_button, useUnmergedTree=true)
             .performClick()
-        composeTestRule.waitForToast(R.string.blank_password)
+        waitForToast(R.string.blank_password)
 
         //회원 가입 시 확인용 비밀번호 동일 여부 검사
         composeTestRule
@@ -127,7 +127,7 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_register_button, useUnmergedTree=true)
             .performClick()
-        composeTestRule.waitForToast(R.string.invalid_password)
+        waitForToast(R.string.invalid_password)
 
         //회원 가입 시 최소 비밀번호 길이 검사
         composeTestRule
@@ -139,19 +139,19 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_register_button, useUnmergedTree=true)
             .performClick()
-        composeTestRule.waitForToast(R.string.loading_register)
-        composeTestRule.waitForToast(R.string.weak_password)
+        waitForToast(R.string.loading_register)
+        waitForToast(R.string.weak_password)
     }
 
     @Test
     fun unregisterDialog_inputWrongPassword_showCorrectToast(){
         register(composeTestRule,testDispatcher)
-        composeTestRule.waitForToast(R.string.loading_register)
-        composeTestRule.waitForToast(R.string.success_register)
+        waitForToast(R.string.loading_register)
+        waitForToast(R.string.success_register)
 
         logIn(composeTestRule,testDispatcher,false)
-        composeTestRule.waitForToast(R.string.send_email)
-        composeTestRule.waitForToast(R.string.loading_signIn)
+        waitForToast(R.string.send_email)
+        waitForToast(R.string.loading_signIn)
 
         //회원 탈퇴 시 잘못된 비밀번호 입력 검사
         composeTestRule
@@ -163,7 +163,7 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_unregister_confirm, useUnmergedTree=true)
             .performClick()
-        composeTestRule.waitForToast(R.string.invalid_password,8000)
+        waitForToast(R.string.invalid_password, 8000)
 
         //회원 탈퇴
         composeTestRule
@@ -189,11 +189,11 @@ class FirebaseUserToastTest {
     @Test
     fun logInScreen_inputWrongEmail_showCorrectToast(){
         register(composeTestRule,testDispatcher)
-        composeTestRule.waitForToast(R.string.loading_register)
-        composeTestRule.waitForToast(R.string.success_register)
+        waitForToast(R.string.loading_register)
+        waitForToast(R.string.success_register)
 
         verifyUser(composeTestRule,testDispatcher)
-        composeTestRule.waitForToast(R.string.send_email)
+        waitForToast(R.string.send_email)
 
         //로그인 시 빈 이메일 검사
         composeTestRule
@@ -205,7 +205,7 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_logIn, useUnmergedTree = true)
             .performClick()
-        composeTestRule.waitForToast(R.string.blank_email)
+        waitForToast(R.string.blank_email)
 
         //로그인 시 잘못된 이메일 형식 검사
         composeTestRule
@@ -214,8 +214,8 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_logIn, useUnmergedTree = true)
             .performClick()
-        composeTestRule.waitForToast(R.string.loading_signIn)
-        composeTestRule.waitForToast(R.string.invalid_email)
+        waitForToast(R.string.loading_signIn)
+        waitForToast(R.string.invalid_email)
 
         //로그인 시 틀린 이메일 입력 검사
         composeTestRule
@@ -227,8 +227,8 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_logIn, useUnmergedTree = true)
             .performClick()
-        composeTestRule.waitForToast(R.string.loading_signIn)
-        composeTestRule.waitForToast(R.string.invalid_credential)
+        waitForToast(R.string.loading_signIn)
+        waitForToast(R.string.invalid_credential)
 
         //로그인
         composeTestRule
@@ -250,11 +250,11 @@ class FirebaseUserToastTest {
     @Test
     fun logInScreen_inputWrongPassword_showCorrectToast(){
         register(composeTestRule,testDispatcher)
-        composeTestRule.waitForToast(R.string.loading_register)
-        composeTestRule.waitForToast(R.string.success_register)
+        waitForToast(R.string.loading_register)
+        waitForToast(R.string.success_register)
         
         verifyUser(composeTestRule,testDispatcher)
-        composeTestRule.waitForToast(R.string.send_email)
+        waitForToast(R.string.send_email)
 
         //로그인 시 빈 비밀번호 검사
         composeTestRule
@@ -266,7 +266,7 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_logIn, useUnmergedTree = true)
             .performClick()
-        composeTestRule.waitForToast(R.string.blank_password)
+        waitForToast(R.string.blank_password)
 
         //로그인 시 틀린 비밀번호 입력 검사
         composeTestRule
@@ -275,8 +275,8 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_logIn, useUnmergedTree = true)
             .performClick()
-        composeTestRule.waitForToast(R.string.loading_signIn)
-        composeTestRule.waitForToast(R.string.invalid_credential)
+        waitForToast(R.string.loading_signIn)
+        waitForToast(R.string.invalid_credential)
 
         //로그인
         composeTestRule
@@ -291,7 +291,7 @@ class FirebaseUserToastTest {
         composeTestRule.runOnIdle {
             testDispatcher.scheduler.advanceUntilIdle()
         }
-        composeTestRule.waitForToast(R.string.loading_signIn)
+        waitForToast(R.string.loading_signIn)
 
         unregister(composeTestRule,testDispatcher)
     }
@@ -299,12 +299,12 @@ class FirebaseUserToastTest {
     @Test
     fun editScreen_inputWrongPassword_showCorrectToast(){
         register(composeTestRule,testDispatcher)
-        composeTestRule.waitForToast(R.string.loading_register)
-        composeTestRule.waitForToast(R.string.success_register)
+        waitForToast(R.string.loading_register)
+        waitForToast(R.string.success_register)
 
         logIn(composeTestRule,testDispatcher,false)
-        composeTestRule.waitForToast(R.string.send_email)
-        composeTestRule.waitForToast(R.string.loading_signIn)
+        waitForToast(R.string.send_email)
+        waitForToast(R.string.loading_signIn)
 
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_account_edit, useUnmergedTree = true)
@@ -326,7 +326,7 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_account_edit_confirm_button, useUnmergedTree = true)
             .performClick()
-        composeTestRule.waitForToast(R.string.check_password,8000)
+        waitForToast(R.string.check_password, 8000)
 
         //틀린 비밀번호 입력 후 인증 확인 검사
         composeTestRule
@@ -338,7 +338,7 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_account_edit_current_password_button, useUnmergedTree = true)
             .performClick()
-        composeTestRule.waitForToast(R.string.invalid_password)
+        waitForToast(R.string.invalid_password)
 
         //현재 비밀번호 입력 후 인증 확인 검사
         composeTestRule
@@ -350,7 +350,7 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_account_edit_current_password_button, useUnmergedTree = true)
             .performClick()
-        composeTestRule.waitForToast(R.string.already_reauthorization)
+        waitForToast(R.string.already_reauthorization)
         
         //변경할 비밀번호에 일치하지 않는 번호 입력 검사
         composeTestRule
@@ -362,11 +362,11 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_account_edit_current_password_button, useUnmergedTree = true)
             .performClick()
-        composeTestRule.waitForToast(R.string.already_reauthorization)
+        waitForToast(R.string.already_reauthorization)
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_account_edit_confirm_button, useUnmergedTree = true)
             .performClick()
-        composeTestRule.waitForToast(R.string.incorrect_new_password,8000)
+        waitForToast(R.string.incorrect_new_password, 8000)
 
         //변경할 비밀번호에 6자 미만 번호 입력 검사
         composeTestRule
@@ -378,7 +378,7 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_account_edit_confirm_button, useUnmergedTree = true)
             .performClick()
-        composeTestRule.waitForToast(R.string.weak_password)
+        waitForToast(R.string.weak_password)
 
         //변경할 비밀번호에 올바른 번호 입력 검사
         composeTestRule
@@ -396,7 +396,7 @@ class FirebaseUserToastTest {
         composeTestRule
             .onNodeWithTagForStringId(R.string.test_account_edit_confirm_button, useUnmergedTree = true)
             .performClick()
-        composeTestRule.waitForToast(R.string.success_edit)
+        waitForToast(R.string.success_edit)
         
         unregister(composeTestRule,testDispatcher,NEW_PASSWORD)
     }

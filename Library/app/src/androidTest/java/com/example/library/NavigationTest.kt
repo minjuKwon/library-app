@@ -65,7 +65,7 @@ class NavigationTest {
             composeTestRule.activity.onBackPressedDispatcher.onBackPressed()
         }
 
-        composeTestRule.waitForToast(R.string.toast_finish)
+        waitForToast(R.string.toast_finish)
     }
 
     private fun pressTab(tabId:Int){

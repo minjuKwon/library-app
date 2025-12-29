@@ -1,6 +1,5 @@
 package com.example.library.common
 
-import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Root
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -11,7 +10,7 @@ import org.hamcrest.TypeSafeMatcher
 
 object TestUtil {
 
-    fun ComposeTestRule.waitForToast(text: Int, timeout: Long = 6000L) {
+    fun waitForToast(text: Int, timeout: Long = 6000L) {
         val end = System.currentTimeMillis() + timeout
         var lastError: Throwable? = null
 
