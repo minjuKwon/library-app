@@ -41,6 +41,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.Transaction
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -302,178 +303,53 @@ class FirebaseBookRepository@Inject constructor(
                 val suspensionDate= userLoanListResult?.getSuspensionEndDateToLong()
                 if(status == BookStatusType.AVAILABLE.name&&((hasOverdueResult!=null &&!hasOverdueResult)
                             &&(suspensionDate!=null&&historyRequest.eventDate>=suspensionDate))){
-                    val libraryHistory= LibraryHistory(
-                        historyRequest.libraryHistoryId,
-                        historyRequest.userId,
-                        historyRequest.bookId,
-                        BookStatusType.BORROWED.name,
-                        historyRequest.eventDate,
-                        historyRequest.dueDate
+                    loanLibrary(
+                        historyRequest,
+                        libraryDocRef,
+                        transaction
                     )
-                    val loanDocRef= fireStore.collection(LIBRARY_HISTORY_COLLECTION)
-                        .document(historyRequest.libraryHistoryId)
-                    transaction.set(loanDocRef, libraryHistory)
-
-                    val data= mapOf(
-                        USER_ID to historyRequest.userId,
-                        STATUS_TYPE to BookStatusType.BORROWED.name,
-                        BORROWED_AT to historyRequest.eventDate,
-                        DUE_DATE to historyRequest.dueDate
-                    )
-                    transaction.update(libraryDocRef, data)
-
-                    val userLoanLibrary= UserLoanLibrary(
-                        userLibraryInfoId = historyRequest.libraryHistoryId,
-                        userId = historyRequest.userId,
-                        bookId = historyRequest.bookId,
-                        title = historyRequest.bookTitle,
-                        authors = historyRequest.bookAuthors,
-                        status = BookStatusType.BORROWED.name,
-                        loanDate = historyRequest.eventDate,
-                        dueDate = historyRequest.dueDate
-                    )
-                    val userLoanDocRef= fireStore.collection(USER_LOAN_LIBRARY_COLLECTION)
-                        .document(historyRequest.libraryHistoryId)
-                    transaction.set(userLoanDocRef, userLoanLibrary)
                 }else if(status == BookStatusType.BORROWED.name){
                     //반납하기
                     if(userId== historyRequest.userId){
-                        //다음 예약자가 있을 경우
-                        if(reservationBookSnap?.isEmpty==false){
-                            if (reservationBookDocRef != null) {
-                                transaction.update(
-                                    reservationBookDocRef,
-                                    mapOf(STATUS to ReservationStatusType.NOTIFIED.name)
-                                )
-
-                                val libraryData= mapOf(
-                                    STATUS_TYPE to BookStatusType.RESERVED.name,
-                                    BORROWED_AT to null,
-                                    DUE_DATE to null
-                                )
-                                transaction.update(libraryDocRef, libraryData)
-                            }
-                        }else{
-                            //별도의 예약자가 없는 경우
-                            val libraryData= mapOf(
-                                STATUS_TYPE to BookStatusType.AVAILABLE.name,
-                                BORROWED_AT to null,
-                                DUE_DATE to null
-                            )
-                            transaction.update(libraryDocRef, libraryData)
-                        }
-                        val historyData= mapOf(
-                            STATUS to BookStatusType.RETURNED.name,
-                            RETURN_DATE to historyRequest.eventDate
+                        returnLibrary(
+                            historyRequest,
+                            reservationBookSnap,
+                            reservationBookDocRef,
+                            historyDocRef,
+                            libraryDocRef,
+                            userLoanBookDocRef,
+                            transaction
                         )
-                        if (historyDocRef != null) {
-                            transaction.update(historyDocRef, historyData)
-                        }
-
-                        val userLoanBookData= mapOf(
-                            STATUS to BookStatusType.RETURNED.name,
-                            RETURN_DATE to historyRequest.eventDate
-                        )
-                        if (userLoanBookDocRef != null) {
-                            transaction.update(userLoanBookDocRef, userLoanBookData)
-                        }
                     }else{
                         //BORROWED 상태에서 userId가 다르면 예약 로직
-                        if(reservationUserDocRef!=null){
-                            //예약 취소
-                            if(reservationUserSnap?.exists() == true){
-                                if(reservationUserSnap.get(STATUS) ==ReservationStatusType.WAITING.name){
-                                    val reservationData=
-                                        mapOf(STATUS to ReservationStatusType.CANCELLED.name)
-                                    transaction.update(reservationUserDocRef, reservationData)
-                                }
-                            }
-                        }else{
-                            //예약 생성
-                            val libraryReservation= LibraryReservation(
-                                historyRequest.libraryHistoryId,
-                                historyRequest.userId,
-                                historyRequest.bookId,
-                                historyRequest.bookTitle?:"",
-                                historyRequest.eventDate,
-                                ReservationStatusType.WAITING.name
-                            )
-                            val reservationNewDocRef= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
-                                .document(historyRequest.libraryHistoryId)
-                            transaction.set(reservationNewDocRef, libraryReservation)
-                        }
+                        reserveLibrary(
+                            historyRequest,
+                            reservationUserDocRef,
+                            reservationUserSnap,
+                            transaction
+                        )
                     }
                 }else if(status == BookStatusType.OVERDUE.name){
                     if(userId== historyRequest.userId){
-                        val libraryData= mapOf(
-                            STATUS_TYPE to BookStatusType.AVAILABLE.name,
-                            BORROWED_AT to null,
-                            DUE_DATE to null,
-                            OVERDUE_DATE to null
+                        returnWithOverdue(
+                            historyRequest,
+                            libraryDocRef,
+                            historyDocRef,
+                            userLoanBookDocRef,
+                            transaction
                         )
-                        transaction.update(libraryDocRef, libraryData)
-
-                        val historyData= mapOf(
-                            STATUS to BookStatusType.RETURNED.name,
-                            RETURN_DATE to historyRequest.eventDate
-                        )
-                        if (historyDocRef != null) {
-                            transaction.update(historyDocRef, historyData)
-                        }
-
-                        val userLoanBookData= mapOf(
-                            STATUS to BookStatusType.RETURNED.name,
-                            RETURN_DATE to historyRequest.eventDate
-                        )
-                        if (userLoanBookDocRef != null) {
-                            transaction.update(userLoanBookDocRef, userLoanBookData)
-                        }
                     }else{
                         return@runTransaction
                     }
                 }else if(status==BookStatusType.RESERVED.name){
                     //예약 당사자가 예약 차례가 되었을 때 대출
                     if(userReservedStatus==ReservationStatusType.NOTIFIED.name){
-                        val libraryHistory= LibraryHistory(
-                            historyRequest.libraryHistoryId,
-                            historyRequest.userId,
-                            historyRequest.bookId,
-                            BookStatusType.BORROWED.name,
-                            historyRequest.eventDate,
-                            historyRequest.dueDate
+                        loanForReservation(
+                            historyRequest,
+                            libraryDocRef,
+                            reservationUserDocRef,
+                            transaction
                         )
-                        val loanDocRef= fireStore.collection(LIBRARY_HISTORY_COLLECTION)
-                            .document(historyRequest.libraryHistoryId)
-                        transaction.set(loanDocRef, libraryHistory)
-
-                        val data= mapOf(
-                            USER_ID to historyRequest.userId,
-                            STATUS_TYPE to BookStatusType.BORROWED.name,
-                            BORROWED_AT to historyRequest.eventDate,
-                            DUE_DATE to historyRequest.dueDate
-                        )
-                        transaction.update(libraryDocRef, data)
-
-                        val userLoanLibrary= UserLoanLibrary(
-                            userLibraryInfoId = historyRequest.libraryHistoryId,
-                            userId = historyRequest.userId,
-                            bookId = historyRequest.bookId,
-                            title = historyRequest.bookTitle,
-                            authors = historyRequest.bookAuthors,
-                            status = BookStatusType.BORROWED.name,
-                            loanDate = historyRequest.eventDate,
-                            dueDate = historyRequest.dueDate
-                        )
-                        val userLoanDocRef= fireStore.collection(USER_LOAN_LIBRARY_COLLECTION)
-                            .document(historyRequest.libraryHistoryId)
-                        transaction.set(userLoanDocRef, userLoanLibrary)
-
-                        if(reservationUserDocRef!=null){
-                            transaction.update(
-                                reservationUserDocRef,
-                                mapOf(STATUS to ReservationStatusType.BORROWED.name)
-                            )
-                        }
                     }
                 }
                 else{
@@ -485,6 +361,207 @@ class FirebaseBookRepository@Inject constructor(
             return Result.failure(FirebaseException(e.code.name))
         }catch (e:Exception){
             return Result.failure(e)
+        }
+    }
+
+    private fun loanLibrary(
+        historyRequest: HistoryRequest,
+        libraryDocRef:DocumentReference,
+        transaction: Transaction
+    ){
+        val libraryHistory= LibraryHistory(
+            historyRequest.libraryHistoryId,
+            historyRequest.userId,
+            historyRequest.bookId,
+            BookStatusType.BORROWED.name,
+            historyRequest.eventDate,
+            historyRequest.dueDate
+        )
+        val loanDocRef= fireStore.collection(LIBRARY_HISTORY_COLLECTION)
+            .document(historyRequest.libraryHistoryId)
+        transaction.set(loanDocRef, libraryHistory)
+
+        val data= mapOf(
+            USER_ID to historyRequest.userId,
+            STATUS_TYPE to BookStatusType.BORROWED.name,
+            BORROWED_AT to historyRequest.eventDate,
+            DUE_DATE to historyRequest.dueDate
+        )
+        transaction.update(libraryDocRef, data)
+
+        val userLoanLibrary= UserLoanLibrary(
+            userLibraryInfoId = historyRequest.libraryHistoryId,
+            userId = historyRequest.userId,
+            bookId = historyRequest.bookId,
+            title = historyRequest.bookTitle,
+            authors = historyRequest.bookAuthors,
+            status = BookStatusType.BORROWED.name,
+            loanDate = historyRequest.eventDate,
+            dueDate = historyRequest.dueDate
+        )
+        val userLoanDocRef= fireStore.collection(USER_LOAN_LIBRARY_COLLECTION)
+            .document(historyRequest.libraryHistoryId)
+        transaction.set(userLoanDocRef, userLoanLibrary)
+    }
+
+    private fun returnLibrary(
+        historyRequest:HistoryRequest,
+        reservationBookSnap:QuerySnapshot?,
+        reservationBookDocRef:DocumentReference?,
+        historyDocRef:DocumentReference?,
+        libraryDocRef:DocumentReference,
+        userLoanBookDocRef:DocumentReference?,
+        transaction: Transaction
+    ){
+        //다음 예약자가 있을 경우
+        if(reservationBookSnap?.isEmpty==false){
+            if (reservationBookDocRef != null) {
+                transaction.update(
+                    reservationBookDocRef,
+                    mapOf(STATUS to ReservationStatusType.NOTIFIED.name)
+                )
+
+                val libraryData= mapOf(
+                    STATUS_TYPE to BookStatusType.RESERVED.name,
+                    BORROWED_AT to null,
+                    DUE_DATE to null
+                )
+                transaction.update(libraryDocRef, libraryData)
+            }
+        }else{
+            //별도의 예약자가 없는 경우
+            val libraryData= mapOf(
+                STATUS_TYPE to BookStatusType.AVAILABLE.name,
+                BORROWED_AT to null,
+                DUE_DATE to null
+            )
+            transaction.update(libraryDocRef, libraryData)
+        }
+        val historyData= mapOf(
+            STATUS to BookStatusType.RETURNED.name,
+            RETURN_DATE to historyRequest.eventDate
+        )
+        if (historyDocRef != null) {
+            transaction.update(historyDocRef, historyData)
+        }
+
+        val userLoanBookData= mapOf(
+            STATUS to BookStatusType.RETURNED.name,
+            RETURN_DATE to historyRequest.eventDate
+        )
+        if (userLoanBookDocRef != null) {
+            transaction.update(userLoanBookDocRef, userLoanBookData)
+        }
+    }
+
+    private fun reserveLibrary(
+        historyRequest: HistoryRequest,
+        reservationUserDocRef: DocumentReference?,
+        reservationUserSnap:DocumentSnapshot?,
+        transaction: Transaction
+    ){
+        if(reservationUserDocRef!=null){
+            //예약 취소
+            if(reservationUserSnap?.exists() == true){
+                if(reservationUserSnap.get(STATUS) ==ReservationStatusType.WAITING.name){
+                    val reservationData=
+                        mapOf(STATUS to ReservationStatusType.CANCELLED.name)
+                    transaction.update(reservationUserDocRef, reservationData)
+                }
+            }
+        }else{
+            //예약 생성
+            val libraryReservation= LibraryReservation(
+                historyRequest.libraryHistoryId,
+                historyRequest.userId,
+                historyRequest.bookId,
+                historyRequest.bookTitle?:"",
+                historyRequest.eventDate,
+                ReservationStatusType.WAITING.name
+            )
+            val reservationNewDocRef= fireStore.collection(LIBRARY_RESERVATION_COLLECTION)
+                .document(historyRequest.libraryHistoryId)
+            transaction.set(reservationNewDocRef, libraryReservation)
+        }
+    }
+
+    private fun returnWithOverdue(
+        historyRequest: HistoryRequest,
+        libraryDocRef: DocumentReference,
+        historyDocRef: DocumentReference?,
+        userLoanBookDocRef: DocumentReference?,
+        transaction: Transaction
+    ){
+        val libraryData= mapOf(
+            STATUS_TYPE to BookStatusType.AVAILABLE.name,
+            BORROWED_AT to null,
+            DUE_DATE to null,
+            OVERDUE_DATE to null
+        )
+        transaction.update(libraryDocRef, libraryData)
+
+        val historyData= mapOf(
+            STATUS to BookStatusType.RETURNED.name,
+            RETURN_DATE to historyRequest.eventDate
+        )
+        if (historyDocRef != null) {
+            transaction.update(historyDocRef, historyData)
+        }
+
+        val userLoanBookData= mapOf(
+            STATUS to BookStatusType.RETURNED.name,
+            RETURN_DATE to historyRequest.eventDate
+        )
+        if (userLoanBookDocRef != null) {
+            transaction.update(userLoanBookDocRef, userLoanBookData)
+        }
+    }
+
+    private fun loanForReservation(
+        historyRequest: HistoryRequest,
+        libraryDocRef: DocumentReference,
+        reservationUserDocRef: DocumentReference?,
+        transaction: Transaction
+    ){
+        val libraryHistory= LibraryHistory(
+            historyRequest.libraryHistoryId,
+            historyRequest.userId,
+            historyRequest.bookId,
+            BookStatusType.BORROWED.name,
+            historyRequest.eventDate,
+            historyRequest.dueDate
+        )
+        val loanDocRef= fireStore.collection(LIBRARY_HISTORY_COLLECTION)
+            .document(historyRequest.libraryHistoryId)
+        transaction.set(loanDocRef, libraryHistory)
+
+        val data= mapOf(
+            USER_ID to historyRequest.userId,
+            STATUS_TYPE to BookStatusType.BORROWED.name,
+            BORROWED_AT to historyRequest.eventDate,
+            DUE_DATE to historyRequest.dueDate
+        )
+        transaction.update(libraryDocRef, data)
+
+        val userLoanLibrary= UserLoanLibrary(
+            userLibraryInfoId = historyRequest.libraryHistoryId,
+            userId = historyRequest.userId,
+            bookId = historyRequest.bookId,
+            title = historyRequest.bookTitle,
+            authors = historyRequest.bookAuthors,
+            status = BookStatusType.BORROWED.name,
+            loanDate = historyRequest.eventDate,
+            dueDate = historyRequest.dueDate
+        )
+        val userLoanDocRef= fireStore.collection(USER_LOAN_LIBRARY_COLLECTION)
+            .document(historyRequest.libraryHistoryId)
+        transaction.set(userLoanDocRef, userLoanLibrary)
+
+        if(reservationUserDocRef!=null){
+            transaction.update(
+                reservationUserDocRef,
+                mapOf(STATUS to ReservationStatusType.BORROWED.name)
+            )
         }
     }
 

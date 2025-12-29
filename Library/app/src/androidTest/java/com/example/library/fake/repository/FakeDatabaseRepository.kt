@@ -186,153 +186,23 @@ class FakeBookRepository:DatabaseRepository {
             }
             if(bookStatus == BookStatusType.AVAILABLE.name&&((hasOverdueResult!=null &&!hasOverdueResult)
                         &&(suspensionDate!=null&&historyRequest.eventDate>=suspensionDate))){
-                val libraryHistory= LibraryHistory(
-                    historyRequest.libraryHistoryId,
-                    historyRequest.userId,
-                    historyRequest.bookId,
-                    BookStatusType.BORROWED.name,
-                    historyRequest.eventDate,
-                    historyRequest.dueDate
-                )
-                historyList.add(libraryHistory)
-
-                val libraryData= library.copy(
-                    userId = historyRequest.userId,
-                    library = library.library.copy(
-                        bookStatus = BookStatus.Borrowed(historyRequest.userId,
-                            Instant.ofEpochMilli(historyRequest.eventDate),
-                            Instant.ofEpochMilli(historyRequest.dueDate)
-                        )
-                    )
-                )
-                itemList[libraryIdx]= libraryData
-
-                val userLoanLibrary= UserLoanLibrary(
-                    userLibraryInfoId = historyRequest.libraryHistoryId,
-                    userId = historyRequest.userId,
-                    bookId = historyRequest.bookId,
-                    title = historyRequest.bookTitle,
-                    authors = historyRequest.bookAuthors,
-                    status = BookStatusType.BORROWED.name,
-                    loanDate = historyRequest.eventDate,
-                    dueDate = historyRequest.dueDate
-                )
-                userLoanLibraryList.add(userLoanLibrary)
+                loanLibrary(historyRequest, library, libraryIdx)
             }else if(bookStatus == BookStatusType.BORROWED.name){
                 //반납하기
                 if(userId== historyRequest.userId){
-                    //다음 예약자가 있을 경우
-                    val idx= reservationList.indexOf(reservationBook)
-                    if(idx>=0){
-                        reservationList[idx]= reservationList[idx].copy(
-                            status = ReservationStatusType.NOTIFIED.name
-                        )
-
-                        itemList[libraryIdx]= itemList[libraryIdx].copy(
-                            library = itemList[libraryIdx].library.copy(
-                                bookStatus = BookStatus.Reserved,
-                            )
-                        )
-                    }else{
-                        //별도의 예약자가 없는 경우
-                        itemList[libraryIdx]= itemList[libraryIdx].copy(
-                            library = itemList[libraryIdx].library.copy(
-                                bookStatus = BookStatus.Available,
-                            )
-                        )
-                    }
-                    val historyIdx= historyList.indexOf(history)
-                    historyList[historyIdx]=historyList[historyIdx].copy(
-                        status = BookStatusType.RETURNED.name,
-                        returnDate = historyRequest.eventDate
-                    )
-
-                    val userIdx= userLoanLibraryList.indexOf(userLoan)
-                    userLoanLibraryList[userIdx]= userLoanLibraryList[userIdx].copy(
-                        status = BookStatusType.RETURNED.name,
-                        returnDate = historyRequest.eventDate
-                    )
+                    returnLibrary(historyRequest, reservationBook, history, userLoan, libraryIdx)
                 }else{
                     //BORROWED 상태에서 userId가 다르면 예약 로직
-                    //예약 취소
-                    if(reservationUser.status==ReservationStatusType.WAITING.name){
-                        val idx= reservationList.indexOf(reservationUser)
-                        reservationList[idx]=reservationList[idx].copy(
-                            status = ReservationStatusType.CANCELLED.name
-                        )
-                    }else{
-                        //예약 생성
-                        val libraryReservation= LibraryReservation(
-                            historyRequest.libraryHistoryId,
-                            historyRequest.userId,
-                            historyRequest.bookId,
-                            historyRequest.bookTitle?:"",
-                            historyRequest.eventDate,
-                            ReservationStatusType.WAITING.name
-                        )
-                        reservationList.add(libraryReservation)
-                    }
+                    reserveLibrary(historyRequest, reservationUser)
                 }
             }else if(bookStatus == BookStatusType.OVERDUE.name){
                 if(userId==historyRequest.userId){
-                    itemList[libraryIdx]=itemList[libraryIdx].copy(
-                        library= itemList[libraryIdx].library.copy(
-                            bookStatus= BookStatus.Available
-                        )
-                    )
-
-                    val historyIdx= historyList.indexOf(history)
-                    historyList[historyIdx]= historyList[historyIdx].copy(
-                        status = BookStatusType.RETURNED.name,
-                        returnDate = historyRequest.eventDate
-                    )
-
-                    val loanIdx= userLoanLibraryList.indexOf(userLoan)
-                    userLoanLibraryList[loanIdx]= userLoanLibraryList[loanIdx].copy(
-                        status = BookStatusType.RETURNED.name,
-                        returnDate = historyRequest.eventDate
-                    )
+                    returnWithOverdue(historyRequest, history, userLoan, libraryIdx)
                 }
             }else if(bookStatus==BookStatusType.RESERVED.name){
                 //예약 당사자가 예약 차례가 되었을 때 대출
                 if(reservationUser.status==ReservationStatusType.NOTIFIED.name){
-                    val libraryHistory= LibraryHistory(
-                        historyRequest.libraryHistoryId,
-                        historyRequest.userId,
-                        historyRequest.bookId,
-                        BookStatusType.BORROWED.name,
-                        historyRequest.eventDate,
-                        historyRequest.dueDate
-                    )
-                    historyList.add(libraryHistory)
-
-                    itemList[libraryIdx]= itemList[libraryIdx].copy(
-                        userId= historyRequest.userId,
-                        library = itemList[libraryIdx].library.copy(
-                            bookStatus= BookStatus.Borrowed(
-                                userId= historyRequest.userId,
-                                borrowedAt = Instant.ofEpochMilli(historyRequest.eventDate),
-                                dueDate = Instant.ofEpochMilli(historyRequest.dueDate)
-                            )
-                        )
-                    )
-
-                    val userLoanLibrary= UserLoanLibrary(
-                        userLibraryInfoId = historyRequest.libraryHistoryId,
-                        userId = historyRequest.userId,
-                        bookId = historyRequest.bookId,
-                        title = historyRequest.bookTitle,
-                        authors = historyRequest.bookAuthors,
-                        status = BookStatusType.BORROWED.name,
-                        loanDate = historyRequest.eventDate,
-                        dueDate = historyRequest.dueDate
-                    )
-                    userLoanLibraryList.add(userLoanLibrary)
-
-                    val idx= reservationList.indexOf(reservationUser)
-                    reservationList[idx] = reservationList[idx].copy(
-                        status = ReservationStatusType.BORROWED.name
-                    )
+                    loanForReservation(historyRequest, reservationUser, libraryIdx)
                 }
             }
             return Result.success(Unit)
@@ -341,6 +211,178 @@ class FakeBookRepository:DatabaseRepository {
         }catch (e:Exception){
             return Result.failure(e)
         }
+    }
+
+    private fun loanLibrary(
+        historyRequest: HistoryRequest,
+        library: DatabaseItem,
+        libraryIdx:Int
+    ){
+        val libraryHistory= LibraryHistory(
+            historyRequest.libraryHistoryId,
+            historyRequest.userId,
+            historyRequest.bookId,
+            BookStatusType.BORROWED.name,
+            historyRequest.eventDate,
+            historyRequest.dueDate
+        )
+        historyList.add(libraryHistory)
+
+        val libraryData= library.copy(
+            userId = historyRequest.userId,
+            library = library.library.copy(
+                bookStatus = BookStatus.Borrowed(historyRequest.userId,
+                    Instant.ofEpochMilli(historyRequest.eventDate),
+                    Instant.ofEpochMilli(historyRequest.dueDate)
+                )
+            )
+        )
+        itemList[libraryIdx]= libraryData
+
+        val userLoanLibrary= UserLoanLibrary(
+            userLibraryInfoId = historyRequest.libraryHistoryId,
+            userId = historyRequest.userId,
+            bookId = historyRequest.bookId,
+            title = historyRequest.bookTitle,
+            authors = historyRequest.bookAuthors,
+            status = BookStatusType.BORROWED.name,
+            loanDate = historyRequest.eventDate,
+            dueDate = historyRequest.dueDate
+        )
+        userLoanLibraryList.add(userLoanLibrary)
+    }
+
+    private fun returnLibrary(
+        historyRequest: HistoryRequest,
+        reservationBook: LibraryReservation,
+        history:LibraryHistory,
+        userLoan:UserLoanLibrary,
+        libraryIdx: Int,
+    ){
+        //다음 예약자가 있을 경우
+        val idx= reservationList.indexOf(reservationBook)
+        if(idx>=0){
+            reservationList[idx]= reservationList[idx].copy(
+                status = ReservationStatusType.NOTIFIED.name
+            )
+
+            itemList[libraryIdx]= itemList[libraryIdx].copy(
+                library = itemList[libraryIdx].library.copy(
+                    bookStatus = BookStatus.Reserved,
+                )
+            )
+        }else{
+            //별도의 예약자가 없는 경우
+            itemList[libraryIdx]= itemList[libraryIdx].copy(
+                library = itemList[libraryIdx].library.copy(
+                    bookStatus = BookStatus.Available,
+                )
+            )
+        }
+        val historyIdx= historyList.indexOf(history)
+        historyList[historyIdx]=historyList[historyIdx].copy(
+            status = BookStatusType.RETURNED.name,
+            returnDate = historyRequest.eventDate
+        )
+
+        val userIdx= userLoanLibraryList.indexOf(userLoan)
+        userLoanLibraryList[userIdx]= userLoanLibraryList[userIdx].copy(
+            status = BookStatusType.RETURNED.name,
+            returnDate = historyRequest.eventDate
+        )
+    }
+
+    private fun reserveLibrary(
+        historyRequest: HistoryRequest,
+        reservationUser:LibraryReservation
+    ){
+        //예약 취소
+        if(reservationUser.status==ReservationStatusType.WAITING.name){
+            val idx= reservationList.indexOf(reservationUser)
+            reservationList[idx]=reservationList[idx].copy(
+                status = ReservationStatusType.CANCELLED.name
+            )
+        }else{
+            //예약 생성
+            val libraryReservation= LibraryReservation(
+                historyRequest.libraryHistoryId,
+                historyRequest.userId,
+                historyRequest.bookId,
+                historyRequest.bookTitle?:"",
+                historyRequest.eventDate,
+                ReservationStatusType.WAITING.name
+            )
+            reservationList.add(libraryReservation)
+        }
+    }
+
+    private fun returnWithOverdue(
+        historyRequest: HistoryRequest,
+        history: LibraryHistory,
+        userLoan: UserLoanLibrary,
+        libraryIdx: Int
+    ){
+        itemList[libraryIdx]=itemList[libraryIdx].copy(
+            library= itemList[libraryIdx].library.copy(
+                bookStatus= BookStatus.Available
+            )
+        )
+
+        val historyIdx= historyList.indexOf(history)
+        historyList[historyIdx]= historyList[historyIdx].copy(
+            status = BookStatusType.RETURNED.name,
+            returnDate = historyRequest.eventDate
+        )
+
+        val loanIdx= userLoanLibraryList.indexOf(userLoan)
+        userLoanLibraryList[loanIdx]= userLoanLibraryList[loanIdx].copy(
+            status = BookStatusType.RETURNED.name,
+            returnDate = historyRequest.eventDate
+        )
+    }
+
+    private fun loanForReservation(
+        historyRequest: HistoryRequest,
+        reservationUser: LibraryReservation,
+        libraryIdx: Int
+    ){
+        val libraryHistory= LibraryHistory(
+            historyRequest.libraryHistoryId,
+            historyRequest.userId,
+            historyRequest.bookId,
+            BookStatusType.BORROWED.name,
+            historyRequest.eventDate,
+            historyRequest.dueDate
+        )
+        historyList.add(libraryHistory)
+
+        itemList[libraryIdx]= itemList[libraryIdx].copy(
+            userId= historyRequest.userId,
+            library = itemList[libraryIdx].library.copy(
+                bookStatus= BookStatus.Borrowed(
+                    userId= historyRequest.userId,
+                    borrowedAt = Instant.ofEpochMilli(historyRequest.eventDate),
+                    dueDate = Instant.ofEpochMilli(historyRequest.dueDate)
+                )
+            )
+        )
+
+        val userLoanLibrary= UserLoanLibrary(
+            userLibraryInfoId = historyRequest.libraryHistoryId,
+            userId = historyRequest.userId,
+            bookId = historyRequest.bookId,
+            title = historyRequest.bookTitle,
+            authors = historyRequest.bookAuthors,
+            status = BookStatusType.BORROWED.name,
+            loanDate = historyRequest.eventDate,
+            dueDate = historyRequest.dueDate
+        )
+        userLoanLibraryList.add(userLoanLibrary)
+
+        val idx= reservationList.indexOf(reservationUser)
+        reservationList[idx] = reservationList[idx].copy(
+            status = ReservationStatusType.BORROWED.name
+        )
     }
 
     override suspend fun getUserLoanBookList(userId: String): Result<List<UserLoanLibrary>?> {
