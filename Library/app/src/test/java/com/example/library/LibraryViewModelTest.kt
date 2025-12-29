@@ -62,11 +62,11 @@ class LibraryViewModelTest {
             externalScope = testScope
         )
 
-        Assert.assertEquals(LibraryUiState.Loading, libraryViewModel.libraryUiState)
+        Assert.assertEquals(LibraryUiState.Loading, libraryViewModel.libraryUiState.value)
 
         testScheduler.advanceUntilIdle()
 
-        val successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+        val successState = (libraryViewModel.libraryUiState.value as LibraryUiState.Success)
         val actualItems = successState.list.map { it.library.book }
 
         Assert.assertEquals(expectedItems?.book, actualItems)
@@ -103,11 +103,11 @@ class LibraryViewModelTest {
             externalScope = testScope
         )
 
-        Assert.assertTrue(viewModel.libraryUiState is LibraryUiState.Loading)
+        Assert.assertTrue(viewModel.libraryUiState.value is LibraryUiState.Loading)
 
         testScheduler.advanceUntilIdle()
 
-        Assert.assertTrue(viewModel.libraryUiState is LibraryUiState.Error)
+        Assert.assertTrue(viewModel.libraryUiState.value is LibraryUiState.Error)
 
         testScope.cancel()
     }
@@ -134,7 +134,7 @@ class LibraryViewModelTest {
 
         testScheduler.advanceUntilIdle()
 
-        var successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+        var successState = (libraryViewModel.libraryUiState.value as LibraryUiState.Success)
 
         successState.list.forEachIndexed { index, libraryUiModel ->
             if(index%2==1){
@@ -143,7 +143,7 @@ class LibraryViewModelTest {
             }
         }
 
-        successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+        successState = (libraryViewModel.libraryUiState.value as LibraryUiState.Success)
 
         successState.list.forEachIndexed { index, libraryUiModel ->
             if(index%2==1){
@@ -175,7 +175,7 @@ class LibraryViewModelTest {
 
         testScheduler.advanceUntilIdle()
 
-        var successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+        var successState = (libraryViewModel.libraryUiState.value as LibraryUiState.Success)
 
         successState.list.forEachIndexed { index, libraryUiModel ->
             if(index%2==0){
@@ -186,7 +186,7 @@ class LibraryViewModelTest {
         libraryViewModel.getLiked()
         testScheduler.advanceUntilIdle()
 
-        successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+        successState = (libraryViewModel.libraryUiState.value as LibraryUiState.Success)
 
         successState.list.forEachIndexed { index, libraryUiModel ->
             if(index%2==0){
@@ -220,7 +220,7 @@ class LibraryViewModelTest {
 
         testScheduler.advanceUntilIdle()
 
-        var successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+        var successState = (libraryViewModel.libraryUiState.value as LibraryUiState.Success)
 
         successState.list.forEachIndexed { index, libraryUiModel ->
             if(index%2==1){
@@ -231,7 +231,7 @@ class LibraryViewModelTest {
         libraryViewModel.resetLiked()
         testScheduler.advanceUntilIdle()
 
-        successState = (libraryViewModel.libraryUiState as LibraryUiState.Success)
+        successState = (libraryViewModel.libraryUiState.value as LibraryUiState.Success)
 
         successState.list.forEach { libraryUiModel ->
             Assert.assertFalse(libraryUiModel.isLiked)

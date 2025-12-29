@@ -29,6 +29,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -644,7 +645,7 @@ fun UserInformationEditScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val focusRequester= remember{FocusRequester()}
-    val isPasswordVerified by userViewModel.isPasswordVerified
+    val isPasswordVerified by userViewModel.isPasswordVerified.collectAsState()
 
     var isClickName by remember { mutableStateOf(false) }
     var isClickCurrentPassword by remember { mutableStateOf(false) }

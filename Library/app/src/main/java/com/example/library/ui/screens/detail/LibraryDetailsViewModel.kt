@@ -1,8 +1,5 @@
 package com.example.library.ui.screens.detail
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.library.core.DateTimeConverter.calculateOverDueDate
@@ -50,22 +47,22 @@ class LibraryDetailsViewModel @Inject constructor(
         )
     val userPreferences= _userPreferences
 
-    var uiState: LibraryDetailsUiState by mutableStateOf(LibraryDetailsUiState.Loading)
-        private set
+    private val _uiState= MutableStateFlow<LibraryDetailsUiState>(LibraryDetailsUiState.Loading)
+    val uiState=_uiState
 
-    private val _currentLibrary= mutableStateOf(defaultLibrary)
+    private val _currentLibrary= MutableStateFlow(defaultLibrary)
     val currentLibrary= _currentLibrary
 
-    private val _reservationStatus= mutableStateOf("")
+    private val _reservationStatus= MutableStateFlow("")
     val reservationStatus= _reservationStatus
 
-    private val _isShowOverdueDialog= mutableStateOf(false)
+    private val _isShowOverdueDialog= MutableStateFlow(false)
     val isShowOverdueDialog= _isShowOverdueDialog
 
-    private val _isShowSuspensionDateDialog= mutableStateOf(false)
+    private val _isShowSuspensionDateDialog= MutableStateFlow(false)
     val isShowSuspensionDateDialog= _isShowSuspensionDateDialog
 
-    private val _isShowReservationDialog= mutableStateOf(false)
+    private val _isShowReservationDialog= MutableStateFlow(false)
     val isShowReservationDialog= _isShowReservationDialog
 
     private val _reservationCount= MutableStateFlow<Map<String, Int>>(emptyMap())
@@ -77,9 +74,9 @@ class LibraryDetailsViewModel @Inject constructor(
     private var bookStatusListener: ListenerRegistration? =null
 
     fun updateCurrentItem(library: Library){
-        uiState=LibraryDetailsUiState.Loading
+        _uiState.value=LibraryDetailsUiState.Loading
         _currentLibrary.value= library
-        uiState=LibraryDetailsUiState.Success
+        _uiState.value=LibraryDetailsUiState.Success
     }
 
     fun loanLibrary(
@@ -88,7 +85,7 @@ class LibraryDetailsViewModel @Inject constructor(
     ){
         scope.launch {
             _loadCompleteLoad.value=false
-            uiState=LibraryDetailsUiState.Loading
+            _uiState.value=LibraryDetailsUiState.Loading
 
             val id= awaitUserId()
             val bookStatus= _currentLibrary.value.bookStatus
@@ -107,7 +104,7 @@ class LibraryDetailsViewModel @Inject constructor(
                 }
             }
 
-            uiState=try{
+            _uiState.value=try{
                 val isSave= firebaseBookService.updateLibraryHistory(
                     userId = id,
                     libraryId = _currentLibrary.value.libraryId,

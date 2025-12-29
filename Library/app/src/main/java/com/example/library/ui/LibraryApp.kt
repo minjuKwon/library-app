@@ -38,16 +38,18 @@ fun LibraryApp(
         currentDestination?.route?.startsWith(it.navigationMenuType.route) == true
         }?.navigationMenuType?: LibraryDestination.Books
 
-    val textFieldKeyword by libraryViewModel.textFieldKeyword
-    val dueCheckResult by libraryViewModel.dueCheckResult
+    val libraryUiState by libraryViewModel.libraryUiState.collectAsState()
+    val textFieldKeyword by libraryViewModel.textFieldKeyword.collectAsState()
+    val dueCheckResult by libraryViewModel.dueCheckResult.collectAsState()
     val reservedBookList by libraryViewModel.reservedBookList.collectAsState()
     val currentPage by libraryViewModel.currentPage.collectAsState()
 
-    val isShowOverdueDialog by libraryDetailsViewModel.isShowOverdueDialog
-    val isShowSuspensionDialog by libraryDetailsViewModel.isShowSuspensionDateDialog
-    val isShowReservationDialog by libraryDetailsViewModel.isShowReservationDialog
-    val currentBook by libraryDetailsViewModel.currentLibrary
-    val reservationStatus by libraryDetailsViewModel.reservationStatus
+    val detailsUiState by libraryDetailsViewModel.uiState.collectAsState()
+    val isShowOverdueDialog by libraryDetailsViewModel.isShowOverdueDialog.collectAsState()
+    val isShowSuspensionDialog by libraryDetailsViewModel.isShowSuspensionDateDialog.collectAsState()
+    val isShowReservationDialog by libraryDetailsViewModel.isShowReservationDialog.collectAsState()
+    val currentBook by libraryDetailsViewModel.currentLibrary.collectAsState()
+    val reservationStatus by libraryDetailsViewModel.reservationStatus.collectAsState()
     val reservationCount by libraryDetailsViewModel.reservationCount.collectAsState()
     val userPreferences by libraryDetailsViewModel.userPreferences.collectAsState()
 
@@ -74,7 +76,7 @@ fun LibraryApp(
     LibraryAppContent(
         navController=navController,
         userViewModel=userViewModel,
-        libraryUiState=libraryViewModel.libraryUiState,
+        libraryUiState=libraryUiState,
         navigationConfig = NavigationConfig(
             contentType=contentType,
             navigationType = navigationType,
@@ -114,7 +116,7 @@ fun LibraryApp(
             updateCurrentBook={ libraryDetailsViewModel.updateCurrentItem(it) }
         ),
         detailsScreenParams = DetailsScreenParams(
-            uiState= libraryDetailsViewModel.uiState,
+            uiState= detailsUiState,
             currentPage = currentPage,
             userId = userPreferences?.uid?:"",
             reservationCount = reservationCount,

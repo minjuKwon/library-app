@@ -1,6 +1,5 @@
 package com.example.library.ui.screens.user
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.library.data.entity.User
@@ -48,25 +47,25 @@ class UserViewModel @Inject constructor(
     private val _event= MutableSharedFlow<UserUiState>()
     val event= _event.asSharedFlow()
 
-    private val _userLoanHistoryList= mutableStateOf(listOf(listOf<String>()))
+    private val _userLoanHistoryList= MutableStateFlow(listOf(listOf<String>()))
     val userLoanHistoryList= _userLoanHistoryList
 
-    private val _userLoanBookList= mutableStateOf(listOf(listOf<String>()))
+    private val _userLoanBookList= MutableStateFlow(listOf(listOf<String>()))
     val userLoanBookList= _userLoanBookList
 
-    private val _userOverdueBookList= mutableStateOf(listOf(listOf<String>()))
+    private val _userOverdueBookList= MutableStateFlow(listOf(listOf<String>()))
     val userOverdueBookList= _userOverdueBookList
 
-    private val _userReservationList= mutableStateOf(listOf(listOf<String>()))
+    private val _userReservationList= MutableStateFlow(listOf(listOf<String>()))
     val userReservationList= _userReservationList
 
-    private val _suspensionEnd= mutableStateOf("")
+    private val _suspensionEnd= MutableStateFlow("")
     val suspensionEnd= _suspensionEnd
 
-    private val _isUserVerified= mutableStateOf(true)
+    private val _isUserVerified= MutableStateFlow(true)
     val isUserVerified= _isUserVerified
 
-    private val _isPasswordVerified= mutableStateOf(false)
+    private val _isPasswordVerified= MutableStateFlow(false)
     val isPasswordVerified= _isPasswordVerified
 
     private val _isClickEmailLink= MutableStateFlow(false)

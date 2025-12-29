@@ -76,7 +76,7 @@ fun NavGraphBuilder.settingDestination(
         }
 
         composable(route= LibraryDestination.LogIn.route) {
-            val isUserVerified by userViewModel.isUserVerified
+            val isUserVerified by userViewModel.isUserVerified.collectAsState()
             val isClickEmailLink by userViewModel.isClickEmailLink.collectAsState()
 
             if(isUserVerified){
@@ -122,7 +122,7 @@ fun NavGraphBuilder.settingDestination(
         }
 
         composable(route=LibraryDestination.LoanHistory.route){
-            val list by userViewModel.userLoanHistoryList
+            val list by userViewModel.userLoanHistoryList.collectAsState()
             LoanHistoryScreen(
                 list= list,
                 onBackPressed = {navController.popBackStack()}
@@ -130,9 +130,9 @@ fun NavGraphBuilder.settingDestination(
         }
 
         composable(route=LibraryDestination.LoanStatus.route){
-            val loanList by userViewModel.userLoanBookList
-            val overdueList by userViewModel.userOverdueBookList
-            val suspensionDate by userViewModel.suspensionEnd
+            val loanList by userViewModel.userLoanBookList.collectAsState()
+            val overdueList by userViewModel.userOverdueBookList.collectAsState()
+            val suspensionDate by userViewModel.suspensionEnd.collectAsState()
 
             LoanStatusScreen(
                 loanList = loanList,
@@ -143,7 +143,7 @@ fun NavGraphBuilder.settingDestination(
         }
 
         composable(route=LibraryDestination.ReservationStatus.route){
-            val reservationList by userViewModel.userReservationList
+            val reservationList by userViewModel.userReservationList.collectAsState()
             ReservationStatusScreen(
                 reservationList=reservationList,
                 onBackPressed = {navController.popBackStack()}
