@@ -17,8 +17,12 @@ class CacheBookRepository @Inject constructor(
 ) : LocalRepository {
 
     override suspend fun searchResultData(query: String, page: Int): List<Library> {
-        val normalizeQuery= normalizeQuery(query)
-        return bookCacheDao.getBooks(normalizeQuery, page).toListLibrary()
+        try{
+            val normalizeQuery= normalizeQuery(query)
+            return bookCacheDao.getBooks(normalizeQuery, page).toListLibrary()
+        }catch (e:Exception){
+            throw Exception(e.message)
+        }
     }
 
     override suspend fun cacheLibraryBooks(
@@ -28,35 +32,55 @@ class CacheBookRepository @Inject constructor(
         cachedAt:Long,
         accessedAt:Long
     ){
-        val normalizeQuery= normalizeQuery(query)
+        try{
+            val normalizeQuery= normalizeQuery(query)
 
-        bookCacheDao.insertSearchResultWithLibrary(
-            library.toSearchResultEntity(normalizeQuery, page, cachedAt, accessedAt),
-            library.toLibraryEntity(),
-            library.book.bookInfo.toBookEntity(library.book.id),
-            library.book.bookInfo.img.toBookImageEntity(library.book.id)
-        )
+            bookCacheDao.insertSearchResultWithLibrary(
+                library.toSearchResultEntity(normalizeQuery, page, cachedAt, accessedAt),
+                library.toLibraryEntity(),
+                library.book.bookInfo.toBookEntity(library.book.id),
+                library.book.bookInfo.img.toBookImageEntity(library.book.id)
+            )
+        }catch (e:Exception){
+            throw Exception(e.message)
+        }
     }
 
     override suspend fun searchTotalCount(query: String): Int? {
-        val normalizeQuery= normalizeQuery(query)
-        return bookCacheDao.getSearchTotalCount(normalizeQuery)
+        try{
+            val normalizeQuery= normalizeQuery(query)
+            return bookCacheDao.getSearchTotalCount(normalizeQuery)
+        }catch (e:Exception){
+            throw Exception(e.message)
+        }
     }
 
     override suspend fun cacheTotalCount(query: String, count: Int) {
-        val normalizeQuery= normalizeQuery(query)
-        val entity= SearchTotalCountEntity(normalizeQuery, count)
+        try{
+            val normalizeQuery= normalizeQuery(query)
+            val entity= SearchTotalCountEntity(normalizeQuery, count)
 
-        bookCacheDao.insertSearchTotalCount(entity)
+            bookCacheDao.insertSearchTotalCount(entity)
+        }catch (e:Exception){
+            throw Exception(e.message)
+        }
     }
 
     override suspend fun hasCachedKeyword(keyword: String, page: Int):Boolean{
-        val normalizeQuery= normalizeQuery(keyword)
-        return bookCacheDao.hasBooksForKeyword(normalizeQuery, page)
+        try{
+            val normalizeQuery= normalizeQuery(keyword)
+            return bookCacheDao.hasBooksForKeyword(normalizeQuery, page)
+        }catch (e:Exception){
+            throw Exception(e.message)
+        }
     }
 
     override suspend fun updateAccessTime(libraryId: String, page: Int, now: Long) {
-        bookCacheDao.updateLastAccess(libraryId, page, now)
+        try{
+            bookCacheDao.updateLastAccess(libraryId, page, now)
+        }catch (e:Exception){
+            throw Exception(e.message)
+        }
     }
 
 }
