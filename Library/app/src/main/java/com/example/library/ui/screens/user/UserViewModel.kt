@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.library.data.entity.User
 import com.example.library.di.ApplicationScope
+import com.example.library.domain.DatabaseService
 import com.example.library.domain.UserService
-import com.example.library.service.FirebaseBookService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val firebaseUserService: UserService,
-    private val firebaseBookService: FirebaseBookService,
+    private val firebaseBookService: DatabaseService,
     @ApplicationScope externalScope:CoroutineScope?=null
 ) : ViewModel(){
 

@@ -10,10 +10,10 @@ import com.example.library.data.entity.LibraryLiked
 import com.example.library.data.entity.User
 import com.example.library.data.mapper.toListUiModel
 import com.example.library.di.ApplicationScope
+import com.example.library.domain.DatabaseService
 import com.example.library.domain.DueCheckResult
 import com.example.library.domain.LibrarySyncService
 import com.example.library.domain.SessionManager
-import com.example.library.service.FirebaseBookService
 import com.example.library.ui.common.LibraryUiModel
 import com.google.firebase.firestore.ListenerRegistration
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +33,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val librarySyncService: LibrarySyncService,
-    private val firebaseBookService: FirebaseBookService,
+    private val firebaseBookService: DatabaseService,
     defaultSessionManager: SessionManager,
     @ApplicationScope externalScope: CoroutineScope? = null
 ):ViewModel() {

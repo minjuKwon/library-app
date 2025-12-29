@@ -11,8 +11,8 @@ import com.example.library.data.entity.LibraryHistory
 import com.example.library.data.entity.User
 import com.example.library.data.mapper.toStringType
 import com.example.library.di.ApplicationScope
+import com.example.library.domain.DatabaseService
 import com.example.library.domain.SessionManager
-import com.example.library.service.FirebaseBookService
 import com.example.library.ui.screens.search.defaultLibrary
 import com.example.library.ui.screens.user.getSuspensionEndDateToLong
 import com.google.firebase.firestore.ListenerRegistration
@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LibraryDetailsViewModel @Inject constructor(
-    private val firebaseBookService: FirebaseBookService,
+    private val firebaseBookService: DatabaseService,
     defaultSessionManager: SessionManager,
     @ApplicationScope externalScope: CoroutineScope? = null
 ): ViewModel() {
