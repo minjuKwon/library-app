@@ -125,7 +125,7 @@ fun LogInScreen(
             modifier= Modifier
                 .padding(dimensionResource(R.dimen.padding_xxl))
         ){
-            if(userViewModel.isUserVerified.value&&isClickEmailLink){
+            if(isClickEmailLink){
                 Text(
                     text= stringResource(R.string.already_reauthorization),
                     modifier=Modifier

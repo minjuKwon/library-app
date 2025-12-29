@@ -39,7 +39,7 @@ fun LibraryRankingScreen(
 ){
     val tempBook =Book("1",
     BookInfo("android_1",listOf("1_1","1_2"),"publisher1",
-        "0101","description1", BookImage(),false)
+        "0101","description1", BookImage())
     )
     val tempLibrary= Library("1",tempBook, BookStatus.Available, "123.f","3층",0)
     Column(
