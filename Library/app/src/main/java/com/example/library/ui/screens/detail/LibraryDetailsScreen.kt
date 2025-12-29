@@ -358,12 +358,11 @@ private fun BookStatusButton(
             is BookStatus.Borrowed -> Text(stringResource(R.string.return_book))
             is BookStatus.OverDue -> Text(stringResource(R.string.return_book))
             is BookStatus.Reserved ->{
-                if(status== ReservationStatusType.NOTIFIED.name)
-                    Text(stringResource(R.string.borrow_book))
-                else if(status== ReservationStatusType.WAITING.name)
-                    Text(stringResource(R.string.cancel_reservation_book))
-                else
-                    Text(stringResource(R.string.reserve_book))
+                when(status){
+                    ReservationStatusType.NOTIFIED.name -> Text(stringResource(R.string.borrow_book))
+                    ReservationStatusType.WAITING.name -> Text(stringResource(R.string.cancel_reservation_book))
+                    else -> Text(stringResource(R.string.reserve_book))
+                }
             }
         }
     }
