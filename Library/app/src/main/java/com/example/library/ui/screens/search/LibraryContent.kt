@@ -54,18 +54,18 @@ import com.example.library.ui.common.DetailsScreenParams
 import com.example.library.ui.common.LibraryUiModel
 import com.example.library.ui.common.ListContentParams
 import com.example.library.ui.common.TextFieldParams
+import com.example.library.ui.common.UserScreenParams
 import com.example.library.ui.screens.detail.LibraryDetailsScreen
 import com.example.library.ui.screens.getTotalItemCount
 
 @Composable
 fun LibraryListOnlyContent(
-    libraryUiState: LibraryUiState,
     list:List<LibraryUiModel>,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
+    userScreenParams:UserScreenParams,
     isAtRoot:Boolean,
     isNotFullScreen:Boolean,
-    isLogIn:Boolean,
     onNavigateToDetails:(String)->Unit,
     onNavigationToLogIn:()->Unit,
     modifier:Modifier= Modifier
@@ -88,7 +88,7 @@ fun LibraryListOnlyContent(
     ) {
         val pageGroupSize = 3
         val pageSize = PAGE_SIZE
-        val totalItemCount= getTotalItemCount(libraryUiState)
+        val totalItemCount= getTotalItemCount(listContentParams.libraryUiState)
         val totalPages = (totalItemCount+pageSize-1)/pageSize
         val currentGroup = (listContentParams.currentPage-1)/pageGroupSize
 
@@ -104,7 +104,6 @@ fun LibraryListOnlyContent(
         LibraryTotalItemText(totalItemCount)
 
         LibraryList(
-            libraryUiState= libraryUiState,
             list= list,
             pageGroupSize = pageGroupSize,
             totalPages= totalPages,
@@ -112,7 +111,7 @@ fun LibraryListOnlyContent(
             currentGroup= currentGroup,
             listContentParams= listContentParams,
             isNotFullScreen=isNotFullScreen,
-            isLogIn= isLogIn,
+            isLogIn= userScreenParams.isLogIn,
             onNavigateToDetails= onNavigateToDetails,
             onNavigationToLogIn= onNavigationToLogIn
         )
@@ -240,7 +239,6 @@ private fun LibraryTotalItemText(
 
 @Composable
 private fun LibraryList(
-    libraryUiState: LibraryUiState,
     list:List<LibraryUiModel>,
     pageGroupSize:Int,
     totalPages:Int,
@@ -277,7 +275,7 @@ private fun LibraryList(
                 )
             }
         }
-        item{ LibraryUiStateIndicator(libraryUiState) }
+        item{ LibraryUiStateIndicator(listContentParams.libraryUiState) }
         item {
             PageNumberButton(
                 pageGroupSize = pageGroupSize,
@@ -422,36 +420,34 @@ private fun CheckReservationDialog(
 
 @Composable
 fun LibraryListAndDetailContent(
-    libraryUiState: LibraryUiState,
     isAtRoot:Boolean,
-    isLogIn: Boolean,
     list:List<LibraryUiModel>,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
     detailsScreenParams: DetailsScreenParams,
+    userScreenParams: UserScreenParams,
     onNavigateToDetails:(String)->Unit,
     onNavigationToLogIn:()->Unit,
     modifier:Modifier= Modifier
 ){
     Row(modifier=modifier){
         LibraryListOnlyContent(
-            libraryUiState = libraryUiState,
             list = list,
             textFieldParams=textFieldParams,
             listContentParams=listContentParams,
+            userScreenParams=userScreenParams,
             onNavigateToDetails = onNavigateToDetails,
             onNavigationToLogIn=onNavigationToLogIn,
             isAtRoot=isAtRoot,
             isNotFullScreen=false,
-            isLogIn = isLogIn,
             modifier=Modifier.weight(1f)
         )
 
         val activity = LocalContext.current as Activity
 
-        if(libraryUiState is LibraryUiState.Success){
+        if(listContentParams.libraryUiState is LibraryUiState.Success){
             LibraryDetailsScreen(
-                isLogIn=isLogIn,
+                isLogIn=userScreenParams.isLogIn,
                 isNotFullScreen = false,
                 detailsScreenParams= detailsScreenParams,
                 onBackPressed= { activity.finish() },

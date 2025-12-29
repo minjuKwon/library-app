@@ -3,8 +3,6 @@ package com.example.library.ui.navigation.graph
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.navigation.NavGraphBuilder
@@ -28,33 +26,29 @@ import com.example.library.ui.common.DetailsScreenParams
 import com.example.library.ui.common.ListContentParams
 import com.example.library.ui.common.NavigationConfig
 import com.example.library.ui.common.TextFieldParams
-import com.example.library.ui.screens.user.UserViewModel
+import com.example.library.ui.common.UserScreenParams
 
 fun NavGraphBuilder.booksDestination(
-    libraryUiState: LibraryUiState,
     navController: NavHostController,
-    userViewModel: UserViewModel,
     navigationConfig: NavigationConfig,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
-    detailsScreenParams: DetailsScreenParams
+    detailsScreenParams: DetailsScreenParams,
+    userScreenParams: UserScreenParams
 ){
     navigation(
         startDestination = LibraryDestination.Books.route,
         route=GraphRoutes.HOME
     ){
         composable(route= LibraryDestination.Books.route){
-            val isLogIn by userViewModel.isLogIn.collectAsState()
-
             if(navigationConfig.contentType== ContentType.LIST_AND_DETAIL){
                 LibraryListAndDetailContent(
-                    libraryUiState = libraryUiState,
                     isAtRoot=navController.previousBackStackEntry == null,
-                    isLogIn=isLogIn,
-                    list = getBookList(libraryUiState) ,
+                    list = getBookList(listContentParams.libraryUiState) ,
                     listContentParams=listContentParams,
                     textFieldParams=textFieldParams,
                     detailsScreenParams=detailsScreenParams,
+                    userScreenParams=userScreenParams,
                     onNavigateToDetails={ itemId->
                         navController.navigateSingle("${LibraryDestination.Details.route}/$itemId")
                     },
@@ -64,15 +58,14 @@ fun NavGraphBuilder.booksDestination(
                 )
             }else{
                 Column {
-                    when(libraryUiState){
+                    when(listContentParams.libraryUiState){
                         is LibraryUiState.Success -> LibraryListOnlyContent(
-                            libraryUiState=libraryUiState,
-                            list=libraryUiState.list,
+                            list=listContentParams.libraryUiState.list,
                             textFieldParams=textFieldParams,
                             listContentParams=listContentParams,
+                            userScreenParams= userScreenParams,
                             isAtRoot= navController.previousBackStackEntry == null,
                             isNotFullScreen = true,
-                            isLogIn = isLogIn,
                             onNavigateToDetails={
                                 navController
                                     .navigateSingle("${LibraryDestination.Details.route}/$it")
@@ -104,11 +97,10 @@ fun NavGraphBuilder.booksDestination(
             arguments= LibraryDestination.Details.arguments
         ){ navBackStackEntry->
             val id= navBackStackEntry.arguments?.getString(LibraryDestination.Details.BOOK_ID_ARGS)
-            val isLogIn by userViewModel.isLogIn.collectAsState()
 
             if (id != null) {
                 LibraryDetailsScreen(
-                    isLogIn= isLogIn,
+                    isLogIn= userScreenParams.isLogIn,
                     detailsScreenParams= detailsScreenParams,
                     onBackPressed={navController.popBackStack()}
                 )

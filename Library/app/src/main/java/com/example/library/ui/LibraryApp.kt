@@ -20,6 +20,7 @@ import com.example.library.ui.common.ListContentParams
 import com.example.library.ui.common.NavigationConfig
 import com.example.library.ui.common.NavigationType
 import com.example.library.ui.common.TextFieldParams
+import com.example.library.ui.common.UserScreenParams
 
 @Composable
 fun LibraryApp(
@@ -53,6 +54,18 @@ fun LibraryApp(
     val reservationCount by libraryDetailsViewModel.reservationCount.collectAsState()
     val userPreferences by libraryDetailsViewModel.userPreferences.collectAsState()
 
+    val userUiState = userViewModel.event
+    val isLogIn by userViewModel.isLogIn.collectAsState()
+    val isUserVerified by userViewModel.isUserVerified.collectAsState()
+    val isClickEmailLink by userViewModel.isClickEmailLink.collectAsState()
+    val isPasswordVerified by userViewModel.isPasswordVerified.collectAsState()
+    val suspensionDate by userViewModel.suspensionEnd.collectAsState()
+    val userInfo by userViewModel.userPreferences.collectAsState()
+    val loanHistoryList by userViewModel.userLoanHistoryList.collectAsState()
+    val loanBookList by userViewModel.userLoanBookList.collectAsState()
+    val overdueList by userViewModel.userOverdueBookList.collectAsState()
+    val reservationList by userViewModel.userReservationList.collectAsState()
+
     val navigationType:NavigationType
     val contentType:ContentType
     when(windowSize){
@@ -75,8 +88,6 @@ fun LibraryApp(
     }
     LibraryAppContent(
         navController=navController,
-        userViewModel=userViewModel,
-        libraryUiState=libraryUiState,
         navigationConfig = NavigationConfig(
             contentType=contentType,
             navigationType = navigationType,
@@ -95,6 +106,7 @@ fun LibraryApp(
             }
         ),
         listContentParams = ListContentParams(
+            libraryUiState=libraryUiState,
             scrollState=scrollState,
             currentPage=currentPage,
             dueCheckResult= dueCheckResult,
@@ -136,15 +148,48 @@ fun LibraryApp(
             updateSuspensionDialog={libraryDetailsViewModel.updateSuspensionDialog(it)},
             updateReservationDialog = {libraryDetailsViewModel.updateReservationDialog(it)}
         ),
-        resetLibraryList={libraryViewModel.getLiked()},
-        resetBookStatus = {libraryViewModel.getBookStatus()},
-        resetUserBookStatus={
-            libraryViewModel.getBookStatus()
-            libraryViewModel.resetLiked()
-            libraryDetailsViewModel.updateOverdueDialog(false)
-            libraryDetailsViewModel.updateSuspensionDialog(false)
-            libraryDetailsViewModel.updateReservationDialog(false)
-        },
+        userScreenParams= UserScreenParams(
+            uiState = userUiState,
+            isLogIn = isLogIn,
+            isUserVerified= isUserVerified,
+            isClickEmailLink = isClickEmailLink,
+            isPasswordVerified=isPasswordVerified,
+            suspensionDate = suspensionDate,
+            userInfo = userInfo,
+            loanHistoryList = loanHistoryList,
+            loanBookList=loanBookList,
+            overdueList=overdueList,
+            reservationList=reservationList,
+            signOut = {userViewModel.signOut()},
+            checkUserVerified={userViewModel.checkUserVerified()},
+            getUserLoanHistoryList={userViewModel.getUserLoanHistoryList()},
+            getUserLoanBookList={userViewModel.getUserLoanBookList()},
+            getReservationList={userViewModel.getReservationList()},
+            sendVerificationEmail={userViewModel.sendVerificationEmail()},
+            resetLibraryList={libraryViewModel.getLiked()},
+            resetBookStatus = {libraryViewModel.getBookStatus()},
+            resetUserBookStatus={
+                libraryViewModel.getBookStatus()
+                libraryViewModel.resetLiked()
+                libraryDetailsViewModel.updateOverdueDialog(false)
+                libraryDetailsViewModel.updateSuspensionDialog(false)
+                libraryDetailsViewModel.updateReservationDialog(false)
+            },
+            updateLogInState={userViewModel.updateLogInState(it)},
+            updatePasswordVerifiedState={userViewModel.updatePasswordVerifiedState(it)},
+            updateEmailVerifiedState={userViewModel.updateEmailVerifiedState(it)},
+            unregister = {userViewModel.unregister(it)},
+            findPassword = {userViewModel.findPassword(it)},
+            verifyCurrentPassword = {userViewModel.verifyCurrentPassword(it)},
+            changePassword = {userViewModel.changePassword(it)},
+            changeUserInfo={userViewModel.changeUserInfo(it)},
+            register = { user, password ->
+                userViewModel.register(user, password)
+            },
+            signIn = { email, password ->
+                userViewModel.signIn(email, password)
+            }
+        ),
         modifier=modifier
     )
 }

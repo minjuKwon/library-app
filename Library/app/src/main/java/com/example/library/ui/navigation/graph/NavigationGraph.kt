@@ -5,25 +5,20 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.library.ui.navigation.destination.GraphRoutes
-import com.example.library.ui.screens.search.LibraryUiState
-import com.example.library.ui.screens.user.UserViewModel
 import com.example.library.ui.common.DetailsScreenParams
 import com.example.library.ui.common.ListContentParams
 import com.example.library.ui.common.NavigationConfig
 import com.example.library.ui.common.TextFieldParams
+import com.example.library.ui.common.UserScreenParams
 
 @Composable
 fun NavigationGraph(
     navController: NavHostController,
-    libraryUiState: LibraryUiState,
     navigationConfig: NavigationConfig,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
     detailsScreenParams: DetailsScreenParams,
-    userViewModel: UserViewModel,
-    resetLibraryList:()->Unit,
-    resetBookStatus:()->Unit,
-    resetUserBookStatus:()->Unit,
+    userScreenParams:UserScreenParams,
     modifier:Modifier=Modifier
 ){
     NavHost(
@@ -32,23 +27,18 @@ fun NavigationGraph(
         modifier=modifier
     ){
         booksDestination(
-            libraryUiState,
             navController,
-            userViewModel,
             navigationConfig,
             textFieldParams,
             listContentParams,
-            detailsScreenParams
+            detailsScreenParams,
+            userScreenParams
         )
         //rankingDestination(listContentParams)
         settingDestination(
-            libraryUiState,
             navController,
-            userViewModel,
             listContentParams,
-            resetLibraryList,
-            resetBookStatus,
-            resetUserBookStatus
+            userScreenParams
         )
     }
 }

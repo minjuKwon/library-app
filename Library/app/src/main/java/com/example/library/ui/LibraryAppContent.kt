@@ -31,25 +31,20 @@ import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.navigation.graph.NavigationGraph
 import com.example.library.ui.navigation.destination.NavigationItemContent
 import com.example.library.ui.common.DetailsScreenParams
-import com.example.library.ui.screens.search.LibraryUiState
-import com.example.library.ui.screens.user.UserViewModel
 import com.example.library.ui.common.ListContentParams
 import com.example.library.ui.common.NavigationConfig
 import com.example.library.ui.common.TextFieldParams
 import com.example.library.ui.common.NavigationType
+import com.example.library.ui.common.UserScreenParams
 
 @Composable
 fun LibraryAppContent(
     navController: NavHostController,
-    userViewModel: UserViewModel,
-    libraryUiState: LibraryUiState,
     navigationConfig: NavigationConfig,
     textFieldParams: TextFieldParams,
     listContentParams: ListContentParams,
     detailsScreenParams: DetailsScreenParams,
-    resetLibraryList:()->Unit,
-    resetBookStatus:()->Unit,
-    resetUserBookStatus:()->Unit,
+    userScreenParams: UserScreenParams,
     modifier: Modifier = Modifier
 ){
 
@@ -76,15 +71,11 @@ fun LibraryAppContent(
         ) {
             NavigationGraph(
                 navController= navController,
-                libraryUiState= libraryUiState,
                 navigationConfig= navigationConfig,
                 textFieldParams= textFieldParams,
                 listContentParams= listContentParams,
-                userViewModel=userViewModel,
                 detailsScreenParams= detailsScreenParams,
-                resetLibraryList=resetLibraryList,
-                resetBookStatus = resetBookStatus,
-                resetUserBookStatus= resetUserBookStatus
+                userScreenParams = userScreenParams
             )
         }
     }else{
@@ -104,15 +95,11 @@ fun LibraryAppContent(
                 Column(modifier=Modifier.fillMaxSize()) {
                     NavigationGraph(
                         navController= navController,
-                        libraryUiState= libraryUiState,
                         navigationConfig= navigationConfig,
                         textFieldParams= textFieldParams,
                         listContentParams= listContentParams,
                         detailsScreenParams= detailsScreenParams,
-                        userViewModel=userViewModel,
-                        resetLibraryList=resetLibraryList,
-                        resetBookStatus = resetBookStatus,
-                        resetUserBookStatus= resetUserBookStatus,
+                        userScreenParams = userScreenParams,
                         modifier=Modifier.weight(1f)
                     )
 

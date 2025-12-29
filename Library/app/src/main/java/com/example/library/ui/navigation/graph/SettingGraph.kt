@@ -1,17 +1,15 @@
 package com.example.library.ui.navigation.graph
 
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.library.ui.common.ListContentParams
+import com.example.library.ui.common.UserScreenParams
 import com.example.library.ui.navigation.destination.LibraryDestination
 import com.example.library.ui.navigation.destination.UserRoutes
 import com.example.library.ui.navigation.navigateSingle
 import com.example.library.ui.navigation.navigateToSetting
-import com.example.library.ui.screens.search.LibraryUiState
 import com.example.library.ui.screens.getLikedList
 import com.example.library.ui.screens.user.LibraryUserScreen
 import com.example.library.ui.screens.user.LikedListScreen
@@ -23,29 +21,20 @@ import com.example.library.ui.screens.user.NotVerificationScreen
 import com.example.library.ui.screens.user.RegisterScreen
 import com.example.library.ui.screens.user.ReservationStatusScreen
 import com.example.library.ui.screens.user.UserInformationEditScreen
-import com.example.library.ui.screens.user.UserViewModel
 
 fun NavGraphBuilder.settingDestination(
-    libraryUiState:LibraryUiState,
     navController: NavHostController,
-    userViewModel: UserViewModel,
     listContentParams: ListContentParams,
-    resetLibraryList:()->Unit,
-    resetBookStatus:()->Unit,
-    resetUserBookStatus:()->Unit
+    userScreenParams: UserScreenParams
 ){
     navigation(
         startDestination = LibraryDestination.Setting.route,
         route= UserRoutes.USER
     ){
         composable(route= LibraryDestination.Setting.route){
-            val isLogIn by userViewModel.isLogIn.collectAsState()
-            val userInfo by userViewModel.userPreferences.collectAsState()
-            if(isLogIn){
+            if(userScreenParams.isLogIn){
                 LibraryUserScreen(
-                    userViewModel=userViewModel,
-                    userInfo= userInfo,
-                    resetUserBookStatus= resetUserBookStatus,
+                    userScreenParams= userScreenParams,
                     onNavigationToEdit={
                         navController.navigateSingle(LibraryDestination.UserEdit.route)
                     },
@@ -76,29 +65,23 @@ fun NavGraphBuilder.settingDestination(
         }
 
         composable(route= LibraryDestination.LogIn.route) {
-            val isUserVerified by userViewModel.isUserVerified.collectAsState()
-            val isClickEmailLink by userViewModel.isClickEmailLink.collectAsState()
-
-            if(isUserVerified){
+            if(userScreenParams.isUserVerified){
                 LogInScreen(
-                    userViewModel= userViewModel,
-                    isClickEmailLink=isClickEmailLink,
-                    resetLibraryList=resetLibraryList,
-                    resetBookStatus= resetBookStatus,
+                    userScreenParams= userScreenParams,
                     onBackPressed = {navController.popBackStack()},
                     onNavigationToSetting={
                         navController.navigateToSetting()
-                        userViewModel.checkUserVerified()
+                        userScreenParams.checkUserVerified()
                     }
                 )
             }else{
-                NotVerificationScreen(userViewModel= userViewModel)
+                NotVerificationScreen(userScreenParams)
             }
         }
 
         composable(route= LibraryDestination.Register.route) {
             RegisterScreen(
-                userViewModel=userViewModel,
+                userScreenParams=userScreenParams,
                 onBackPressed = {navController.popBackStack()},
                 onNavigationToLogIn={
                     navController.navigate(LibraryDestination.LogIn.route){
@@ -110,10 +93,8 @@ fun NavGraphBuilder.settingDestination(
         }
 
         composable(route=LibraryDestination.UserEdit.route){
-            val userInfo by userViewModel.userPreferences.collectAsState()
             UserInformationEditScreen(
-                userViewModel=userViewModel,
-                userInfo= userInfo,
+                userScreenParams=userScreenParams,
                 onBackPressed = {navController.popBackStack()},
                 onNavigationToSetting={
                     navController.navigateToSetting()
@@ -122,37 +103,31 @@ fun NavGraphBuilder.settingDestination(
         }
 
         composable(route=LibraryDestination.LoanHistory.route){
-            val list by userViewModel.userLoanHistoryList.collectAsState()
             LoanHistoryScreen(
-                list= list,
+                list= userScreenParams.loanHistoryList,
                 onBackPressed = {navController.popBackStack()}
             )
         }
 
         composable(route=LibraryDestination.LoanStatus.route){
-            val loanList by userViewModel.userLoanBookList.collectAsState()
-            val overdueList by userViewModel.userOverdueBookList.collectAsState()
-            val suspensionDate by userViewModel.suspensionEnd.collectAsState()
-
             LoanStatusScreen(
-                loanList = loanList,
-                overdueList= overdueList,
-                suspensionDate=suspensionDate,
+                loanList = userScreenParams.loanBookList,
+                overdueList= userScreenParams.overdueList,
+                suspensionDate=userScreenParams.suspensionDate,
                 onBackPressed = {navController.popBackStack()}
             )
         }
 
         composable(route=LibraryDestination.ReservationStatus.route){
-            val reservationList by userViewModel.userReservationList.collectAsState()
             ReservationStatusScreen(
-                reservationList=reservationList,
+                reservationList=userScreenParams.reservationList,
                 onBackPressed = {navController.popBackStack()}
             )
         }
 
         composable(route=LibraryDestination.LikedList.route){
             LikedListScreen(
-                list= getLikedList(libraryUiState),
+                list= getLikedList(listContentParams.libraryUiState),
                 listContentParams=listContentParams,
                 onBackPressed = {navController.popBackStack()},
                 onNavigateToDetails={

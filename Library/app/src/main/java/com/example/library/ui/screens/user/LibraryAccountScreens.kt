@@ -29,7 +29,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,6 +59,7 @@ import com.example.library.ui.common.BackIconButton
 import com.example.library.ui.common.Divider
 import com.example.library.ui.common.HandleUserUiState
 import com.example.library.ui.common.TextRadioButton
+import com.example.library.ui.common.UserScreenParams
 
 @Composable
 private fun paddingModifier()= Modifier
@@ -70,10 +70,7 @@ private fun paddingModifier()= Modifier
 
 @Composable
 fun LogInScreen(
-    userViewModel:UserViewModel,
-    isClickEmailLink:Boolean,
-    resetLibraryList:()->Unit,
-    resetBookStatus:()->Unit,
+    userScreenParams: UserScreenParams,
     onBackPressed:()->Unit,
     onNavigationToSetting:()->Unit
 ){
@@ -94,16 +91,16 @@ fun LogInScreen(
     }
 
     HandleUserUiState(
-        event= userViewModel.event,
+        event= userScreenParams.uiState,
         onSuccess = {
             isClick=true
-            resetLibraryList()
-            resetBookStatus()
-            userViewModel.updateLogInState(true)
+            userScreenParams.resetLibraryList()
+            userScreenParams.resetBookStatus()
+            userScreenParams.updateLogInState(true)
             onNavigationToSetting()
         },
         onFailure = { state:UserUiState.Failure ->
-            if(state.message=="사용자 인증 실패") userViewModel.checkUserVerified()
+            if(state.message=="사용자 인증 실패") userScreenParams.checkUserVerified()
             else{
                 val message= when(state.message){
                     "ERROR_INVALID_EMAIL" -> R.string.invalid_email
@@ -126,7 +123,7 @@ fun LogInScreen(
             modifier= Modifier
                 .padding(dimensionResource(R.dimen.padding_xxl))
         ){
-            if(isClickEmailLink){
+            if(userScreenParams.isClickEmailLink){
                 Text(
                     text= stringResource(R.string.already_reauthorization),
                     modifier=Modifier
@@ -165,7 +162,7 @@ fun LogInScreen(
                         if(!isClick){
                             val result=checkLogInInputAndShowToast(context, inputId, inputPassword)
                             if(result){
-                                userViewModel.signIn(inputId, inputPassword)
+                                userScreenParams.signIn(inputId, inputPassword)
                             }
                         }
                     }
@@ -182,7 +179,7 @@ fun LogInScreen(
                 if(!isClick){
                     val result=checkLogInInputAndShowToast(context, inputId, inputPassword)
                     if(result){
-                        userViewModel.signIn(inputId, inputPassword)
+                        userScreenParams.signIn(inputId, inputPassword)
                     }
                 }
             }) {
@@ -204,7 +201,7 @@ fun LogInScreen(
         isShow = openAlertDialog,
         onDismissRequest = {openAlertDialog=false},
         onConfirmation = {
-            userViewModel.findPassword(it)
+            userScreenParams.findPassword(it)
             openAlertDialog=false
         }
     )
@@ -308,14 +305,14 @@ private fun FindPasswordDialog(
 
 @Composable
 fun NotVerificationScreen(
-    userViewModel:UserViewModel
+    userScreenParams: UserScreenParams
 ){
     val context = LocalContext.current
     val lifecycleOwner = (LocalContext.current as ComponentActivity).lifecycle
     DisposableEffect(lifecycleOwner){
         val observer = LifecycleEventObserver { _, event ->
             when(event){
-                Lifecycle.Event.ON_RESUME ->{ userViewModel.checkUserVerified() }
+                Lifecycle.Event.ON_RESUME ->{ userScreenParams.checkUserVerified() }
                 else ->{}
             }
         }
@@ -326,9 +323,9 @@ fun NotVerificationScreen(
     }
 
     HandleUserUiState(
-        event= userViewModel.event,
+        event= userScreenParams.uiState,
         onSuccess = {
-            userViewModel.updateEmailVerifiedState(true)
+            userScreenParams.updateEmailVerifiedState(true)
             Toast.makeText(context, R.string.send_email, Toast.LENGTH_LONG).show()
         },
         onFailure = {
@@ -354,7 +351,7 @@ fun NotVerificationScreen(
                 .testTag(stringResource(R.string.test_not_verification))
         )
         Button(
-            onClick = { userViewModel.sendVerificationEmail() }
+            onClick = { userScreenParams.sendVerificationEmail() }
         ) {
             Text(
                 text= stringResource(R.string.resend),
@@ -366,7 +363,7 @@ fun NotVerificationScreen(
 
 @Composable
 fun RegisterScreen(
-    userViewModel:UserViewModel,
+    userScreenParams:UserScreenParams,
     onBackPressed:()->Unit,
     onNavigationToLogIn:()->Unit
 ){
@@ -389,7 +386,7 @@ fun RegisterScreen(
     }
 
     HandleUserUiState(
-        event= userViewModel.event,
+        event= userScreenParams.uiState,
         onSuccess = {
             isClick=true
             Toast.makeText(context, R.string.success_register, Toast.LENGTH_LONG).show()
@@ -505,7 +502,7 @@ fun RegisterScreen(
                                     inputVerifiedPassword
                                 )
                                 if(result){
-                                    userViewModel.register(
+                                    userScreenParams.register(
                                         userInfo,
                                         inputPassword
                                     )
@@ -529,7 +526,7 @@ fun RegisterScreen(
                                 inputVerifiedPassword
                             )
                             if(result){
-                                userViewModel.register(
+                                userScreenParams.register(
                                     userInfo,
                                     inputPassword
                                 )
@@ -635,8 +632,7 @@ private fun RegisterButton(
 
 @Composable
 fun UserInformationEditScreen(
-    userViewModel:UserViewModel,
-    userInfo: User,
+    userScreenParams:UserScreenParams,
     onBackPressed:()->Unit,
     onNavigationToSetting:()->Unit
 ){
@@ -645,7 +641,8 @@ fun UserInformationEditScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val focusRequester= remember{FocusRequester()}
-    val isPasswordVerified by userViewModel.isPasswordVerified.collectAsState()
+
+    val userInfo= userScreenParams.userInfo
 
     var isClickName by remember { mutableStateOf(false) }
     var isClickCurrentPassword by remember { mutableStateOf(false) }
@@ -656,11 +653,11 @@ fun UserInformationEditScreen(
         isClickName=false
         isClickCurrentPassword=false
         isClickNewPassword=false
-        userViewModel.updatePasswordVerifiedState(false)
+        userScreenParams.updatePasswordVerifiedState(false)
     }
 
     HandleUserUiState(
-        event= userViewModel.event,
+        event= userScreenParams.uiState,
         onSuccess = { state:UserUiState.Success ->
             if(state.message=="verifyCurrentPassword"){
                 isClickCurrentPassword=true
@@ -691,7 +688,7 @@ fun UserInformationEditScreen(
             userName = userInfo.name,
             onEdit = {
                 if(!isClickName){
-                    userViewModel.changeUserInfo(mapOf("name" to it))
+                    userScreenParams.changeUserInfo(mapOf("name" to it))
                 }
             }
         )
@@ -707,12 +704,12 @@ fun UserInformationEditScreen(
         CurrentPasswordTextField(
             context=context,
             onVerify = {
-                if(isPasswordVerified){
+                if(userScreenParams.isPasswordVerified){
                     Toast.makeText(context, R.string.already_reauthorization,Toast.LENGTH_LONG).show()
                 }else{
                     if(!isClickCurrentPassword){
                         keyboardController?.hide()
-                        userViewModel.verifyCurrentPassword(it)
+                        userScreenParams.verifyCurrentPassword(it)
                     }
                 }
             }
@@ -736,10 +733,10 @@ fun UserInformationEditScreen(
             context=context,
             newPassword = inputNewPassword,
             onConfirm = {
-                if(isPasswordVerified){
+                if(userScreenParams.isPasswordVerified){
                     if(!isClickNewPassword){
                         keyboardController?.hide()
-                        userViewModel.changePassword(it)
+                        userScreenParams.changePassword(it)
                     }
                 }else{
                     Toast.makeText(context, R.string.check_password, Toast.LENGTH_LONG).show()

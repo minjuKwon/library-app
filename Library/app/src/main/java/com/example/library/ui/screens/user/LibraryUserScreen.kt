@@ -36,15 +36,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import com.example.library.R
-import com.example.library.data.entity.User
 import com.example.library.ui.common.Divider
 import com.example.library.ui.common.HandleUserUiState
+import com.example.library.ui.common.UserScreenParams
 
 @Composable
 fun LibraryUserScreen(
-    userViewModel:UserViewModel,
-    userInfo: User,
-    resetUserBookStatus:()->Unit,
+    userScreenParams: UserScreenParams,
     onNavigationToEdit:()->Unit,
     onNavigationToSetting:()->Unit,
     onNavigationToLoanHistory:()->Unit,
@@ -55,22 +53,23 @@ fun LibraryUserScreen(
 
     val context = LocalContext.current
     var openAlertDialog by remember { mutableStateOf(false) }
-    userViewModel.updateEmailVerifiedState(false)
+    val userInfo= userScreenParams.userInfo
+    userScreenParams.updateEmailVerifiedState(false)
 
     HandleUserUiState(
-        event= userViewModel.event,
+        event= userScreenParams.uiState,
         onSuccess = {
             when(it.message){
                 "getUserLoanBookList" ->  onNavigationToLoanStatus()
                 "getUserLoanHistoryList" -> onNavigationToLoanHistory()
                 "getReservationList" -> onNavigationToReservation()
                 "signOut" -> {
-                    resetUserBookStatus()
-                    userViewModel.updateLogInState(false)
+                    userScreenParams.resetUserBookStatus()
+                    userScreenParams.updateLogInState(false)
                     onNavigationToSetting()
                 }
                 "unregister" -> {
-                    userViewModel.updateLogInState(false)
+                    userScreenParams.updateLogInState(false)
                     onNavigationToSetting()
                 }
             }
@@ -109,7 +108,7 @@ fun LibraryUserScreen(
                 Modifier
                     .padding(start= dimensionResource(R.dimen.padding_md))
                     .clickable {
-                        userViewModel.signOut()
+                        userScreenParams.signOut()
                     }
                     .testTag(stringResource(R.string.test_logOut))
             )
@@ -121,9 +120,9 @@ fun LibraryUserScreen(
                 .padding(top= dimensionResource(R.dimen.padding_xl)),
         ){
             val list=listOf(
-                R.string.loan_history to {userViewModel.getUserLoanHistoryList()},
-                R.string.loan_status to { userViewModel.getUserLoanBookList() },
-                R.string.reservation_status to {userViewModel.getReservationList()},
+                R.string.loan_history to {userScreenParams.getUserLoanHistoryList()},
+                R.string.loan_status to {userScreenParams.getUserLoanBookList() },
+                R.string.reservation_status to {userScreenParams.getReservationList()},
                 R.string.liked_list to {onNavigationToLiked()},
                 R.string.unregister to {openAlertDialog=true}
             )
@@ -152,7 +151,7 @@ fun LibraryUserScreen(
         isShow = openAlertDialog,
         onDismissRequest = {openAlertDialog=false},
         onConfirmation = {
-            userViewModel.unregister(it)
+            userScreenParams.unregister(it)
             openAlertDialog=false
         }
     )
