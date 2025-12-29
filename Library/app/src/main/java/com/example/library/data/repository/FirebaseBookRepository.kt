@@ -234,8 +234,6 @@ class FirebaseBookRepository@Inject constructor(
             var reservationBookSnap: QuerySnapshot?= null
             var reservationBookDocRef:DocumentReference?= null
 
-            var userReservedStatus=""
-
             if(historyRequest.bookStatus== BookStatusType.BORROWED.name||
                 historyRequest.bookStatus== BookStatusType.OVERDUE.name){
                 historyDocRef= fireStore.collection(LIBRARY_HISTORY_COLLECTION)
@@ -278,7 +276,7 @@ class FirebaseBookRepository@Inject constructor(
                     .reference
                 reservationUserSnap= reservationUserDocRef.get().await()
             }
-            userReservedStatus=
+            val userReservedStatus=
                 getReservedStatus(historyRequest.userId, historyRequest.bookId).getOrNull()?:""
 
             val hasOverdue= hasOverdueBook(historyRequest.userId)
