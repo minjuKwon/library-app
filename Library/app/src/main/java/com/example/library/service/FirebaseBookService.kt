@@ -3,7 +3,6 @@ package com.example.library.service
 import com.example.library.core.DateTimeConverter.calculateDueDate
 import com.example.library.core.DateTimeConverter.calculateOverDueDateLong
 import com.example.library.core.DateTimeConverter.getLocalDate
-import com.example.library.core.TimeProvider
 import com.example.library.data.FireStoreField.IS_LIKED
 import com.example.library.data.FireStoreField.TIMESTAMP
 import com.example.library.data.entity.BookStatusType
@@ -24,8 +23,7 @@ import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 class FirebaseBookService@Inject constructor(
-    private val databaseRepository: DatabaseRepository,
-    private val timeProvider: TimeProvider
+    private val databaseRepository: DatabaseRepository
 ):DatabaseService {
 
     override suspend fun saveLibraryBooks(keyword: String, page: String, list: List<Library>): Result<Unit> {
@@ -42,7 +40,7 @@ class FirebaseBookService@Inject constructor(
 
     override suspend fun updateLibraryLiked(userId:String, bookId:String, isLiked:Boolean):Result<List<LibraryLiked>> {
         val id="${userId}_${bookId}"
-        val now= timeProvider.now()
+        val now= System.currentTimeMillis()
 
         val isExist= databaseRepository.hasLibraryLiked(id)
         if(isExist.isFailure) throw isExist.exceptionOrNull()?:CheckLibraryLikeFailedException()
@@ -89,7 +87,7 @@ class FirebaseBookService@Inject constructor(
         page: String
     ): Result<Unit> {
         return try{
-            val eventDate= timeProvider.now()
+            val eventDate= System.currentTimeMillis()
             val dueDate= calculateDueDate(eventDate)
 
             val id="${userId}_${bookId}_${eventDate}"
@@ -146,7 +144,7 @@ class FirebaseBookService@Inject constructor(
             if (resultList.isNullOrEmpty()) {
                 Result.success(DueCheckResult())
             }else{
-                val now= timeProvider.now()
+                val now= System.currentTimeMillis()
                 val today= getLocalDate(now)
 
                 val beforeList = mutableListOf<UserLoanLibrary>()

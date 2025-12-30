@@ -7,7 +7,6 @@ import com.example.library.fake.repository.FakeCacheBookRepository
 import com.example.library.fake.repository.FakeNetworkBookRepository
 import com.example.library.fake.FakeSessionManager
 import com.example.library.fake.FakeSessionManager.Companion.UID
-import com.example.library.fake.FakeTimeProvider
 import com.example.library.fake.repository.FakeExceptionNetworkBookRepository
 import com.example.library.rules.TestDispatcherRule
 import com.example.library.service.CacheBookService
@@ -34,7 +33,7 @@ class LibraryViewModelTest {
         val fakeRepository = FakeNetworkBookRepository()
 
         val fakeBookRepository= FakeBookRepository()
-        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository)
 
         val expectedItems = fakeRepository.searchVolume(
             "query",
@@ -52,7 +51,7 @@ class LibraryViewModelTest {
 
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             fakeRepository,
-            CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
+            CacheBookService(FakeCacheBookRepository()),
             fakeFirebaseBookService
         )
         val libraryViewModel = LibraryViewModel(
@@ -88,11 +87,11 @@ class LibraryViewModelTest {
     @Test
     fun libraryViewModel_getBookListInformation_verityLibraryUiStateError()= runTest {
         val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
-        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository())
 
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             FakeExceptionNetworkBookRepository(),
-            CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
+            CacheBookService(FakeCacheBookRepository()),
             fakeFirebaseBookService
         )
 
@@ -118,11 +117,11 @@ class LibraryViewModelTest {
         val fakeRepository = FakeNetworkBookRepository()
 
         val fakeBookRepository= FakeBookRepository()
-        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository)
 
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             fakeRepository,
-            CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
+            CacheBookService(FakeCacheBookRepository()),
             fakeFirebaseBookService
         )
         val libraryViewModel = LibraryViewModel(
@@ -159,11 +158,11 @@ class LibraryViewModelTest {
     fun libraryViewModel_getLiked_verifyCorrectValue()= runTest {
         val testScope = CoroutineScope(testDispatcherRule.testDispatcher)
         val fakeRepository = FakeNetworkBookRepository()
-        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository())
 
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             fakeRepository,
-            CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
+            CacheBookService(FakeCacheBookRepository()),
             fakeFirebaseBookService
         )
         val libraryViewModel = LibraryViewModel(
@@ -204,11 +203,11 @@ class LibraryViewModelTest {
         val fakeRepository = FakeNetworkBookRepository()
 
         val fakeBookRepository= FakeBookRepository()
-        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository)
 
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             fakeRepository,
-            CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
+            CacheBookService(FakeCacheBookRepository()),
             fakeFirebaseBookService
         )
         val libraryViewModel = LibraryViewModel(
@@ -250,11 +249,11 @@ class LibraryViewModelTest {
                 status = ReservationStatusType.NOTIFIED.name
             )
         )
-        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository)
 
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             FakeNetworkBookRepository(),
-            CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
+            CacheBookService(FakeCacheBookRepository()),
             fakeFirebaseBookService
         )
         val libraryViewModel = LibraryViewModel(

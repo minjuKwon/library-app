@@ -2,8 +2,6 @@ package com.example.library.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.library.core.DefaultTimeProvider
-import com.example.library.core.TimeProvider
 import com.example.library.data.repository.CacheBookRepository
 import com.example.library.data.room.BookCacheDao
 import com.example.library.data.room.LibraryDatabase
@@ -45,17 +43,10 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideTimeProvider(): TimeProvider {
-        return DefaultTimeProvider()
-    }
-
-    @Singleton
-    @Provides
     fun provideCacheBookService(
-        cacheBookRepository: LocalRepository,
-        timeProvider: TimeProvider
+        cacheBookRepository: LocalRepository
     ): CacheBookService {
-        return CacheBookService(cacheBookRepository, timeProvider)
+        return CacheBookService(cacheBookRepository)
     }
 
 }

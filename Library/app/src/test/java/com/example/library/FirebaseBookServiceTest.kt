@@ -38,7 +38,7 @@ class FirebaseBookServiceTest {
 
     @Test
     fun firebaseBookService_updateLibraryLiked_verifyCorrectValue_giveExistedValue()= runTest{
-        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository())
 
         fakeFirebaseBookService.updateLibraryLiked("1", "1",true)
         fakeFirebaseBookService.updateLibraryLiked("1", "1",false)
@@ -53,7 +53,7 @@ class FirebaseBookServiceTest {
 
     @Test
     fun firebaseBookService_updateLibraryLiked_verifyCorrectValue_giveNoneExistedValue()= runTest{
-        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository())
 
         fakeFirebaseBookService.updateLibraryLiked("1", "1",true)
 
@@ -67,7 +67,7 @@ class FirebaseBookServiceTest {
 
     @Test
     fun firebaseBookService_updateLibraryLiked_verifyFailure_hasLibraryLiked()= runTest{
-        val fakeFirebaseBookService= FirebaseBookService(LikeCheckFailingRepository(), FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(LikeCheckFailingRepository())
 
         assertFailsWith<CheckLibraryLikeFailedException>{
             fakeFirebaseBookService.updateLibraryLiked("", "",true)
@@ -76,7 +76,7 @@ class FirebaseBookServiceTest {
 
     @Test
     fun firebaseBookService_getLoanDueStatus_verifyCorrectValue_giveEmptyList()= runTest {
-        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository())
 
         val status= fakeFirebaseBookService.getLoanDueStatus("","android","1")
         val result= status.getOrNull()!!
@@ -106,13 +106,13 @@ class FirebaseBookServiceTest {
             UserLoanLibrary(status = BookStatusType.BORROWED.name, dueDate = timeProvider.before())
         )
         fakeBookRepository.addUserLoanBookList(
-            UserLoanLibrary(status = BookStatusType.BORROWED.name, dueDate = timeProvider.now())
+            UserLoanLibrary(status = BookStatusType.BORROWED.name, dueDate = timeProvider.now)
         )
         fakeBookRepository.addUserLoanBookList(
             UserLoanLibrary(status = BookStatusType.BORROWED.name, dueDate = timeProvider.overdue())
         )
 
-        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, timeProvider)
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository)
         val status= fakeFirebaseBookService.getLoanDueStatus("","","")
         val result= status.getOrNull()!!
 
@@ -130,7 +130,7 @@ class FirebaseBookServiceTest {
 
     @Test
     fun firebaseBookService_getLoanDueStatus_verifyFailure_getUserLoanBookList()= runTest {
-        val fakeFirebaseBookService= FirebaseBookService(GetLoanHistoryFailingRepository(), FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(GetLoanHistoryFailingRepository())
 
         assertFailsWith<GetLoanDueStatusFailedException>{
             fakeFirebaseBookService.getLoanDueStatus("", "","")
@@ -156,7 +156,7 @@ class FirebaseBookServiceTest {
                 status = ReservationStatusType.WAITING.name
             )
         )
-        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository)
         val list= fakeFirebaseBookService.getReservationList("1")
         val result= list.getOrNull()!!
 
@@ -178,7 +178,7 @@ class FirebaseBookServiceTest {
     @Test
     fun firebaseBookService_getReservationList_verifyFailure_getReservationsByBook()= runTest {
         val fakeFirebaseBookService=
-            FirebaseBookService(ReservationByUserFailingRepository(), FakeTimeProvider())
+            FirebaseBookService(ReservationByUserFailingRepository())
 
         assertFailsWith<GetReservationsByUserFailedException>{
             fakeFirebaseBookService.getReservationList("")
@@ -188,7 +188,7 @@ class FirebaseBookServiceTest {
     @Test
     fun firebaseBookService_getReservationList_verifyFailure_getReservationsByUser()= runTest {
         val fakeFirebaseBookService=
-            FirebaseBookService(ReservationByBookFailingRepository(), FakeTimeProvider())
+            FirebaseBookService(ReservationByBookFailingRepository())
 
         assertFailsWith<GetReservationsByBookFailedException>{
             fakeFirebaseBookService.getReservationList("")

@@ -2,13 +2,11 @@ package com.example.library.fake.module
 
 import android.content.Context
 import androidx.room.Room
-import com.example.library.core.TimeProvider
 import com.example.library.data.repository.CacheBookRepository
 import com.example.library.data.room.BookCacheDao
 import com.example.library.data.room.LibraryDatabase
 import com.example.library.di.DatabaseModule
 import com.example.library.domain.LocalRepository
-import com.example.library.fake.FakeTimeProvider
 import com.example.library.service.CacheBookService
 import dagger.Module
 import dagger.Provides
@@ -48,17 +46,10 @@ object FakeDatabaseModule {
 
     @Singleton
     @Provides
-    fun provideTimeProvider(): TimeProvider {
-        return FakeTimeProvider()
-    }
-
-    @Singleton
-    @Provides
     fun provideCacheBookService(
-        cacheBookRepository: LocalRepository,
-        timeProvider: TimeProvider
+        cacheBookRepository: LocalRepository
     ): CacheBookService {
-        return CacheBookService(cacheBookRepository, timeProvider)
+        return CacheBookService(cacheBookRepository)
     }
 
 }

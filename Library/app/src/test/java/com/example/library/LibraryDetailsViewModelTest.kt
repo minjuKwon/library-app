@@ -10,7 +10,6 @@ import com.example.library.data.entity.ReservationStatusType
 import com.example.library.data.entity.UserLoanLibrary
 import com.example.library.data.mapper.toStringType
 import com.example.library.fake.FakeSessionManager
-import com.example.library.fake.FakeTimeProvider
 import com.example.library.fake.repository.FakeBookRepository
 import com.example.library.rules.TestDispatcherRule
 import com.example.library.service.FirebaseBookService
@@ -57,7 +56,7 @@ class LibraryDetailsViewModelTest {
                 )
             )
         )
-        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository)
 
         val detailsViewModel = LibraryDetailsViewModel(
             firebaseBookService = fakeFirebaseBookService,
@@ -95,7 +94,7 @@ class LibraryDetailsViewModelTest {
                 )
             )
         )
-        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository)
 
         val detailsViewModel = LibraryDetailsViewModel(
             firebaseBookService = fakeFirebaseBookService,
@@ -144,7 +143,7 @@ class LibraryDetailsViewModelTest {
         fakeBookRepository.addUserLoanBookList(
             UserLoanLibrary(userId="other",status = BookStatusType.BORROWED.name, dueDate = 0)
         )
-        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository)
 
         val detailsViewModel = LibraryDetailsViewModel(
             firebaseBookService = fakeFirebaseBookService,
@@ -196,7 +195,7 @@ class LibraryDetailsViewModelTest {
         fakeBookRepository.addUserLoanBookList(
             UserLoanLibrary(userId="other",status = BookStatusType.BORROWED.name, dueDate = 0)
         )
-        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository)
 
         val detailsViewModel = LibraryDetailsViewModel(
             firebaseBookService = fakeFirebaseBookService,
@@ -258,7 +257,7 @@ class LibraryDetailsViewModelTest {
         fakeBookRepository.addReservationList(
             LibraryReservation(userId="other2",status = ReservationStatusType.WAITING.name)
         )
-        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository)
 
         val detailsViewModel = LibraryDetailsViewModel(
             firebaseBookService = fakeFirebaseBookService,
@@ -306,7 +305,7 @@ class LibraryDetailsViewModelTest {
         fakeBookRepository.addReservationList(
             LibraryReservation(userId="other2",status = ReservationStatusType.NOTIFIED.name)
         )
-        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository)
 
         val detailsViewModel = LibraryDetailsViewModel(
             firebaseBookService = fakeFirebaseBookService,
@@ -361,7 +360,7 @@ class LibraryDetailsViewModelTest {
                 returnDate = now*2
             )
         )
-        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository, FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository)
 
         val detailsViewModel = LibraryDetailsViewModel(
             firebaseBookService = fakeFirebaseBookService,

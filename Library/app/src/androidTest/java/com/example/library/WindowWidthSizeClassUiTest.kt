@@ -4,7 +4,6 @@ import androidx.activity.ComponentActivity
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.example.library.fake.FakeSessionManager
-import com.example.library.fake.FakeTimeProvider
 import com.example.library.fake.repository.FakeBookRepository
 import com.example.library.fake.service.FakeLibrarySyncService
 import com.example.library.fake.service.FakeUserService
@@ -47,7 +46,7 @@ class WindowWidthSizeClassUiTest {
         val dispatcher = StandardTestDispatcher()
         val scope = CoroutineScope(dispatcher)
 
-        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository(), FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(FakeBookRepository())
         val fakeSessionManager= FakeSessionManager()
         val dummyLibraryViewModel = LibraryViewModel(
             librarySyncService = FakeLibrarySyncService(),
