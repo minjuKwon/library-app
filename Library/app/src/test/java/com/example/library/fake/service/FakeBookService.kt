@@ -12,7 +12,7 @@ import com.example.library.service.GetLibraryInfoFailedException
 import com.example.library.service.SaveLibraryInfoFailedException
 import com.google.firebase.firestore.ListenerRegistration
 
-class FakeSaveDatabaseService:DatabaseService {
+class SaveLibraryFailingService:DatabaseService {
     override suspend fun saveLibraryBooks(
         keyword: String,
         page: String,
@@ -22,7 +22,7 @@ class FakeSaveDatabaseService:DatabaseService {
     }
 
     override suspend fun getLibraryBooks(keyword: String, page: String): Result<List<Library>> {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
     override suspend fun isSavedBook(keyword: String, page: String): Result<Boolean> {
@@ -34,25 +34,25 @@ class FakeSaveDatabaseService:DatabaseService {
         bookId: String,
         isLiked: Boolean
     ): Result<List<LibraryLiked>> {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
     override suspend fun getLibraryLikedList(userId: String): Result<List<LibraryLiked>> {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
     override fun getLibraryLikedCount(
         bookId: String,
         onUpdate: (Int) -> Unit
     ): ListenerRegistration {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
     override fun getLibraryStatus(
         bookId: String,
         callback: (LibraryHistory) -> Unit
     ): ListenerRegistration {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
     override suspend fun updateLibraryHistory(
@@ -65,15 +65,15 @@ class FakeSaveDatabaseService:DatabaseService {
         keyword: String,
         page: String
     ): Result<Unit> {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
     override suspend fun getUserLoanBookList(userId: String): Result<List<UserLoanLibrary>> {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
     override suspend fun getUserLoanHistoryList(userId: String): Result<List<UserLoanLibrary>> {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
     override suspend fun getLoanDueStatus(
@@ -81,46 +81,46 @@ class FakeSaveDatabaseService:DatabaseService {
         keyword: String,
         page: String
     ): Result<DueCheckResult> {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
     override suspend fun isOverdueBook(userId: String): Result<Boolean> {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
     override suspend fun isReservedBook(bookId: String): Result<Boolean> {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
     override suspend fun isUserReservedBook(userId: String): Result<Boolean> {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
     override suspend fun getLibraryReservationCount(bookId: String): Result<Int> {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
     override suspend fun getReservedStatus(userId: String, bookId: String): Result<String> {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
     override suspend fun checkMyReservationTurn(userId: String): Result<List<LibraryReservation>> {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
     override suspend fun getReservationList(userId: String): Result<List<List<String>>> {
-        throw FakeSaveDatabaseServiceFailedException()
+        throw FakeSaveLibraryFailedException()
     }
 
 }
 
-class FakeGetDatabaseService:DatabaseService {
+class GetLibraryFailingService:DatabaseService {
     override suspend fun saveLibraryBooks(
         keyword: String,
         page: String,
         list: List<Library>
     ): Result<Unit> {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
     override suspend fun getLibraryBooks(keyword: String, page: String): Result<List<Library>> {
@@ -136,25 +136,25 @@ class FakeGetDatabaseService:DatabaseService {
         bookId: String,
         isLiked: Boolean
     ): Result<List<LibraryLiked>> {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
     override suspend fun getLibraryLikedList(userId: String): Result<List<LibraryLiked>> {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
     override fun getLibraryLikedCount(
         bookId: String,
         onUpdate: (Int) -> Unit
     ): ListenerRegistration {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
     override fun getLibraryStatus(
         bookId: String,
         callback: (LibraryHistory) -> Unit
     ): ListenerRegistration {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
     override suspend fun updateLibraryHistory(
@@ -167,15 +167,15 @@ class FakeGetDatabaseService:DatabaseService {
         keyword: String,
         page: String
     ): Result<Unit> {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
     override suspend fun getUserLoanBookList(userId: String): Result<List<UserLoanLibrary>> {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
     override suspend fun getUserLoanHistoryList(userId: String): Result<List<UserLoanLibrary>> {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
     override suspend fun getLoanDueStatus(
@@ -183,50 +183,50 @@ class FakeGetDatabaseService:DatabaseService {
         keyword: String,
         page: String
     ): Result<DueCheckResult> {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
     override suspend fun isOverdueBook(userId: String): Result<Boolean> {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
     override suspend fun isReservedBook(bookId: String): Result<Boolean> {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
     override suspend fun isUserReservedBook(userId: String): Result<Boolean> {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
     override suspend fun getLibraryReservationCount(bookId: String): Result<Int> {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
     override suspend fun getReservedStatus(userId: String, bookId: String): Result<String> {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
     override suspend fun checkMyReservationTurn(userId: String): Result<List<LibraryReservation>> {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
     override suspend fun getReservationList(userId: String): Result<List<List<String>>> {
-        throw FakeGetDatabaseServiceFailedException()
+        throw FakeGetLibraryFailedException()
     }
 
 }
 
-class FakeCheckDatabaseService:DatabaseService {
+class CheckLibraryService:DatabaseService {
     override suspend fun saveLibraryBooks(
         keyword: String,
         page: String,
         list: List<Library>
     ): Result<Unit> {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override suspend fun getLibraryBooks(keyword: String, page: String): Result<List<Library>> {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override suspend fun isSavedBook(keyword: String, page: String): Result<Boolean> {
@@ -238,25 +238,25 @@ class FakeCheckDatabaseService:DatabaseService {
         bookId: String,
         isLiked: Boolean
     ): Result<List<LibraryLiked>> {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override suspend fun getLibraryLikedList(userId: String): Result<List<LibraryLiked>> {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override fun getLibraryLikedCount(
         bookId: String,
         onUpdate: (Int) -> Unit
     ): ListenerRegistration {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override fun getLibraryStatus(
         bookId: String,
         callback: (LibraryHistory) -> Unit
     ): ListenerRegistration {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override suspend fun updateLibraryHistory(
@@ -269,15 +269,15 @@ class FakeCheckDatabaseService:DatabaseService {
         keyword: String,
         page: String
     ): Result<Unit> {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override suspend fun getUserLoanBookList(userId: String): Result<List<UserLoanLibrary>> {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override suspend fun getUserLoanHistoryList(userId: String): Result<List<UserLoanLibrary>> {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override suspend fun getLoanDueStatus(
@@ -285,35 +285,35 @@ class FakeCheckDatabaseService:DatabaseService {
         keyword: String,
         page: String
     ): Result<DueCheckResult> {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override suspend fun isOverdueBook(userId: String): Result<Boolean> {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override suspend fun isReservedBook(bookId: String): Result<Boolean> {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override suspend fun isUserReservedBook(userId: String): Result<Boolean> {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override suspend fun getLibraryReservationCount(bookId: String): Result<Int> {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override suspend fun getReservedStatus(userId: String, bookId: String): Result<String> {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override suspend fun checkMyReservationTurn(userId: String): Result<List<LibraryReservation>> {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
     override suspend fun getReservationList(userId: String): Result<List<List<String>>> {
-        throw FakeCheckDatabaseServiceFailedException()
+        throw FakeCheckLibraryFailedException()
     }
 
 }

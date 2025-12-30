@@ -7,66 +7,67 @@ import com.example.library.data.entity.LibraryReservation
 import com.example.library.data.entity.UserLoanLibrary
 import com.example.library.domain.DatabaseRepository
 import com.example.library.domain.HistoryRequest
-import com.example.library.service.GetReservationsByBookFailedException
+import com.example.library.service.CheckLibraryLikeFailedException
 import com.google.firebase.firestore.ListenerRegistration
 
-class ReservationByBookExceptionBookRepository: DatabaseRepository {
+class LikeCheckFailingRepository:DatabaseRepository {
+
     override suspend fun addLibraryBook(
         keyword: String,
         page: String,
         list: List<Library>
     ): Result<Unit> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun getLibraryBook(keyword: String, page: String): Result<List<Library>> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun hasServerBook(keyword: String, page: String): Result<Boolean> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun addLibraryLiked(libraryLiked: LibraryLiked): Result<Unit> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun updateLibraryLiked(id: String, data: Map<String, Any>): Result<Unit> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun getLibraryLikedList(userId: String): Result<List<LibraryLiked>> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override fun getLibraryLikedCount(
         bookId: String,
         onUpdate: (Int) -> Unit
     ): ListenerRegistration {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun hasLibraryLiked(id: String): Result<Boolean> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw CheckLibraryLikeFailedException()
     }
 
     override fun getLibraryStatus(
         bookId: String,
         callback: (LibraryHistory) -> Unit
     ): ListenerRegistration {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun updateLibraryHistory(historyRequest: HistoryRequest): Result<Unit> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
-    override suspend fun getUserLoanBookList(userId: String): Result<List<UserLoanLibrary>?> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+    override suspend fun getUserLoanBookList(userId: String): Result<List<UserLoanLibrary>> {
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun getUserLoanHistoryList(userId: String): Result<List<UserLoanLibrary>> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun updateUserOverdueBook(
@@ -75,38 +76,39 @@ class ReservationByBookExceptionBookRepository: DatabaseRepository {
         overdueDate: Long,
         book: UserLoanLibrary
     ): Result<Unit> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun hasOverdueBook(userId: String): Result<Boolean> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun hasReservedBook(bookId: String): Result<Boolean> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun hasUserReservedBook(userId: String): Result<Boolean> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun getLibraryReservationCount(bookId: String): Result<Int> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun getReservedStatus(userId: String, bookId: String): Result<String> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun isMyReservationTurn(userId: String): Result<List<LibraryReservation>> {
-        throw FakeReservationByBookDatabaseRepositoryFailedException()
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun getReservationsByUser(userId: String): Result<List<LibraryReservation>> {
-        return Result.success(listOf(LibraryReservation()))
+        throw FakeLikeCheckFailedException()
     }
 
     override suspend fun getReservationsByBook(bookId: String): Result<List<LibraryReservation>> {
-        throw GetReservationsByBookFailedException()
+        throw FakeLikeCheckFailedException()
     }
+
 }

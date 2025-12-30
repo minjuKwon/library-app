@@ -12,10 +12,10 @@ import com.example.library.data.mapper.toStringType
 import com.example.library.domain.DueCheckResult
 import com.example.library.fake.FakeTimeProvider
 import com.example.library.fake.repository.FakeBookRepository
-import com.example.library.fake.repository.exceptionRepository.LikedExceptionBookRepository
-import com.example.library.fake.repository.exceptionRepository.ReservationByBookExceptionBookRepository
-import com.example.library.fake.repository.exceptionRepository.ReservationByUserExceptionBookRepository
-import com.example.library.fake.repository.exceptionRepository.UserLoanExceptionBookRepository
+import com.example.library.fake.repository.exceptionRepository.LikeCheckFailingRepository
+import com.example.library.fake.repository.exceptionRepository.ReservationByBookFailingRepository
+import com.example.library.fake.repository.exceptionRepository.ReservationByUserFailingRepository
+import com.example.library.fake.repository.exceptionRepository.GetLoanHistoryFailingRepository
 import com.example.library.rules.TestDispatcherRule
 import com.example.library.service.CheckLibraryLikeFailedException
 import com.example.library.service.FirebaseBookService
@@ -67,7 +67,7 @@ class FirebaseBookServiceTest {
 
     @Test
     fun firebaseBookService_updateLibraryLiked_verifyFailure_hasLibraryLiked()= runTest{
-        val fakeFirebaseBookService= FirebaseBookService(LikedExceptionBookRepository(), FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(LikeCheckFailingRepository(), FakeTimeProvider())
 
         assertFailsWith<CheckLibraryLikeFailedException>{
             fakeFirebaseBookService.updateLibraryLiked("", "",true)
@@ -130,7 +130,7 @@ class FirebaseBookServiceTest {
 
     @Test
     fun firebaseBookService_getLoanDueStatus_verifyFailure_getUserLoanBookList()= runTest {
-        val fakeFirebaseBookService= FirebaseBookService(UserLoanExceptionBookRepository(), FakeTimeProvider())
+        val fakeFirebaseBookService= FirebaseBookService(GetLoanHistoryFailingRepository(), FakeTimeProvider())
 
         assertFailsWith<GetLoanDueStatusFailedException>{
             fakeFirebaseBookService.getLoanDueStatus("", "","")
@@ -178,7 +178,7 @@ class FirebaseBookServiceTest {
     @Test
     fun firebaseBookService_getReservationList_verifyFailure_getReservationsByBook()= runTest {
         val fakeFirebaseBookService=
-            FirebaseBookService(ReservationByUserExceptionBookRepository(), FakeTimeProvider())
+            FirebaseBookService(ReservationByUserFailingRepository(), FakeTimeProvider())
 
         assertFailsWith<GetReservationsByUserFailedException>{
             fakeFirebaseBookService.getReservationList("")
@@ -188,7 +188,7 @@ class FirebaseBookServiceTest {
     @Test
     fun firebaseBookService_getReservationList_verifyFailure_getReservationsByUser()= runTest {
         val fakeFirebaseBookService=
-            FirebaseBookService(ReservationByBookExceptionBookRepository(), FakeTimeProvider())
+            FirebaseBookService(ReservationByBookFailingRepository(), FakeTimeProvider())
 
         assertFailsWith<GetReservationsByBookFailedException>{
             fakeFirebaseBookService.getReservationList("")
