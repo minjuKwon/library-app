@@ -11,9 +11,9 @@ import com.example.library.fake.repository.FakeBookRepository
 import com.example.library.fake.repository.FakeCacheBookRepository
 import com.example.library.fake.repository.FakeExceptionNetworkBookRepository
 import com.example.library.fake.repository.FakeNetworkBookRepository
-import com.example.library.fake.service.CheckLibraryService
-import com.example.library.fake.service.GetLibraryFailingService
-import com.example.library.fake.service.SaveLibraryFailingService
+import com.example.library.fake.service.exceptionService.CheckLibraryFailingService
+import com.example.library.fake.service.exceptionService.GetLibraryFailingService
+import com.example.library.fake.service.exceptionService.SaveLibraryFailingService
 import com.example.library.service.CacheBookService
 import com.example.library.service.CheckLibraryInfoFailedException
 import com.example.library.service.DefaultLibrarySyncService
@@ -91,7 +91,7 @@ class LibrarySyncServiceTest {
         val fakeLibrarySyncService= DefaultLibrarySyncService(
             FakeNetworkBookRepository(),
             CacheBookService(FakeCacheBookRepository(), FakeTimeProvider()),
-            CheckLibraryService()
+            CheckLibraryFailingService()
         )
 
         assertFailsWith<CheckLibraryInfoFailedException>{
