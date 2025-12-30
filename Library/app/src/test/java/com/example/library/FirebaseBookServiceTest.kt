@@ -10,7 +10,7 @@ import com.example.library.data.entity.ReservationStatusType
 import com.example.library.data.entity.UserLoanLibrary
 import com.example.library.data.mapper.toStringType
 import com.example.library.domain.DueCheckResult
-import com.example.library.fake.FakeTimeProvider
+import com.example.library.fake.DateConverter
 import com.example.library.fake.repository.FakeBookRepository
 import com.example.library.fake.repository.exceptionRepository.LikeCheckFailingRepository
 import com.example.library.fake.repository.exceptionRepository.ReservationByBookFailingRepository
@@ -85,7 +85,7 @@ class FirebaseBookServiceTest {
 
     @Test
     fun firebaseBookService_getLoanDueStatus_verifyCorrectValue_giveCorrectList()= runTest {
-        val timeProvider=FakeTimeProvider()
+        val dateConverter=DateConverter()
         val fakeBookRepository= FakeBookRepository()
         fakeBookRepository.addItemList(
             FakeBookRepository.DatabaseItem(
@@ -103,13 +103,13 @@ class FirebaseBookServiceTest {
         )
         fakeBookRepository.addHistoryList(LibraryHistory(status = BookStatusType.BORROWED.name))
         fakeBookRepository.addUserLoanBookList(
-            UserLoanLibrary(status = BookStatusType.BORROWED.name, dueDate = timeProvider.before())
+            UserLoanLibrary(status = BookStatusType.BORROWED.name, dueDate = dateConverter.before())
         )
         fakeBookRepository.addUserLoanBookList(
-            UserLoanLibrary(status = BookStatusType.BORROWED.name, dueDate = timeProvider.now)
+            UserLoanLibrary(status = BookStatusType.BORROWED.name, dueDate = dateConverter.now)
         )
         fakeBookRepository.addUserLoanBookList(
-            UserLoanLibrary(status = BookStatusType.BORROWED.name, dueDate = timeProvider.overdue())
+            UserLoanLibrary(status = BookStatusType.BORROWED.name, dueDate = dateConverter.overdue())
         )
 
         val fakeFirebaseBookService= FirebaseBookService(fakeBookRepository)

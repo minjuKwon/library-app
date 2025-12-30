@@ -3,7 +3,7 @@ package com.example.library.fake
 import java.time.Instant
 import java.time.ZoneId
 
-class FakeTimeProvider{
+class DateConverter{
 
     private val zoneId="Asia/Seoul"
     private val seoulZone: ZoneId = ZoneId.of(zoneId)
